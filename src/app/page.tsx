@@ -1005,6 +1005,13 @@ export default function Home() {
   const [active, setActive] = useState("dashboard");
   const [flow, setFlow] = useState<AppFlow>("app");
   const [onboardingStep, setOnboardingStep] = useState(0);
+  const [onboardingAction, setOnboardingAction] = useState("");
+  const [onboardingDebug, setOnboardingDebug] = useState({
+    lastAction: "initial",
+    lastValidation: "not-run",
+    generationStatus: "idle",
+  });
+  const [debugOnboarding, setDebugOnboarding] = useState(false);
   const [registration, setRegistration] = useState<RegistrationForm>(emptyRegistration);
   const [login, setLogin] = useState<LoginForm>(emptyLogin);
   const [reset, setReset] = useState<ResetForm>(emptyReset);
@@ -1050,6 +1057,7 @@ export default function Home() {
   const [isStandaloneApp, setIsStandaloneApp] = useState(false);
   const t = translations[language];
   const themeWriteReadyRef = useRef(false);
+  const onboardingProcessingRef = useRef(false);
   const categoryLabel = (category: string) => t.categories[category as ObligationCategory] || category;
   const maritalStatusLabel = (status: string) => {
     if (language !== "ar") return status;
@@ -1115,6 +1123,11 @@ export default function Home() {
     const storedTheme = window.localStorage.getItem(themeStorageKey);
     if (storedTheme === "light") setDarkMode(false);
     if (storedTheme === "dark") setDarkMode(true);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setDebugOnboarding(process.env.NODE_ENV !== "production" && new URLSearchParams(window.location.search).get("debugOnboarding") === "1");
   }, []);
 
   useEffect(() => {
@@ -1322,6 +1335,43 @@ export default function Home() {
 
   function navigateActive(nextActive: string) {
     requestUnsavedAction(() => setActive(nextActive));
+  }
+
+  function getNextOnboardingStep(step = onboardingStep) {
+    if (step <= 0) return 1;
+    if (onboardingMode === "quick" && step === 1) return 3;
+    return Math.min(4, step + 1);
+  }
+
+  function getPreviousOnboardingStep(step = onboardingStep) {
+    if (step <= 1) return 1;
+    if (onboardingMode === "quick" && step === 3) return 1;
+    return Math.max(1, step - 1);
+  }
+
+  function setOnboardingStepSafely(step: number, action: string) {
+    if (onboardingProcessingRef.current) return;
+    const safeStep = Math.max(0, Math.min(4, step));
+    setOnboardingAction(action);
+    setOnboardingDebug((current) => ({ ...current, lastAction: action, generationStatus: "idle" }));
+    setOnboardingStep(safeStep);
+    window.setTimeout(() => setOnboardingAction(""), 250);
+  }
+
+  function continueOnboarding() {
+    if (onboardingStep >= 4) {
+      completeOnboarding("generate");
+      return;
+    }
+    setOnboardingStepSafely(getNextOnboardingStep(), "continue");
+  }
+
+  function skipOnboardingStep() {
+    if (onboardingStep >= 4) {
+      completeOnboarding("skip-final");
+      return;
+    }
+    setOnboardingStepSafely(getNextOnboardingStep(), "skip-add-later");
   }
 
   function clearUserData() {
@@ -2952,7 +3002,24 @@ export default function Home() {
     }
   }
 
-  function completeOnboarding() {
+  function completeOnboarding(action = "generate") {
+    if (onboardingProcessingRef.current) return;
+    onboardingProcessingRef.current = true;
+    setOnboardingAction(action);
+    setOnboardingDebug((current) => ({ ...current, lastAction: action, generationStatus: "processing" }));
+
+    if (sessionMode === "real") {
+      const storedSession = readJson<StoredSession | null>(sessionStorageKey, null);
+      if (storedSession?.onboardingStatus === "complete") {
+        setOnboardingDebug((current) => ({ ...current, lastValidation: "already-complete", generationStatus: "complete" }));
+        setFlow("app");
+        setActive("dashboard");
+        setOnboardingAction("");
+        onboardingProcessingRef.current = false;
+        return;
+      }
+    }
+
     const onboardingAmounts = [
       onboarding.monthlyNetSalary,
       onboarding.basicSalary,
@@ -2967,54 +3034,63 @@ export default function Home() {
 
     if (onboardingAmounts.some((amount) => amount < 0)) {
       setAuthError(validationMessage("Amounts cannot be negative.", "لا يمكن أن تكون المبالغ سالبة."));
+      setOnboardingDebug((current) => ({ ...current, lastValidation: "negative-amount", generationStatus: "error" }));
+      setOnboardingAction("");
+      onboardingProcessingRef.current = false;
       return;
     }
 
     if (onboarding.annualBonus > 0 && !onboarding.annualBonusMonth) {
       setAuthError(validationMessage("Select an expected month for bonus income.", "اختر الشهر المتوقع للبونص."));
+      setOnboardingDebug((current) => ({ ...current, lastValidation: "missing-bonus-month", generationStatus: "error" }));
+      setOnboardingAction("");
+      onboardingProcessingRef.current = false;
       return;
     }
 
     setAuthError("");
-    const generatedDebts: Debt[] = [];
-    const salaryTotal =
-      incomeEntryMode === "detailed"
-        ? onboarding.basicSalary + onboarding.housingAllowance + onboarding.transportAllowance + onboarding.otherAllowance + onboarding.otherIncome
-        : onboarding.monthlyNetSalary;
-    const withoutGeneratedSalary = incomeSources.filter((income) => income.name !== "Monthly net salary" && income.name !== "Detailed monthly income" && !isAnnualBonusIncome(income));
-    const bonusIncome: IncomeSource[] = onboarding.annualBonus > 0
-      ? [{
-          id: crypto.randomUUID(),
-          name: "Annual bonus",
-          amount: onboarding.annualBonus,
-          type: "Bonus",
-          expectedMonth: onboarding.annualBonusMonth,
-          guaranteed: onboarding.annualBonusGuaranteed,
-          allocation: "Keep unallocated for now",
-          notes: "",
-        }]
-      : [];
-    const nextIncomeSources =
-      salaryTotal > 0
-        ? [
-            {
-              id: crypto.randomUUID(),
-              name: incomeEntryMode === "detailed" ? "Detailed monthly income" : "Monthly net salary",
-              amount: salaryTotal,
-              type: "Salary" as IncomeType,
-            },
-            ...bonusIncome,
-            ...withoutGeneratedSalary,
-          ]
-        : incomeSources;
-    const nextProfile = {
-      ...profile,
-      employer: skipEmployer ? "" : profile.employer,
-    };
+    setOnboardingDebug((current) => ({ ...current, lastValidation: "passed", generationStatus: "generating" }));
+    try {
+      const generatedDebts: Debt[] = [];
+      const generatedPrefix = `onboarding:${currentUserId || "local"}`;
+      const salaryTotal =
+        incomeEntryMode === "detailed"
+          ? onboarding.basicSalary + onboarding.housingAllowance + onboarding.transportAllowance + onboarding.otherAllowance + onboarding.otherIncome
+          : onboarding.monthlyNetSalary;
+      const withoutGeneratedSalary = incomeSources.filter((income) => income.name !== "Monthly net salary" && income.name !== "Detailed monthly income" && !isAnnualBonusIncome(income));
+      const bonusIncome: IncomeSource[] = onboarding.annualBonus > 0
+        ? [{
+            id: crypto.randomUUID(),
+            name: "Annual bonus",
+            amount: onboarding.annualBonus,
+            type: "Bonus",
+            expectedMonth: onboarding.annualBonusMonth,
+            guaranteed: onboarding.annualBonusGuaranteed,
+            allocation: "Keep unallocated for now",
+            notes: "",
+          }]
+        : [];
+      const nextIncomeSources =
+        salaryTotal > 0
+          ? [
+              {
+                id: crypto.randomUUID(),
+                name: incomeEntryMode === "detailed" ? "Detailed monthly income" : "Monthly net salary",
+                amount: salaryTotal,
+                type: "Salary" as IncomeType,
+              },
+              ...bonusIncome,
+              ...withoutGeneratedSalary,
+            ]
+          : incomeSources;
+      const nextProfile = {
+        ...profile,
+        employer: skipEmployer ? "" : profile.employer,
+      };
 
     if (onboarding.existingLoans > 0) {
       generatedDebts.push({
-        id: crypto.randomUUID(),
+        id: `${generatedPrefix}:debt:loans`,
         type: "Personal Loan",
         name: "Existing loans",
         bank: "Multiple providers",
@@ -3027,7 +3103,7 @@ export default function Home() {
 
     if (onboarding.creditCards > 0) {
       generatedDebts.push({
-        id: crypto.randomUUID(),
+        id: `${generatedPrefix}:debt:cards`,
         type: "Credit Card",
         name: "Credit card balance",
         bank: "Card providers",
@@ -3043,7 +3119,7 @@ export default function Home() {
 
     if (onboarding.existingLoans > 0) {
       debtObligations.push({
-        id: crypto.randomUUID(),
+        id: `${generatedPrefix}:obligation:loans`,
         name: "Existing loan payment",
         monthlyAmount: Math.round(onboarding.existingLoans * 0.03),
         category: "Loan",
@@ -3060,7 +3136,7 @@ export default function Home() {
 
     if (onboarding.creditCards > 0) {
       debtObligations.push({
-        id: crypto.randomUUID(),
+        id: `${generatedPrefix}:obligation:cards`,
         name: "Credit card payment",
         monthlyAmount: Math.round(onboarding.creditCards * 0.08),
         category: "Credit Card",
@@ -3075,17 +3151,25 @@ export default function Home() {
       });
     }
 
-    const nextObligations = [...debtObligations, ...obligationEntries.filter((obligation) => obligation.monthlyAmount > 0)];
+    const preservedDebts = debts.filter((debt) => !debt.id.startsWith(`${generatedPrefix}:debt:`) && !["Existing loans", "Credit card balance"].includes(debt.name));
+    const nextDebts = [...preservedDebts, ...generatedDebts];
+    const preservedObligations = obligationEntries.filter((obligation) =>
+      obligation.monthlyAmount > 0 &&
+      !obligation.id.startsWith(`${generatedPrefix}:obligation:`) &&
+      obligation.notes !== "Generated during onboarding." &&
+      !["Existing loan payment", "Credit card payment"].includes(obligation.name)
+    );
+    const nextObligations = [...debtObligations, ...preservedObligations];
 
     setIncomeSources(nextIncomeSources);
     setProfile(nextProfile);
-    setDebts(generatedDebts);
+    setDebts(nextDebts);
     setObligationEntries(nextObligations);
     if (sessionMode === "real" && currentUserId) {
       saveUserData(
         {
           profile: nextProfile,
-          debts: generatedDebts,
+          debts: nextDebts,
           creditCards,
           incomeSources: nextIncomeSources,
           obligationEntries: nextObligations,
@@ -3119,8 +3203,20 @@ export default function Home() {
       }
     }
     setSessionStatus("Onboarding complete: personalized dashboard generated");
+    setOnboardingDebug((current) => ({ ...current, lastValidation: "passed", generationStatus: "complete" }));
     setActive("dashboard");
     setFlow("app");
+    window.setTimeout(() => {
+      setOnboardingAction("");
+      onboardingProcessingRef.current = false;
+    }, 250);
+    } catch (error) {
+      console.error("Onboarding completion failed", error);
+      setAuthError(validationMessage("Something went wrong while continuing setup.", "حدث خطأ أثناء متابعة الإعداد."));
+      setOnboardingDebug((current) => ({ ...current, lastValidation: "runtime-error", generationStatus: "error" }));
+      setOnboardingAction("");
+      onboardingProcessingRef.current = false;
+    }
   }
 
   function renderIncomeEditor(income: IncomeSource, index: number) {
@@ -4298,34 +4394,50 @@ export default function Home() {
                   </div>
                 )}
 
+                {onboardingAction && (
+                  <p className="mt-5 rounded-lg bg-mint/10 px-3 py-2 text-sm font-bold text-emerald-800 dark:text-mint">
+                    {validationMessage("Processing...", "جاري المعالجة...")}
+                  </p>
+                )}
+
                 {authError && <p className="mt-5 rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 dark:bg-red-400/10 dark:text-red-200">{authError}</p>}
+
+                {debugOnboarding && (
+                  <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs font-bold text-amber-900 dark:border-amber-300/40 dark:bg-amber-300/10 dark:text-amber-100">
+                    <p>Onboarding debug</p>
+                    <p>current step: {onboardingStep}</p>
+                    <p>mode: {onboardingMode}</p>
+                    <p>flow: {flow}</p>
+                    <p>status: {readJson<StoredSession | null>(sessionStorageKey, null)?.onboardingStatus || "none"}</p>
+                    <p>completion: {readJson<StoredSession | null>(sessionStorageKey, null)?.onboardingStatus === "complete" ? "complete" : "incomplete"}</p>
+                    <p>last action: {onboardingDebug.lastAction}</p>
+                    <p>last validation: {onboardingDebug.lastValidation}</p>
+                    <p>generation status: {onboardingDebug.generationStatus}</p>
+                  </div>
+                )}
 
                 {onboardingStep > 0 && <div className="mt-6 grid grid-cols-2 gap-3">
                   <button
                     className="h-11 rounded-lg border border-slate-200 text-sm font-bold disabled:opacity-40 dark:border-white/10"
-                    disabled={onboardingStep === 1}
-                    onClick={() => setOnboardingStep((step) => Math.max(1, step - 1))}
+                    disabled={onboardingStep === 1 || Boolean(onboardingAction)}
+                    onClick={() => setOnboardingStepSafely(getPreviousOnboardingStep(), "back")}
                   >
                     Back
                   </button>
                   <button
-                    className="flex h-11 items-center justify-center gap-2 rounded-lg bg-ink text-sm font-bold text-white dark:bg-mint dark:text-ink"
-                    onClick={() => {
-                      if (onboardingStep === 4 || (onboardingMode === "quick" && onboardingStep === 3)) {
-                        completeOnboarding();
-                      } else {
-                        setOnboardingStep((step) => (onboardingMode === "quick" && step === 1 ? 3 : Math.min(4, step + 1)));
-                      }
-                    }}
+                    className="flex h-11 items-center justify-center gap-2 rounded-lg bg-ink text-sm font-bold text-white disabled:opacity-60 dark:bg-mint dark:text-ink"
+                    disabled={Boolean(onboardingAction)}
+                    onClick={continueOnboarding}
                   >
-                    {onboardingStep === 4 || (onboardingMode === "quick" && onboardingStep === 3) ? "Generate Dashboard" : t.common.next}
+                    {onboardingAction ? validationMessage("Processing...", "جاري المعالجة...") : onboardingStep === 4 ? "Generate Dashboard" : t.common.next}
                     <ChevronRight size={17} />
                   </button>
                   <button
-                    className="col-span-2 h-10 rounded-lg border border-dashed border-slate-300 text-sm font-bold dark:border-white/20"
-                    onClick={completeOnboarding}
+                    className="col-span-2 h-10 rounded-lg border border-dashed border-slate-300 text-sm font-bold disabled:opacity-60 dark:border-white/20"
+                    disabled={Boolean(onboardingAction)}
+                    onClick={skipOnboardingStep}
                   >
-                    Skip for now / Add later
+                    {onboardingAction ? validationMessage("Processing...", "جاري المعالجة...") : "Skip for now / Add later"}
                   </button>
                 </div>}
               </div>
