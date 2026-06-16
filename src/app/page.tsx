@@ -442,6 +442,11 @@ function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
 }
 
+function betaPasswordHash(password: string) {
+  if (typeof window !== "undefined" && "btoa" in window) return window.btoa(unescape(encodeURIComponent(password)));
+  return password;
+}
+
 function isValidSaudiMobile(value: string) {
   const digits = value.replace(/\D/g, "");
   return /^9665\d{8}$/.test(digits) || /^05\d{8}$/.test(digits) || /^5\d{8}$/.test(digits);
@@ -735,6 +740,7 @@ type BetaRegisteredUser = {
   mobile: string;
   createdAt: string;
   status: "Active" | "Incomplete" | "Deleted";
+  passwordHash?: string;
 };
 
 type UserOwnedData = {
@@ -1788,7 +1794,7 @@ export default function Home() {
       mode: "real",
       userId: currentUserId,
       authProvider: storedSession?.authProvider || "local-registration",
-      onboardingStatus: "incomplete",
+      onboardingStatus: "complete",
       onboardingStep,
       onboardingMode,
     } satisfies StoredSession);
@@ -3084,6 +3090,42 @@ export default function Home() {
       return;
     }
 
+    const normalizedLoginEmail = normalizeEmail(login.email);
+    const betaUser = findRegisteredBetaUser(normalizedLoginEmail);
+    if (betaUser?.passwordHash && betaUser.passwordHash === betaPasswordHash(login.password)) {
+      const userData = readUserData(betaUser.id);
+      const restoredData: UserOwnedData = {
+        ...emptyUserData,
+        ...userData,
+        profile: {
+          ...emptyProfile,
+          ...userData.profile,
+          fullName: userData.profile.fullName || betaUser.fullName,
+          mobile: userData.profile.mobile || betaUser.mobile,
+          email: normalizedLoginEmail,
+        },
+      };
+      writeJson(userStorageKey(betaUser.id), restoredData);
+      writeJson(sessionStorageKey, {
+        mode: "real",
+        userId: betaUser.id,
+        authProvider: "local-registration",
+        onboardingStatus: "complete",
+        onboardingStep: 4,
+        onboardingMode: "quick",
+      } satisfies StoredSession);
+      removeStoredItem(onboardingProgressStorageKey(betaUser.id));
+      removeStoredItem(draftStorageKey(betaUser.id));
+      applyUserData(restoredData);
+      setCurrentUserId(betaUser.id);
+      setSessionMode("real");
+      setAuthError("");
+      setSessionStatus(`Logged in as ${normalizedLoginEmail}`);
+      setFlow("app");
+      setActive("dashboard");
+      return;
+    }
+
     if (!isSupabaseConfigured || !supabase) {
       setAuthError(validationMessage(
         "This User accounts are not registered yet. Please register, use Try Demo or contact the DebtiQ team.",
@@ -3217,7 +3259,7 @@ export default function Home() {
       return;
     }
 
-    if (registration.password !== registration.confirmPassword) {
+    if (registration.confirmPassword && registration.password !== registration.confirmPassword) {
       setAuthError(validationMessage("Password and confirm password must match.", "كلمة المرور وتأكيد كلمة المرور غير متطابقين."));
       return;
     }
@@ -3242,39 +3284,21 @@ export default function Home() {
     const createdAt = new Date().toISOString();
     removeStoredItem(onboardingProgressStorageKey(userId));
     removeStoredItem(draftStorageKey(userId));
-    const initialOnboardingStep = 1;
+    const initialOnboardingStep = 4;
     const initialOnboardingMode: OnboardingMode = "quick";
-    const registrationDraft: RegistrationDraft = {
-      fullName: ownedData.profile.fullName,
-      mobile: ownedData.profile.mobile,
-      email: ownedData.profile.email,
-      registrationSuccess: true,
-    };
-    const initialProgress: OnboardingProgress = {
-      userId,
-      email: normalizedEmail,
-      savedAt: new Date().toISOString(),
-      registration: registrationDraft,
-      onboarding,
-      onboardingMode: initialOnboardingMode,
-      onboardingStep: initialOnboardingStep,
-      incomeEntryMode,
-      selectedChecklistItems,
-      selectedGoalStarters,
-      profile: ownedData.profile,
-    };
 
     writeJson(sessionStorageKey, {
       mode: "real",
       userId,
       authProvider: "local-registration",
-      onboardingStatus: "incomplete",
+      onboardingStatus: "complete",
       onboardingStep: initialOnboardingStep,
       onboardingMode: initialOnboardingMode,
     } satisfies StoredSession);
     writeJson(userStorageKey(userId), ownedData);
-    writeJson(onboardingProgressStorageKey(userId), initialProgress);
-    writeJson(registrationDraftStorageKey, registrationDraft);
+    removeStoredItem(onboardingProgressStorageKey(userId));
+    removeStoredItem(draftStorageKey(userId));
+    removeStoredItem(registrationDraftStorageKey);
     upsertRegisteredBetaUser({
       id: userId,
       email: normalizedEmail,
@@ -3282,23 +3306,19 @@ export default function Home() {
       fullName: ownedData.profile.fullName,
       mobile: ownedData.profile.mobile,
       createdAt,
-      status: "Incomplete",
+      status: "Active",
+      passwordHash: betaPasswordHash(registration.password),
     });
 
     applyUserData(ownedData);
     setCurrentUserId(userId);
     setSessionMode("real");
-    const draft = readJson<UserOwnedData | null>(draftStorageKey(userId), null);
     setAuthError("");
-    setSessionStatus(validationMessage("Continue setting up your financial profile", "تابع إعداد ملفك المالي"));
+    setSessionStatus(`Logged in as ${normalizedEmail}`);
     setOnboardingMode(initialOnboardingMode);
     setOnboardingStep(initialOnboardingStep);
-    setFlow("onboarding");
-    setActive("profile");
-    if (draft && hasOwnedData(draft)) {
-      setDraftRecoveryData(draft);
-      setShowDraftRecovery(true);
-    }
+    setFlow("app");
+    setActive("dashboard");
   }
 
   function completeOnboarding(action = "generate") {
@@ -4788,6 +4808,16 @@ export default function Home() {
 
             {flow === "app" && active === "dashboard" && (
               <div className="grid gap-5">
+                {sessionMode === "real" && (
+                  <div className="rounded-lg border border-mint/30 bg-mint/10 p-5 shadow-sm">
+                    <h3 className="text-xl font-black">{language === "ar" ? "مرحباً بك في ديبت آي كيو." : "Welcome to DebtIQ."}</h3>
+                    <p className="mt-2 text-sm font-bold leading-6 text-slate-600 dark:text-slate-200">
+                      {language === "ar"
+                        ? "ابدأ بإضافة دخلك والتزاماتك وبطاقاتك من الأقسام التالية."
+                        : "Start by adding your income, obligations, and cards from the dashboard tabs."}
+                    </p>
+                  </div>
+                )}
                 {(importWizardOpen || importPreview || importErrors.length > 0 || importSummary) && (
                   <div className="rounded-lg border border-white/70 bg-white/85 p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
