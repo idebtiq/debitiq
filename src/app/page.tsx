@@ -232,61 +232,61 @@ const translations = {
     },
   },
   ar: {
-    common: { login: "ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„", createAccount: "Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨", importData: "Ø§Ø³ØªÙŠØ±Ø§Ø¯ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª", downloadTemplate: "ØªØ­Ù…ÙŠÙ„ Ù‚Ø§Ù„Ø¨ Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ", cancel: "Ø¥Ù„ØºØ§Ø¡", confirm: "ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯", tryDemo: "ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ø¹Ø±Ø¶", next: "Ø§Ù„ØªØ§Ù„ÙŠ", back: "Ø±Ø¬ÙˆØ¹", save: "Ø­ÙØ¸", savedSuccessfully: "ØªÙ… Ø§Ù„Ø­ÙØ¸ Ø¨Ù†Ø¬Ø§Ø­", unsavedChanges: "ØªØ¹Ø¯ÙŠÙ„Ø§Øª ØºÙŠØ± Ù…Ø­ÙÙˆØ¸Ø©", income: "Ø§Ù„Ø¯Ø®Ù„", lifestyle: "Ù†Ù…Ø· Ø§Ù„Ø­ÙŠØ§Ø©", obligations: "Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª", goals: "Ø§Ù„Ø£Ù‡Ø¯Ø§Ù", forecast: "Ø§Ù„ØªÙˆÙ‚Ø¹Ø§Øª", bonus: "Ø§Ù„Ø¨ÙˆÙ†Øµ", suggestedActions: "Ø§Ù„ØªÙˆØµÙŠØ§Øª", profile: "Ø§Ù„Ù…Ù„Ù Ø§Ù„Ø´Ø®ØµÙŠ", accountAccess: "Ø§Ù„ÙˆØµÙˆÙ„ Ù„Ù„Ø­Ø³Ø§Ø¨", debtCenter: "Ù…Ø±ÙƒØ² Ø§Ù„Ø¯ÙŠÙˆÙ†", recommendations: "Ø§Ù„ØªÙˆØµÙŠØ§Øª", opportunities: "Ø§Ù„ÙØ±Øµ Ø§Ù„Ù…Ø­ØªÙ…Ù„Ø©", upcomingExtraIncome: "Ø¯Ø®Ù„ Ø¥Ø¶Ø§ÙÙŠ Ù‚Ø§Ø¯Ù…", financialGapForecast: "ØªÙˆÙ‚Ø¹ Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ù…Ø§Ù„ÙŠ", goalCompletionForecast: "ØªÙˆÙ‚Ø¹ Ø§ÙƒØªÙ…Ø§Ù„ Ø§Ù„Ø£Ù‡Ø¯Ø§Ù", creditCardIntelligence: "ØªØ­Ù„ÙŠÙ„ Ø§Ù„Ø¨Ø·Ø§Ù‚Ø§Øª Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù†ÙŠØ©", printReport: "Ø·Ø¨Ø§Ø¹Ø© Ø§Ù„ØªÙ‚Ø±ÙŠØ±", printPreview: "Ù…Ø¹Ø§ÙŠÙ†Ø© Ø§Ù„Ø·Ø¨Ø§Ø¹Ø©", executiveSummary: "Ø§Ù„ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ù…Ø§Ù„ÙŠ Ø§Ù„ØªÙ†ÙÙŠØ°ÙŠ", actionPlan: "Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª Ø§Ù„Ù…Ù‚ØªØ±Ø­Ø©", profileCompletion: "Ø§ÙƒØªÙ…Ø§Ù„ Ø§Ù„Ù…Ù„Ù Ø§Ù„Ù…Ø§Ù„ÙŠ" },
+    common: { login: "تسجيل الدخول", createAccount: "إنشاء حساب", importData: "استيراد البيانات", downloadTemplate: "تحميل قالب ديبت آي كيو", cancel: "إلغاء", confirm: "تأكيد الاستيراد", tryDemo: "تجربة العرض", next: "التالي", back: "رجوع", save: "حفظ", savedSuccessfully: "تم الحفظ بنجاح", unsavedChanges: "تعديلات غير محفوظة", income: "الدخل", lifestyle: "نمط الحياة", obligations: "الالتزامات", goals: "الأهداف", forecast: "التوقعات", bonus: "البونص", suggestedActions: "التوصيات", profile: "الملف الشخصي", accountAccess: "الوصول للحساب", debtCenter: "مركز الديون", recommendations: "التوصيات", opportunities: "الفرص المحتملة", upcomingExtraIncome: "دخل إضافي قادم", financialGapForecast: "توقع العجز المالي", goalCompletionForecast: "توقع اكتمال الأهداف", creditCardIntelligence: "تحليل البطاقات الائتمانية", printReport: "طباعة التقرير", printPreview: "معاينة الطباعة", executiveSummary: "التقرير المالي التنفيذي", actionPlan: "الإجراءات المقترحة", profileCompletion: "اكتمال الملف المالي" },
     landing: {
-      headline: "Ø±ØªØ¨ Ø¯Ø®Ù„Ùƒ ÙˆØ§Ù„ØªØ²Ø§Ù…Ø§ØªÙƒ ÙˆØ£Ù‡Ø¯Ø§ÙÙƒ Ø§Ù„Ù…Ø§Ù„ÙŠØ© ÙÙŠ Ù…ÙƒØ§Ù† ÙˆØ§Ø­Ø¯",
-      body: "Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ ÙŠØ³Ø§Ø¹Ø¯Ùƒ Ø¹Ù„Ù‰ ÙÙ‡Ù… ÙˆØ¶Ø¹Ùƒ Ø§Ù„Ù…Ø§Ù„ÙŠØŒ ØªØ±ØªÙŠØ¨ Ø¯Ø®Ù„ÙƒØŒ Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„ØªØ²Ø§Ù…Ø§ØªÙƒØŒ Ø§Ù„ØªØ®Ø·ÙŠØ· Ù„Ù„Ù…ØµØ§Ø±ÙŠÙ Ø§Ù„ÙƒØ¨ÙŠØ±Ø©ØŒ ÙˆØ§ÙƒØªØ´Ø§Ù Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ù…Ø§Ù„ÙŠ Ù‚Ø¨Ù„ Ø­Ø¯ÙˆØ«Ù‡.",
+      headline: "رتب دخلك والتزاماتك وأهدافك المالية في مكان واحد",
+      body: "ديبت آي كيو يساعدك على فهم وضعك المالي، ترتيب دخلك، متابعة التزاماتك، التخطيط للمصاريف الكبيرة، واكتشاف العجز المالي قبل حدوثه.",
       benefits: [
-        "Ø§Ø¹Ø±Ù Ø£ÙŠÙ† ÙŠØ°Ù‡Ø¨ Ø±Ø§ØªØ¨Ùƒ Ø´Ù‡Ø±ÙŠØ§Ù‹",
-        "Ø§ÙƒØªØ´Ù Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ù…Ø§Ù„ÙŠ Ù‚Ø¨Ù„ Ø­Ø¯ÙˆØ«Ù‡",
-        "Ø±ØªØ¨ Ø§Ù„ØªØ²Ø§Ù…Ø§ØªÙƒ Ø­Ø³Ø¨ ØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ø³ØªØ­Ù‚Ø§Ù‚",
-        "ØªØ§Ø¨Ø¹ Ø¨Ø·Ø§Ù‚Ø§ØªÙƒ Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù†ÙŠØ© ÙˆÙ†Ø³Ø¨Ø© Ø§Ø³ØªØ®Ø¯Ø§Ù…Ù‡Ø§",
-        "Ø®Ø·Ø· Ù„Ù„Ù…ØµØ§Ø±ÙŠÙ Ø§Ù„ÙƒØ¨ÙŠØ±Ø© Ù…Ø«Ù„ Ø§Ù„Ù…Ø¯Ø§Ø±Ø³ ÙˆØ§Ù„Ø¥ÙŠØ¬Ø§Ø± ÙˆØ§Ù„Ø³ÙŠØ§Ø±Ø© ÙˆØ§Ù„Ø¨ÙŠØª",
-        "Ø§Ø¹Ø±Ù ÙƒÙ… ØªØ­ØªØ§Ø¬ Ø´Ù‡Ø±ÙŠØ§Ù‹ Ù„Ù„ÙˆØµÙˆÙ„ Ø¥Ù„Ù‰ Ø£Ù‡Ø¯Ø§ÙÙƒ",
-        "Ø§Ø¹Ø±Ù Ù…ØªÙ‰ Ø³ØªÙ†ØªÙ‡ÙŠ Ø¨Ø¹Ø¶ Ø§Ù„ØªØ²Ø§Ù…Ø§ØªÙƒ ÙˆÙƒÙ… Ø³ÙŠØªØ­Ø±Ø± Ù…Ù† Ø¯Ø®Ù„Ùƒ Ù…Ø³ØªÙ‚Ø¨Ù„Ø§Ù‹",
-        "Ø§Ø³ØªÙˆØ±Ø¯ Ø¨ÙŠØ§Ù†Ø§ØªÙƒ Ù…Ù† Excel Ø£Ùˆ Ø£Ø¯Ø®Ù„Ù‡Ø§ ÙŠØ¯ÙˆÙŠØ§Ù‹",
-        "Ø§Ø­ØµÙ„ Ù…Ø³ØªÙ‚Ø¨Ù„Ø§Ù‹ Ø¹Ù„Ù‰ ÙØ±Øµ Ù…Ø§Ù„ÙŠØ© Ù…Ù†Ø§Ø³Ø¨Ø© Ù„ÙˆØ¶Ø¹Ùƒ Ø¹Ù†Ø¯ ØªÙˆÙØ±Ù‡Ø§",
+        "اعرف أين يذهب راتبك شهرياً",
+        "اكتشف العجز المالي قبل حدوثه",
+        "رتب التزاماتك حسب تاريخ الاستحقاق",
+        "تابع بطاقاتك الائتمانية ونسبة استخدامها",
+        "خطط للمصاريف الكبيرة مثل المدارس والإيجار والسيارة والبيت",
+        "اعرف كم تحتاج شهرياً للوصول إلى أهدافك",
+        "اعرف متى ستنتهي بعض التزاماتك وكم سيتحرر من دخلك مستقبلاً",
+        "استورد بياناتك من Excel أو أدخلها يدوياً",
+        "احصل مستقبلاً على فرص مالية مناسبة لوضعك عند توفرها",
       ],
     },
-    dashboard: { monthlyIncome: "Ø§Ù„Ø¯Ø®Ù„ Ø§Ù„Ø´Ù‡Ø±ÙŠ", monthlyObligations: "Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„Ø´Ù‡Ø±ÙŠØ©", monthlySurplusDeficit: "Ø§Ù„ÙØ§Ø¦Ø¶/Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ø´Ù‡Ø±ÙŠ", debtScore: "Ø¶ØºØ· Ø§Ù„Ø¯ÙŠÙ†", upcomingOneTime: "Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„Ù‚Ø§Ø¯Ù…Ø©", requiredMonthlySavings: "Ø§Ù„Ø§Ø¯Ø®Ø§Ø± Ø§Ù„Ø´Ù‡Ø±ÙŠ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨" },
+    dashboard: { monthlyIncome: "الدخل الشهري", monthlyObligations: "الالتزامات الشهرية", monthlySurplusDeficit: "الفائض/العجز الشهري", debtScore: "ضغط الدين", upcomingOneTime: "الالتزامات القادمة", requiredMonthlySavings: "الادخار الشهري المطلوب" },
     onboarding: {
-      title: "Ø¥Ø¹Ø¯Ø§Ø¯ Ø§Ù„Ù…Ù„Ù Ø§Ù„Ø´Ø®ØµÙŠ",
-      setupChoice: "ÙƒÙŠÙ ØªÙØ¶Ù„ Ø¥Ø¶Ø§ÙØ© Ø¨ÙŠØ§Ù†Ø§ØªÙƒ Ø§Ù„Ù…Ø§Ù„ÙŠØ©ØŸ",
-      importExcel: "Ø±ÙØ¹ Ù…Ù„Ù Excel",
-      manualEntry: "Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª ÙŠØ¯ÙˆÙŠØ§Ù‹",
-      whyTitle: "Ù„Ù…Ø§Ø°Ø§ ØªÙƒÙ…Ù„ Ø¨ÙŠØ§Ù†Ø§ØªÙƒØŸ",
-      whyBody: "ÙƒÙ„Ù…Ø§ ÙƒØ§Ù†Øª Ø¨ÙŠØ§Ù†Ø§ØªÙƒ Ø£Ø¯Ù‚ØŒ Ø£ØµØ¨Ø­Øª ØªÙˆÙ‚Ø¹Ø§Øª Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ Ø£ÙƒØ«Ø± ÙØ§Ø¦Ø¯Ø©. Ù„Ø§ Ù†Ø­ØªØ§Ø¬ Ø£Ø±Ù‚Ø§Ù…Ø§Ù‹ Ù…Ø«Ø§Ù„ÙŠØ©ØŒ ÙÙ‚Ø· Ø£Ø¯Ø®Ù„ Ø£ÙØ¶Ù„ ØªÙ‚Ø¯ÙŠØ± Ù„Ø¯ÙŠÙƒ ÙˆÙŠÙ…ÙƒÙ†Ùƒ ØªØ¹Ø¯ÙŠÙ„Ù‡ Ù„Ø§Ø­Ù‚Ø§Ù‹.",
-      whyDetail: "Ø¥Ø¶Ø§ÙØ© Ø¨ÙŠØ§Ù†Ø§ØªÙƒ ØªØ³Ø§Ø¹Ø¯ Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ Ø¹Ù„Ù‰ Ø­Ø³Ø§Ø¨ Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ø´Ù‡Ø±ÙŠØŒ Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§ØªØŒ ØªÙˆÙ‚Ø¹ Ø§Ù„Ø£Ø´Ù‡Ø± Ø¹Ø§Ù„ÙŠØ© Ø§Ù„Ø®Ø·ÙˆØ±Ø©ØŒ ÙˆØªØ­Ø¯ÙŠØ¯ Ø§Ù„Ø£Ù‡Ø¯Ø§Ù Ø§Ù„Ù…Ø§Ù„ÙŠØ© Ø§Ù„Ù…Ù†Ø§Ø³Ø¨Ø© Ù„Ùƒ.",
-      employerName: "Ø§Ø³Ù… Ø¬Ù‡Ø© Ø§Ù„Ø¹Ù…Ù„",
-      skipEmployer: "Ø£ÙØ¶Ù„ Ø¹Ø¯Ù… Ø¥Ø¶Ø§ÙØ© Ø¬Ù‡Ø© Ø§Ù„Ø¹Ù…Ù„",
-      workIncome: "Ø§Ù„Ø¹Ù…Ù„ ÙˆØ§Ù„Ø¯Ø®Ù„",
-      monthlyNetSalary: "ØµØ§ÙÙŠ Ø§Ù„Ø±Ø§ØªØ¨ Ø§Ù„Ø´Ù‡Ø±ÙŠ",
-      incomeMode: "Ù‡Ù„ ØªØ±ÙŠØ¯ Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø±Ø§ØªØ¨ ÙƒØ¥Ø¬Ù…Ø§Ù„ÙŠ ØµØ§ÙÙŠ Ø£Ùˆ ÙƒØªÙØµÙŠÙ„ØŸ",
-      totalIncome: "Ø¥Ø¬Ù…Ø§Ù„ÙŠ ØµØ§ÙÙŠ Ø§Ù„Ø¯Ø®Ù„ Ø§Ù„Ø´Ù‡Ø±ÙŠ",
-      detailedIncome: "ØªÙØµÙŠÙ„ Ø§Ù„Ø¯Ø®Ù„",
-      lifestyle: "Ù…ØµØ§Ø±ÙŠÙ Ù†Ù…Ø· Ø§Ù„Ø­ÙŠØ§Ø© Ø§Ù„Ø´Ù‡Ø±ÙŠØ©",
-      commonObligations: "Ù‡Ù„ Ù„Ø¯ÙŠÙƒ Ø£ÙŠ Ù…Ù† Ù‡Ø°Ù‡ Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§ØªØŸ",
-      goalsQuestion: "Ù…Ø§ Ø£Ù‡Ø¯Ø§ÙÙƒ Ø§Ù„Ù…Ø§Ù„ÙŠØ©ØŸ",
+      title: "إعداد الملف الشخصي",
+      setupChoice: "كيف تفضل إضافة بياناتك المالية؟",
+      importExcel: "رفع ملف Excel",
+      manualEntry: "إدخال البيانات يدوياً",
+      whyTitle: "لماذا تكمل بياناتك؟",
+      whyBody: "كلما كانت بياناتك أدق، أصبحت توقعات ديبت آي كيو أكثر فائدة. لا نحتاج أرقاماً مثالية، فقط أدخل أفضل تقدير لديك ويمكنك تعديله لاحقاً.",
+      whyDetail: "إضافة بياناتك تساعد ديبت آي كيو على حساب العجز الشهري، متابعة الالتزامات، توقع الأشهر عالية الخطورة، وتحديد الأهداف المالية المناسبة لك.",
+      employerName: "اسم جهة العمل",
+      skipEmployer: "أفضل عدم إضافة جهة العمل",
+      workIncome: "العمل والدخل",
+      monthlyNetSalary: "صافي الراتب الشهري",
+      incomeMode: "هل تريد إدخال الراتب كإجمالي صافي أو كتفصيل؟",
+      totalIncome: "إجمالي صافي الدخل الشهري",
+      detailedIncome: "تفصيل الدخل",
+      lifestyle: "مصاريف نمط الحياة الشهرية",
+      commonObligations: "هل لديك أي من هذه الالتزامات؟",
+      goalsQuestion: "ما أهدافك المالية؟",
     },
-    income: { title: "Ù…ØµØ§Ø¯Ø± Ø§Ù„Ø¯Ø®Ù„", name: "Ø§Ø³Ù… Ø§Ù„Ø¯Ø®Ù„", amount: "Ù…Ø¨Ù„Øº Ø§Ù„Ø¯Ø®Ù„", type: "Ù†ÙˆØ¹ Ø§Ù„Ø¯Ø®Ù„" },
-    obligation: { title: "Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª", amount: "Ø§Ù„Ù…Ø¨Ù„Øº", frequency: "Ø§Ù„ØªÙƒØ±Ø§Ø±", dueDate: "ØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ø³ØªØ­Ù‚Ø§Ù‚", startDate: "ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¨Ø¯Ø§ÙŠØ©", endDate: "ØªØ§Ø±ÙŠØ® Ø§Ù„Ù†Ù‡Ø§ÙŠØ©", allocation: "Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„Ø§Ø­ØªØ³Ø§Ø¨", savedAmount: "Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ù…Ø¯Ø®Ø±" },
-    goal: { title: "Ø§Ù„Ø£Ù‡Ø¯Ø§Ù" },
-    creditCard: { title: "Ø§Ù„Ø¨Ø·Ø§Ù‚Ø§Øª Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù†ÙŠØ©" },
-    admin: { title: "Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©" },
-    categories: { Loan: "Ù‚Ø±Ø¶", "Credit Card": "Ø¨Ø·Ø§Ù‚Ø© Ø§Ø¦ØªÙ…Ø§Ù†ÙŠØ©", Education: "ØªØ¹Ù„ÙŠÙ…", Housing: "Ø³ÙƒÙ†", Children: "Ø£Ø¨Ù†Ø§Ø¡", "Domestic Worker": "Ø¹Ø§Ù…Ù„Ø© Ù…Ù†Ø²Ù„ÙŠØ©", Vehicle: "Ø³ÙŠØ§Ø±Ø©", Insurance: "ØªØ£Ù…ÙŠÙ†", Lifestyle: "Ù†Ù…Ø· Ø­ÙŠØ§Ø©", Other: "Ø£Ø®Ø±Ù‰" },
+    income: { title: "مصادر الدخل", name: "اسم الدخل", amount: "مبلغ الدخل", type: "نوع الدخل" },
+    obligation: { title: "الالتزامات", amount: "المبلغ", frequency: "التكرار", dueDate: "تاريخ الاستحقاق", startDate: "تاريخ البداية", endDate: "تاريخ النهاية", allocation: "طريقة الاحتساب", savedAmount: "المبلغ المدخر" },
+    goal: { title: "الأهداف" },
+    creditCard: { title: "البطاقات الائتمانية" },
+    admin: { title: "الإدارة" },
+    categories: { Loan: "قرض", "Credit Card": "بطاقة ائتمانية", Education: "تعليم", Housing: "سكن", Children: "أبناء", "Domestic Worker": "عاملة منزلية", Vehicle: "سيارة", Insurance: "تأمين", Lifestyle: "نمط حياة", Other: "أخرى" },
     tooltips: {
-      frequency: "ÙƒÙ… Ù…Ø±Ø© ÙŠØªÙƒØ±Ø± Ù‡Ø°Ø§ Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…ØŸ Ø´Ù‡Ø±ÙŠØŒ Ø³Ù†ÙˆÙŠØŒ Ø£Ùˆ Ù…Ø±Ø© ÙˆØ§Ø­Ø¯Ø©.",
-      dueDate: "ØªØ§Ø±ÙŠØ® Ø§Ø³ØªØ­Ù‚Ø§Ù‚ Ø§Ù„Ø¯ÙØ¹ Ø£Ùˆ Ø¢Ø®Ø± Ù…ÙˆØ¹Ø¯ Ù„Ù„Ø³Ø¯Ø§Ø¯.",
-      startDate: "ØªØ§Ø±ÙŠØ® Ø¨Ø¯Ø§ÙŠØ© Ø§Ù„Ø§Ù„ØªØ²Ø§Ù… Ø£Ùˆ Ø§Ù„Ù‚Ø±Ø¶.",
-      endDate: "ØªØ§Ø±ÙŠØ® Ø§Ù†ØªÙ‡Ø§Ø¡ Ø§Ù„Ø§Ù„ØªØ²Ø§Ù… Ø£Ùˆ Ø¢Ø®Ø± Ø¯ÙØ¹Ø© Ù…ØªÙˆÙ‚Ø¹Ø©.",
-      allocationMethod: "Ø§Ø®ØªØ± Ù‡Ù„ ÙŠØªÙ… Ø§Ø­ØªØ³Ø§Ø¨ Ø§Ù„Ù…Ø¨Ù„Øº ÙƒØ§Ù…Ù„Ø§Ù‹ ÙÙŠ Ø´Ù‡Ø± Ø§Ù„Ø§Ø³ØªØ­Ù‚Ø§Ù‚ Ø£Ùˆ ØªÙˆØ²ÙŠØ¹Ù‡ Ø´Ù‡Ø±ÙŠØ§Ù‹ Ø­ØªÙ‰ Ù…ÙˆØ¹Ø¯ Ø§Ù„Ø³Ø¯Ø§Ø¯.",
-      minimumPaymentDue: "Ø£Ù‚Ù„ Ù…Ø¨Ù„Øº ÙŠØ¬Ø¨ Ø¯ÙØ¹Ù‡ Ù„ØªØ¬Ù†Ø¨ Ø§Ù„ØªØ£Ø®ÙŠØ± Ø£Ùˆ Ø§Ù„Ø±Ø³ÙˆÙ… Ø§Ù„Ø¥Ø¶Ø§ÙÙŠØ©.",
-      statementTotalDue: "Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ù…Ø³ØªØ­Ù‚ ÙÙŠ ÙƒØ´Ù Ø§Ù„Ø¨Ø·Ø§Ù‚Ø© Ø§Ù„Ø£Ø®ÙŠØ±.",
-      creditLimit: "Ø§Ù„Ø­Ø¯ Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù†ÙŠ Ø§Ù„ÙƒØ§Ù…Ù„ Ù„Ù„Ø¨Ø·Ø§Ù‚Ø©.",
-      creditUtilization: "Ø§Ù„Ù†Ø³Ø¨Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…Ø© Ù…Ù† Ø§Ù„Ø­Ø¯ Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù†ÙŠ.",
-      annualBonus: "Ø¨ÙˆÙ†Øµ Ø³Ù†ÙˆÙŠ Ù…ØªÙˆÙ‚Ø¹ ÙŠØ­ÙØ¸ ÙƒÙ…ØµØ¯Ø± Ø¯Ø®Ù„ ÙˆÙŠØ¸Ù‡Ø± ÙÙ‚Ø· ÙÙŠ Ø´Ù‡Ø±Ù‡ Ø§Ù„Ù…ØªÙˆÙ‚Ø¹.",
-      monthlyNetSalary: "Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ø°ÙŠ ÙŠØ¯Ø®Ù„ Ø­Ø³Ø§Ø¨Ùƒ Ø´Ù‡Ø±ÙŠØ§Ù‹ Ø¨Ø¹Ø¯ Ø§Ù„Ø®ØµÙˆÙ…Ø§Øª.",
-      lifestyleExpenses: "Ù…ØµØ§Ø±ÙŠÙ ÙŠÙˆÙ…ÙŠØ© Ø£Ùˆ Ø´Ù‡Ø±ÙŠØ© ØºÙŠØ± Ù…Ø±ØªØ¨Ø·Ø© Ø¨Ø¹Ù‚Ø¯ØŒ Ù„ÙƒÙ†Ù‡Ø§ ØªØ¤Ø«Ø± Ø¹Ù„Ù‰ Ø§Ù„ØªØ¯ÙÙ‚ Ø§Ù„Ù†Ù‚Ø¯ÙŠ.",
+      frequency: "كم مرة يتكرر هذا الالتزام؟ شهري، سنوي، أو مرة واحدة.",
+      dueDate: "تاريخ استحقاق الدفع أو آخر موعد للسداد.",
+      startDate: "تاريخ بداية الالتزام أو القرض.",
+      endDate: "تاريخ انتهاء الالتزام أو آخر دفعة متوقعة.",
+      allocationMethod: "اختر هل يتم احتساب المبلغ كاملاً في شهر الاستحقاق أو توزيعه شهرياً حتى موعد السداد.",
+      minimumPaymentDue: "أقل مبلغ يجب دفعه لتجنب التأخير أو الرسوم الإضافية.",
+      statementTotalDue: "إجمالي المبلغ المستحق في كشف البطاقة الأخير.",
+      creditLimit: "الحد الائتماني الكامل للبطاقة.",
+      creditUtilization: "النسبة المستخدمة من الحد الائتماني.",
+      annualBonus: "بونص سنوي متوقع يحفظ كمصدر دخل ويظهر فقط في شهره المتوقع.",
+      monthlyNetSalary: "المبلغ الذي يدخل حسابك شهرياً بعد الخصومات.",
+      lifestyleExpenses: "مصاريف يومية أو شهرية غير مرتبطة بعقد، لكنها تؤثر على التدفق النقدي.",
     },
   },
 } as const;
@@ -375,14 +375,14 @@ function parseAmount(value: unknown) {
   const unicodeAmount = Number(unicodeCleaned);
   if (Number.isFinite(unicodeAmount)) return unicodeIsNegative ? -Math.abs(unicodeAmount) : unicodeAmount;
   const normalizedDigits = value
-    .replace(/[Ù -Ù©]/g, (digit) => String("Ù Ù¡Ù¢Ù£Ù¤Ù¥Ù¦Ù§Ù¨Ù©".indexOf(digit)))
+    .replace(/[٠-٩]/g, (digit) => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
     .replace(/[Û°-Û¹]/g, (digit) => String("Û°Û±Û²Û³Û´ÛµÛ¶Û·Û¸Û¹".indexOf(digit)));
   const isNegative = /^\s*\(.*\)\s*$/.test(normalizedDigits) || normalizedDigits.trim().startsWith("-");
   const cleaned = normalizedDigits
     .replace(/\((.*)\)/, "$1")
     .replace(/[\u00a0\s]/g, "")
-    .replace(/[Ù¬,]/g, "")
-    .replace(/[Ù«]/g, ".")
+    .replace(/[٬,]/g, "")
+    .replace(/[٫]/g, ".")
     .replace(/[^0-9.-]/g, "");
   const amount = Number(cleaned);
   return Number.isFinite(amount) ? (isNegative ? -Math.abs(amount) : amount) : Number.NaN;
@@ -469,14 +469,14 @@ function mapObligationCategory(value: unknown) {
 
 function mapObligationFrequency(value: unknown): ObligationFrequency {
   const normalized = normalizeKey(String(value || ""));
-  if (["annual", "yearly", "Ø³Ù†ÙˆÙŠ"].includes(normalized)) return "Annual";
-  if (["onetime", "once", "single", "Ù…Ø±Ø©ÙˆØ§Ø­Ø¯Ø©", "Ù…Ø±Ù‡ÙˆØ§Ø­Ø¯Ù‡"].includes(normalized)) return "One-Time";
+  if (["annual", "yearly", "سنوي"].includes(normalized)) return "Annual";
+  if (["onetime", "once", "single", "مرةواحدة", "مرهواحده"].includes(normalized)) return "One-Time";
   return "Monthly";
 }
 
 function mapAllocationMethod(value: unknown, frequency: ObligationFrequency): ObligationAllocationMethod {
   const normalized = normalizeKey(String(value || ""));
-  if (normalized.includes("spread") || normalized.includes("saving") || normalized.includes("monthly") || normalized.includes("ØªÙˆØ²ÙŠØ¹") || normalized.includes("Ø´Ù‡Ø±ÙŠ")) {
+  if (normalized.includes("spread") || normalized.includes("saving") || normalized.includes("monthly") || normalized.includes("توزيع") || normalized.includes("شهري")) {
     return "Spread amount monthly until due date";
   }
   if (frequency === "Monthly") return "Count full amount only in due month";
@@ -833,35 +833,35 @@ const emptyImportMappings: ImportMappings = {
 
 const categoryAliases: Record<string, ObligationCategory> = {
   loan: "Loan",
-  "Ù‚Ø±Ø¶": "Loan",
+  "قرض": "Loan",
   creditcard: "Credit Card",
   card: "Credit Card",
-  "Ø¨Ø·Ø§Ù‚Ø©": "Credit Card",
+  "بطاقة": "Credit Card",
   education: "Education",
   school: "Education",
-  "ØªØ¹Ù„ÙŠÙ…": "Education",
+  "تعليم": "Education",
   housing: "Housing",
   rent: "Housing",
-  "Ø³ÙƒÙ†": "Housing",
+  "سكن": "Housing",
   children: "Children",
   child: "Children",
-  "Ø£Ø¨Ù†Ø§Ø¡": "Children",
-  "Ø§Ø¨Ù†Ø§Ø¡": "Children",
+  "أبناء": "Children",
+  "ابناء": "Children",
   domesticworker: "Domestic Worker",
   maid: "Domestic Worker",
-  "Ø®Ø§Ø¯Ù…Ø©": "Domestic Worker",
+  "خادمة": "Domestic Worker",
   vehicle: "Vehicle",
   car: "Vehicle",
-  "Ø³ÙŠØ§Ø±Ø©": "Vehicle",
+  "سيارة": "Vehicle",
   insurance: "Insurance",
-  "ØªØ£Ù…ÙŠÙ†": "Insurance",
-  "ØªØ§Ù…ÙŠÙ†": "Insurance",
+  "تأمين": "Insurance",
+  "تامين": "Insurance",
   lifestyle: "Lifestyle",
   expenses: "Lifestyle",
-  "Ù†Ù…Ø· Ø­ÙŠØ§Ø©": "Lifestyle",
+  "نمط حياة": "Lifestyle",
   other: "Other",
-  "Ø£Ø®Ø±Ù‰": "Other",
-  "Ø§Ø®Ø±Ù‰": "Other",
+  "أخرى": "Other",
+  "اخرى": "Other",
 };
 
 function Field({
@@ -1109,58 +1109,58 @@ export default function Home() {
   const maritalStatusLabel = (status: string) => {
     if (language !== "ar") return status;
     const labels: Record<MaritalStatus, string> = {
-      Single: "Ø£Ø¹Ø²Ø¨",
-      Married: "Ù…ØªØ²ÙˆØ¬",
-      Divorced: "Ù…Ø·Ù„Ù‚",
-      Widowed: "Ø£Ø±Ù…Ù„",
-      "Prefer not to say": "Ù„Ø§ Ø£Ø±ØºØ¨ Ø¨Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø©",
+      Single: "أعزب",
+      Married: "متزوج",
+      Divorced: "مطلق",
+      Widowed: "أرمل",
+      "Prefer not to say": "لا أرغب بالإجابة",
     };
     return labels[status as MaritalStatus] || status;
   };
   const employmentSectorLabel = (sector: string) => {
     if (language !== "ar") return sector;
     const labels: Record<EmploymentSector, string> = {
-      Government: "Ø­ÙƒÙˆÙ…ÙŠ",
-      "Private Sector": "Ù‚Ø·Ø§Ø¹ Ø®Ø§Øµ",
-      Military: "Ù‚Ø·Ø§Ø¹ Ø¹Ø³ÙƒØ±ÙŠ",
-      "Semi-Government": "Ø´Ø¨Ù‡ Ø­ÙƒÙˆÙ…ÙŠ",
-      "Self-Employed": "Ø¹Ù…Ù„ Ø­Ø±",
-      Retired: "Ù…ØªÙ‚Ø§Ø¹Ø¯",
-      Student: "Ø·Ø§Ù„Ø¨",
-      "Prefer not to say": "Ù„Ø§ Ø£Ø±ØºØ¨ Ø¨Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø©",
-      Other: "Ø£Ø®Ø±Ù‰",
+      Government: "حكومي",
+      "Private Sector": "قطاع خاص",
+      Military: "قطاع عسكري",
+      "Semi-Government": "شبه حكومي",
+      "Self-Employed": "عمل حر",
+      Retired: "متقاعد",
+      Student: "طالب",
+      "Prefer not to say": "لا أرغب بالإجابة",
+      Other: "أخرى",
     };
     return labels[sector as EmploymentSector] || sector;
   };
   const countryLabel = (country: string) => {
     if (language !== "ar") return country;
     const labels: Record<Country, string> = {
-      "Saudi Arabia": "Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©",
-      UAE: "Ø§Ù„Ø¥Ù…Ø§Ø±Ø§Øª",
-      Kuwait: "Ø§Ù„ÙƒÙˆÙŠØª",
-      Bahrain: "Ø§Ù„Ø¨Ø­Ø±ÙŠÙ†",
-      Qatar: "Ù‚Ø·Ø±",
-      Oman: "Ø¹Ù…Ø§Ù†",
-      Other: "Ø£Ø®Ø±Ù‰",
+      "Saudi Arabia": "السعودية",
+      UAE: "الإمارات",
+      Kuwait: "الكويت",
+      Bahrain: "البحرين",
+      Qatar: "قطر",
+      Oman: "عمان",
+      Other: "أخرى",
     };
     return labels[country as Country] || country;
   };
   const cityLabel = (city: string) => {
     if (language !== "ar") return city;
     const labels: Record<string, string> = {
-      Riyadh: "Ø§Ù„Ø±ÙŠØ§Ø¶",
-      Jeddah: "Ø¬Ø¯Ø©",
-      Makkah: "Ù…ÙƒØ©",
-      Madinah: "Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©",
-      Dammam: "Ø§Ù„Ø¯Ù…Ø§Ù…",
-      Khobar: "Ø§Ù„Ø®Ø¨Ø±",
-      Dhahran: "Ø§Ù„Ø¸Ù‡Ø±Ø§Ù†",
-      Jubail: "Ø§Ù„Ø¬Ø¨ÙŠÙ„",
-      Abha: "Ø£Ø¨Ù‡Ø§",
-      Tabuk: "ØªØ¨ÙˆÙƒ",
-      Hail: "Ø­Ø§Ø¦Ù„",
-      "Al Ahsa": "Ø§Ù„Ø£Ø­Ø³Ø§Ø¡",
-      Other: "Ø£Ø®Ø±Ù‰",
+      Riyadh: "الرياض",
+      Jeddah: "جدة",
+      Makkah: "مكة",
+      Madinah: "المدينة",
+      Dammam: "الدمام",
+      Khobar: "الخبر",
+      Dhahran: "الظهران",
+      Jubail: "الجبيل",
+      Abha: "أبها",
+      Tabuk: "تبوك",
+      Hail: "حائل",
+      "Al Ahsa": "الأحساء",
+      Other: "أخرى",
     };
     return labels[city] || city;
   };
@@ -1199,13 +1199,13 @@ export default function Home() {
   const bonusAllocationLabel = (allocation: string) => {
     if (language !== "ar") return allocation;
     const labels: Record<BonusAllocation, string> = {
-      "Allocate to financial goals": "ØªØ®ØµÙŠØµÙ‡ Ù„Ù„Ø£Ù‡Ø¯Ø§Ù Ø§Ù„Ù…Ø§Ù„ÙŠØ©",
-      "Pay off a credit card": "Ø³Ø¯Ø§Ø¯ Ø¨Ø·Ø§Ù‚Ø© Ø§Ø¦ØªÙ…Ø§Ù†ÙŠØ©",
-      "Pay off a loan": "Ø³Ø¯Ø§Ø¯ Ù‚Ø±Ø¶",
-      "Emergency fund": "ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„Ø·ÙˆØ§Ø±Ø¦",
-      "School fees / major obligation": "Ø±Ø³ÙˆÙ… Ø§Ù„Ù…Ø¯Ø§Ø±Ø³ Ø£Ùˆ Ø§Ù„ØªØ²Ø§Ù…Ø§Øª ÙƒØ¨ÙŠØ±Ø©",
-      "Keep unallocated for now": "ØªØ±ÙƒÙ‡ Ø¨Ø¯ÙˆÙ† ØªØ®ØµÙŠØµ Ø§Ù„Ø¢Ù†",
-      "Custom allocation": "ØªØ®ØµÙŠØµ Ù…Ø®ØµØµ",
+      "Allocate to financial goals": "تخصيصه للأهداف المالية",
+      "Pay off a credit card": "سداد بطاقة ائتمانية",
+      "Pay off a loan": "سداد قرض",
+      "Emergency fund": "صندوق الطوارئ",
+      "School fees / major obligation": "رسوم المدارس أو التزامات كبيرة",
+      "Keep unallocated for now": "تركه بدون تخصيص الآن",
+      "Custom allocation": "تخصيص مخصص",
     };
     return labels[allocation as BonusAllocation] || allocation;
   };
@@ -1274,20 +1274,20 @@ export default function Home() {
 
   function validateFinancialData(data: UserOwnedData) {
     if (data.profile.email && !isValidEmail(data.profile.email)) {
-      return validationMessage("Enter a valid email address.", "Ø§Ù„Ø±Ø¬Ø§Ø¡ Ø¥Ø¯Ø®Ø§Ù„ Ø¨Ø±ÙŠØ¯ Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ ØµØ­ÙŠØ­.");
+      return validationMessage("Enter a valid email address.", "الرجاء إدخال بريد إلكتروني صحيح.");
     }
 
     if (data.profile.mobile && !isValidSaudiMobile(data.profile.mobile)) {
-      return validationMessage("Enter a valid Saudi mobile number.", "Ø§Ù„Ø±Ø¬Ø§Ø¡ Ø¥Ø¯Ø®Ø§Ù„ Ø±Ù‚Ù… Ø¬ÙˆØ§Ù„ Ø³Ø¹ÙˆØ¯ÙŠ ØµØ­ÙŠØ­.");
+      return validationMessage("Enter a valid Saudi mobile number.", "الرجاء إدخال رقم جوال سعودي صحيح.");
     }
 
     if (hasNegativeAmounts(data.incomeSources as unknown as Array<Record<string, unknown>>, ["amount"])) {
-      return validationMessage("Income amounts cannot be negative.", "Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø£Ù† ØªÙƒÙˆÙ† Ù…Ø¨Ø§Ù„Øº Ø§Ù„Ø¯Ø®Ù„ Ø³Ø§Ù„Ø¨Ø©.");
+      return validationMessage("Income amounts cannot be negative.", "لا يمكن أن تكون مبالغ الدخل سالبة.");
     }
 
     const invalidBonus = data.incomeSources.find((income) => isAnnualBonusIncome(income) && income.amount > 0 && !income.expectedMonth);
     if (invalidBonus) {
-      return validationMessage("Select an expected month for bonus income.", "Ø§Ø®ØªØ± Ø§Ù„Ø´Ù‡Ø± Ø§Ù„Ù…ØªÙˆÙ‚Ø¹ Ù„Ù„Ø¨ÙˆÙ†Øµ.");
+      return validationMessage("Select an expected month for bonus income.", "اختر الشهر المتوقع للبونص.");
     }
 
     const invalidObligation = data.obligationEntries.find((obligation) => {
@@ -1301,7 +1301,7 @@ export default function Home() {
       return obligation.monthlyAmount <= 0 || !frequencyValid || !allocationValid || !dueDateValid || !startEndValid || obligation.savedAmount < 0;
     });
     if (invalidObligation) {
-      return validationMessage("Check obligation amount, frequency, dates, and allocation method.", "Ø±Ø§Ø¬Ø¹ Ù…Ø¨Ù„Øº Ø§Ù„Ø§Ù„ØªØ²Ø§Ù… ÙˆØ§Ù„ØªÙƒØ±Ø§Ø± ÙˆØ§Ù„ØªÙˆØ§Ø±ÙŠØ® ÙˆØ·Ø±ÙŠÙ‚Ø© Ø§Ù„ØªÙˆØ²ÙŠØ¹.");
+      return validationMessage("Check obligation amount, frequency, dates, and allocation method.", "راجع مبلغ الالتزام والتكرار والتواريخ وطريقة التوزيع.");
     }
 
     const invalidCard = data.creditCards.find((card) =>
@@ -1313,12 +1313,12 @@ export default function Home() {
       (!!card.dueDate && !isValidDateString(card.dueDate))
     );
     if (invalidCard) {
-      return validationMessage("Check credit card limit, balance, payments, and due date.", "Ø±Ø§Ø¬Ø¹ Ø­Ø¯ Ø§Ù„Ø¨Ø·Ø§Ù‚Ø© ÙˆØ§Ù„Ø±ØµÙŠØ¯ ÙˆØ§Ù„Ù…Ø¯ÙÙˆØ¹Ø§Øª ÙˆØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ø³ØªØ­Ù‚Ø§Ù‚.");
+      return validationMessage("Check credit card limit, balance, payments, and due date.", "راجع حد البطاقة والرصيد والمدفوعات وتاريخ الاستحقاق.");
     }
 
     const invalidGoal = data.goals.find((goal) => goal.targetAmount <= 0 || goal.currentAmount < 0 || (!!goal.targetDate && !isValidDateString(goal.targetDate)));
     if (invalidGoal) {
-      return validationMessage("Goal target amount must be positive and dates must be valid.", "ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ù…Ø¨Ù„Øº Ø§Ù„Ù‡Ø¯Ù Ø£ÙƒØ¨Ø± Ù…Ù† ØµÙØ± ÙˆØ£Ù† ØªÙƒÙˆÙ† Ø§Ù„ØªÙˆØ§Ø±ÙŠØ® ØµØ­ÙŠØ­Ø©.");
+      return validationMessage("Goal target amount must be positive and dates must be valid.", "يجب أن يكون مبلغ الهدف أكبر من صفر وأن تكون التواريخ صحيحة.");
     }
 
     return "";
@@ -1379,7 +1379,7 @@ export default function Home() {
     if (typeof window !== "undefined") window.localStorage.setItem(pwaInstallPromptSeenStorageKey, "1");
     setPwaInstallPromptSeen(true);
     setShowInstallPrompt(false);
-    setInstallNotice(validationMessage("If DebtIQ is already on your home screen, you do not need to add it again.", "Ø¥Ø°Ø§ ÙƒØ§Ù† Ø§Ù„ØªØ·Ø¨ÙŠÙ‚ Ù…ÙˆØ¬ÙˆØ¯Ø§Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©ØŒ Ù„Ø§ ØªØ­ØªØ§Ø¬ Ù„Ø¥Ø¶Ø§ÙØªÙ‡ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰."));
+    setInstallNotice(validationMessage("If DebtIQ is already on your home screen, you do not need to add it again.", "إذا كان التطبيق موجوداً على الشاشة الرئيسية، لا تحتاج لإضافته مرة أخرى."));
     if (!deferredInstallPrompt) {
       return;
     }
@@ -1391,7 +1391,7 @@ export default function Home() {
 
   function dismissInstallPrompt() {
     setShowInstallPrompt(false);
-    setInstallNotice(validationMessage("If DebtIQ is already on your home screen, you do not need to add it again.", "Ø¥Ø°Ø§ ÙƒØ§Ù† Ø§Ù„ØªØ·Ø¨ÙŠÙ‚ Ù…ÙˆØ¬ÙˆØ¯Ø§Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©ØŒ Ù„Ø§ ØªØ­ØªØ§Ø¬ Ù„Ø¥Ø¶Ø§ÙØªÙ‡ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰."));
+    setInstallNotice(validationMessage("If DebtIQ is already on your home screen, you do not need to add it again.", "إذا كان التطبيق موجوداً على الشاشة الرئيسية، لا تحتاج لإضافته مرة أخرى."));
     if (typeof window !== "undefined") {
       window.localStorage.setItem(installDismissedStorageKey, "1");
       window.localStorage.setItem(pwaInstallPromptSeenStorageKey, "1");
@@ -1424,7 +1424,7 @@ export default function Home() {
       onboarding.annualBonus,
     ];
     if (amounts.some((amount) => Number.isNaN(amount) || amount < 0)) {
-      return validationMessage("Step 1 amounts must be valid and cannot be negative.", "ÙŠØ¬Ø¨ Ø£Ù† ØªÙƒÙˆÙ† Ù…Ø¨Ø§Ù„Øº Ø§Ù„Ø®Ø·ÙˆØ© Ø§Ù„Ø£ÙˆÙ„Ù‰ ØµØ­ÙŠØ­Ø© ÙˆØºÙŠØ± Ø³Ø§Ù„Ø¨Ø©.");
+      return validationMessage("Step 1 amounts must be valid and cannot be negative.", "يجب أن تكون مبالغ الخطوة الأولى صحيحة وغير سالبة.");
     }
     return "";
   }
@@ -1464,7 +1464,7 @@ export default function Home() {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.warn("Recovered while writing onboarding checkpoint", error);
-      return validationMessage(`Recovered from local storage issue: ${message}`, `ØªÙ… ØªØ¬Ø§ÙˆØ² Ù…Ø´ÙƒÙ„Ø© ÙÙŠ Ø§Ù„ØªØ®Ø²ÙŠÙ† Ø§Ù„Ù…Ø­Ù„ÙŠ: ${message}`);
+      return validationMessage(`Recovered from local storage issue: ${message}`, `تم تجاوز مشكلة في التخزين المحلي: ${message}`);
     }
   }
 
@@ -1501,7 +1501,7 @@ export default function Home() {
         return;
       }
       if (onboardingStep >= 4) {
-        setAuthError(validationMessage("Use Generate Dashboard to complete setup.", "Ø§Ø³ØªØ®Ø¯Ù… Ø¥Ù†Ø´Ø§Ø¡ Ù„ÙˆØ­Ø© Ø§Ù„ØªØ­ÙƒÙ… Ù„Ø¥ÙƒÙ…Ø§Ù„ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯."));
+        setAuthError(validationMessage("Use Generate Dashboard to complete setup.", "استخدم إنشاء لوحة التحكم لإكمال الإعداد."));
         setOnboardingDebug((current) => ({ ...current, lastAction: "continue", lastValidation: "blocked-final-step", generationStatus: "idle" }));
         return;
       }
@@ -1531,7 +1531,7 @@ export default function Home() {
 
   function handleCompleteOnboarding(action = "generate") {
     if (onboardingStep < 4) {
-      setAuthError(validationMessage("Complete the current step first.", "Ø£ÙƒÙ…Ù„ Ø§Ù„Ø®Ø·ÙˆØ© Ø§Ù„Ø­Ø§Ù„ÙŠØ© Ø£ÙˆÙ„Ø§Ù‹."));
+      setAuthError(validationMessage("Complete the current step first.", "أكمل الخطوة الحالية أولاً."));
       setOnboardingDebug((current) => ({ ...current, lastAction: action, lastValidation: "blocked-before-final-step", generationStatus: "idle" }));
       return;
     }
@@ -2054,7 +2054,7 @@ export default function Home() {
       estimatedCompletion:
         monthsRemaining > 120
           ? language === "ar"
-            ? "Ø§Ù„Ù…Ø³Ø§Ù‡Ù…Ø© Ø§Ù„Ø­Ø§Ù„ÙŠØ© Ù…Ù†Ø®ÙØ¶Ø© Ø¬Ø¯Ø§Ù‹ ÙˆÙ„Ø§ ØªØ³Ù…Ø­ Ø¨ØªÙ‚Ø¯ÙŠØ± ØªØ§Ø±ÙŠØ® ÙˆØ§Ù‚Ø¹ÙŠ Ù„ØªØ­Ù‚ÙŠÙ‚ Ø§Ù„Ù‡Ø¯Ù."
+            ? "المساهمة الحالية منخفضة جداً ولا تسمح بتقدير تاريخ واقعي لتحقيق الهدف."
             : "Current contribution is too low to estimate a realistic completion date."
           : formatEstimatedMonth(monthsRemaining),
       monthsRemaining,
@@ -2114,63 +2114,63 @@ export default function Home() {
   const recommendedEmergencySaving = Math.max(250, Math.round(Math.max(snapshot.availableCashFlow, snapshot.cashFlow, 0) * 0.2));
   const recommendationCards = [
     {
-      title: language === "ar" ? "ØªÙˆØµÙŠØ© ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„Ø·ÙˆØ§Ø±Ø¦" : "Emergency fund recommendation",
+      title: language === "ar" ? "توصية صندوق الطوارئ" : "Emergency fund recommendation",
       body:
         !emergencyFundForecast
-          ? language === "ar" ? "Ù„Ù… ÙŠØªÙ… ØªØ­Ø¯ÙŠØ¯ ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„Ø·ÙˆØ§Ø±Ø¦ Ø¨Ø¹Ø¯." : "Your emergency fund is not set."
+          ? language === "ar" ? "لم يتم تحديد صندوق الطوارئ بعد." : "Your emergency fund is not set."
           : snapshot.cashFlow > 0
-          ? language === "ar" ? `Ø­Ø§ÙˆÙ„ Ø§Ø¯Ø®Ø§Ø± ${currency.format(recommendedEmergencySaving)} Ø´Ù‡Ø±ÙŠØ§ ÙÙŠ ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„Ø·ÙˆØ§Ø±Ø¦.` : `Try saving ${currency.format(recommendedEmergencySaving)} monthly in your emergency fund.`
-          : language === "ar" ? "Ø£ØºÙ„Ù‚ Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ø´Ù‡Ø±ÙŠ Ø£ÙˆÙ„Ø§ØŒ Ø«Ù… Ø£Ø¹Ø¯ ØªØ´ØºÙŠÙ„ Ù…Ø³Ø§Ù‡Ù…Ø§Øª ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„Ø·ÙˆØ§Ø±Ø¦." : "Close the monthly deficit first, then restart emergency fund contributions.",
+          ? language === "ar" ? `حاول ادخار ${currency.format(recommendedEmergencySaving)} شهرياً في صندوق الطوارئ.` : `Try saving ${currency.format(recommendedEmergencySaving)} monthly in your emergency fund.`
+          : language === "ar" ? "أغلق العجز الشهري أولا، ثم أعد تشغيل مساهمات صندوق الطوارئ." : "Close the monthly deficit first, then restart emergency fund contributions.",
       tone: !emergencyFundForecast || snapshot.cashFlow <= 0 ? "warn" : "good",
     },
     {
-      title: language === "ar" ? "ØªÙ†Ø¨ÙŠÙ‡ Ø§Ù„ØªØ²Ø§Ù… Ù‚Ø§Ø¯Ù…" : "Upcoming obligation warning",
+      title: language === "ar" ? "تنبيه التزام قادم" : "Upcoming obligation warning",
       body: largestUpcomingObligation
-        ? language === "ar" ? `${largestUpcomingObligation.name} Ù‡Ùˆ Ø£ÙƒØ¨Ø± Ø§Ù„ØªØ²Ø§Ù… Ù‚Ø§Ø¯Ù… Ø¨Ù‚ÙŠÙ…Ø© ${currency.format(largestUpcomingObligation.monthlyAmount)}.` : `${largestUpcomingObligation.name} is your largest upcoming obligation at ${currency.format(largestUpcomingObligation.monthlyAmount)}.`
-        : language === "ar" ? "Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø§Ù„ØªØ²Ø§Ù… ÙƒØ¨ÙŠØ± Ù‚Ø§Ø¯Ù… Ù…Ø³Ø¬Ù„ Ø­Ø§Ù„ÙŠØ§." : "No major upcoming obligation is currently recorded.",
+        ? language === "ar" ? `${largestUpcomingObligation.name} هو أكبر التزام قادم بقيمة ${currency.format(largestUpcomingObligation.monthlyAmount)}.` : `${largestUpcomingObligation.name} is your largest upcoming obligation at ${currency.format(largestUpcomingObligation.monthlyAmount)}.`
+        : language === "ar" ? "لا يوجد التزام كبير قادم مسجل حاليا." : "No major upcoming obligation is currently recorded.",
       tone: largestUpcomingObligation ? "warn" : "good",
     },
     {
-      title: language === "ar" ? "ØªÙ†Ø¨ÙŠÙ‡ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù…Ø±ØªÙØ¹ Ù„Ù„Ø¨Ø·Ø§Ù‚Ø© Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù†ÙŠØ©" : "High credit card utilization warning",
+      title: language === "ar" ? "تنبيه استخدام مرتفع للبطاقة الائتمانية" : "High credit card utilization warning",
       body:
         highestUtilizationCard && highestUtilizationCard.utilization >= 100
-          ? language === "ar" ? "Ø¥Ø­Ø¯Ù‰ Ø§Ù„Ø¨Ø·Ø§Ù‚Ø§Øª Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù†ÙŠØ© Ù…Ø³ØªØ®Ø¯Ù…Ø© Ø¨Ø§Ù„ÙƒØ§Ù…Ù„." : "One credit card is fully utilized."
+          ? language === "ar" ? "إحدى البطاقات الائتمانية مستخدمة بالكامل." : "One credit card is fully utilized."
           : highestUtilizationCard && highestUtilizationCard.utilization > 80
-          ? language === "ar" ? `${highestUtilizationCard.cardName} Ø¹Ù†Ø¯ Ø§Ø³ØªØ®Ø¯Ø§Ù… ${Math.round(highestUtilizationCard.utilization)}%. Ø£Ø¹Ø· Ø§Ù„Ø£ÙˆÙ„ÙˆÙŠØ© Ù„Ù„Ø³Ø¯Ø§Ø¯ Ø£Ùˆ Ø®ÙØ¶ Ø§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù….` : `${highestUtilizationCard.cardName} is at ${Math.round(highestUtilizationCard.utilization)}% utilization. Prioritize payoff or limit reduction.`
-          : language === "ar" ? "Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ø¨Ø·Ø§Ù‚Ø§Øª Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù†ÙŠØ© Ù„Ø§ ÙŠØ¸Ù‡Ø± Ù†Ù…Ø·Ø§ Ø¹Ø§Ù„ÙŠ Ø§Ù„Ø®Ø·ÙˆØ±Ø©." : "Credit card utilization is not showing a high-risk pattern.",
+          ? language === "ar" ? `${highestUtilizationCard.cardName} عند استخدام ${Math.round(highestUtilizationCard.utilization)}%. أعط الأولوية للسداد أو خفض الاستخدام.` : `${highestUtilizationCard.cardName} is at ${Math.round(highestUtilizationCard.utilization)}% utilization. Prioritize payoff or limit reduction.`
+          : language === "ar" ? "استخدام البطاقات الائتمانية لا يظهر نمطا عالي الخطورة." : "Credit card utilization is not showing a high-risk pattern.",
       tone: highestUtilizationCard && highestUtilizationCard.utilization > 80 ? "bad" : "good",
     },
     {
-      title: language === "ar" ? "ØªÙˆØµÙŠØ© Ù…ØµØ§Ø±ÙŠÙ Ù†Ù…Ø· Ø§Ù„Ø­ÙŠØ§Ø©" : "Lifestyle spending suggestion",
+      title: language === "ar" ? "توصية مصاريف نمط الحياة" : "Lifestyle spending suggestion",
       body:
         totalLifestyleExpenses > snapshot.totalIncome * 0.35
-          ? language === "ar" ? "Ù…ØµØ§Ø±ÙŠÙ Ù†Ù…Ø· Ø§Ù„Ø­ÙŠØ§Ø© Ù…Ø±ØªÙØ¹Ø© Ù…Ù‚Ø§Ø±Ù†Ø© Ø¨Ø¯Ø®Ù„Ùƒ. Ø±Ø§Ø¬Ø¹ Ø§Ù„Ù…Ø·Ø§Ø¹Ù… ÙˆØ§Ù„ØªØ±ÙÙŠÙ‡ ÙˆØ§Ù„Ø§Ø´ØªØ±Ø§ÙƒØ§Øª ÙˆØ§Ù„Ø®Ø¯Ù…Ø§Øª." : "Your lifestyle spending is high compared to your income. Review restaurants, entertainment, subscriptions, and utilities."
-          : language === "ar" ? "Ù…ØµØ§Ø±ÙŠÙ Ù†Ù…Ø· Ø§Ù„Ø­ÙŠØ§Ø© Ø¶Ù…Ù† Ø§Ù„Ù†Ø·Ø§Ù‚ Ø§Ù„Ø¥Ø±Ø´Ø§Ø¯ÙŠ Ø­Ø§Ù„ÙŠØ§." : "Lifestyle spending is within the soft guidance range for now.",
+          ? language === "ar" ? "مصاريف نمط الحياة مرتفعة مقارنة بدخلك. راجع المطاعم والترفيه والاشتراكات والخدمات." : "Your lifestyle spending is high compared to your income. Review restaurants, entertainment, subscriptions, and utilities."
+          : language === "ar" ? "مصاريف نمط الحياة ضمن النطاق الإرشادي حاليا." : "Lifestyle spending is within the soft guidance range for now.",
       tone: totalLifestyleExpenses > snapshot.totalIncome * 0.35 ? "warn" : "good",
     },
     {
-      title: language === "ar" ? "ØªÙˆØµÙŠØ© Ø³Ø¯Ø§Ø¯ Ø§Ù„Ø¯ÙŠÙ†" : "Debt payoff suggestion",
+      title: language === "ar" ? "توصية سداد الدين" : "Debt payoff suggestion",
       body:
         snapshot.totalDebt > 0 && snapshot.cashFlow > 0
-          ? language === "ar" ? `Ù„Ø¯ÙŠÙƒ Ø­Ø§Ù„ÙŠØ§ ${currency.format(snapshot.availableCashFlow)} Ù…ØªØ§Ø­Ø© Ø´Ù‡Ø±ÙŠØ§. ÙÙƒØ± ÙÙŠ ØªØ®ØµÙŠØµ Ø¬Ø²Ø¡ Ù…Ù†Ù‡Ø§ Ù„Ø£Ù‡Ø¯Ø§ÙÙƒ.` : `You currently have ${currency.format(snapshot.availableCashFlow)} available monthly. Consider allocating part of this amount toward your goals.`
+          ? language === "ar" ? `لديك حالياً ${currency.format(snapshot.availableCashFlow)} متاحة شهرياً. فكر في تخصيص جزء منها لأهدافك.` : `You currently have ${currency.format(snapshot.availableCashFlow)} available monthly. Consider allocating part of this amount toward your goals.`
           : snapshot.totalDebt > 0
-            ? language === "ar" ? "ØªØ¬Ù†Ø¨ Ø¥Ø¶Ø§ÙØ© Ø¯ÙŠÙ† Ø¬Ø¯ÙŠØ¯ Ø­ØªÙ‰ ÙŠØµØ¨Ø­ Ø§Ù„ØªØ¯ÙÙ‚ Ø§Ù„Ù†Ù‚Ø¯ÙŠ Ø¥ÙŠØ¬Ø§Ø¨ÙŠØ§." : "Avoid adding new debt until cash flow turns positive."
-            : language === "ar" ? "Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø±ØµÙŠØ¯ Ø¯ÙŠÙ† Ù†Ø´Ø· Ù…Ø³Ø¬Ù„." : "No active debt balance is recorded.",
+            ? language === "ar" ? "تجنب إضافة دين جديد حتى يصبح التدفق النقدي إيجابيا." : "Avoid adding new debt until cash flow turns positive."
+            : language === "ar" ? "لا يوجد رصيد دين نشط مسجل." : "No active debt balance is recorded.",
       tone: snapshot.totalDebt > 0 && snapshot.cashFlow <= 0 ? "warn" : "good",
     },
   ];
   const salaryDistribution = [
-    { label: language === "ar" ? "Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª" : "Obligations", value: snapshot.totalMonthlyObligations },
-    { label: language === "ar" ? "Ù†Ù…Ø· Ø§Ù„Ø­ÙŠØ§Ø©" : "Lifestyle", value: totalLifestyleExpenses },
-    { label: language === "ar" ? "Ù…Ø¯ÙÙˆØ¹Ø§Øª Ø§Ù„Ø¯ÙŠÙˆÙ†" : "Debt Payments", value: snapshot.debtInstallments },
-    { label: language === "ar" ? "Ø§Ù„Ù…ØªØ¨Ù‚ÙŠ" : "Remaining", value: Math.max(snapshot.cashFlow, 0) },
+    { label: language === "ar" ? "الالتزامات" : "Obligations", value: snapshot.totalMonthlyObligations },
+    { label: language === "ar" ? "نمط الحياة" : "Lifestyle", value: totalLifestyleExpenses },
+    { label: language === "ar" ? "مدفوعات الديون" : "Debt Payments", value: snapshot.debtInstallments },
+    { label: language === "ar" ? "المتبقي" : "Remaining", value: Math.max(snapshot.cashFlow, 0) },
   ].filter((item) => item.value > 0);
   const salaryDistributionTotal = Math.max(snapshot.totalIncome, salaryDistribution.reduce((total, item) => total + item.value, 0), 1);
   const actionPlan = [
-    language === "ar" ? "Ø¨Ù†Ø§Ø¡ ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„Ø·ÙˆØ§Ø±Ø¦" : "Build Emergency Fund",
-    language === "ar" ? "Ø®ÙØ¶ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ø¨Ø·Ø§Ù‚Ø§Øª Ø§Ù„Ø§Ø¦ØªÙ…Ø§Ù†ÙŠØ©" : "Reduce Credit Card Utilization",
-    language === "ar" ? "ØªØ®ØµÙŠØµ Ø¬Ø²Ø¡ Ù…Ù† Ø§Ù„ÙØ§Ø¦Ø¶ Ø§Ù„Ø´Ù‡Ø±ÙŠ Ù„Ù„Ø£Ù‡Ø¯Ø§Ù" : "Allocate Part of Monthly Surplus to Goals",
-    language === "ar" ? "Ø§Ù„Ø§Ø³ØªØ¹Ø¯Ø§Ø¯ Ù„Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„ÙƒØ¨ÙŠØ±Ø© Ø§Ù„Ù‚Ø§Ø¯Ù…Ø©" : "Prepare for Upcoming Major Obligations",
+    language === "ar" ? "بناء صندوق الطوارئ" : "Build Emergency Fund",
+    language === "ar" ? "خفض استخدام البطاقات الائتمانية" : "Reduce Credit Card Utilization",
+    language === "ar" ? "تخصيص جزء من الفائض الشهري للأهداف" : "Allocate Part of Monthly Surplus to Goals",
+    language === "ar" ? "الاستعداد للالتزامات الكبيرة القادمة" : "Prepare for Upcoming Major Obligations",
   ];
 
   function addDebt() {
@@ -2491,41 +2491,41 @@ export default function Home() {
   function inferImportMappings(raw: ImportRawData): ImportMappings {
     return {
       incomeSources: {
-        name: pickColumn(raw.columns.incomeSources, ["Name", "Income Name", "Source", "Ù…ØµØ¯Ø±", "Ø§Ù„Ø§Ø³Ù…"]),
-        type: pickColumn(raw.columns.incomeSources, ["Type", "Income Type", "Ù†ÙˆØ¹"]),
-        amount: pickColumn(raw.columns.incomeSources, ["Amount", "Income Amount", "Ù…Ø¨Ù„Øº", "Ø§Ù„Ù‚ÙŠÙ…Ø©"]),
+        name: pickColumn(raw.columns.incomeSources, ["Name", "Income Name", "Source", "مصدر", "الاسم"]),
+        type: pickColumn(raw.columns.incomeSources, ["Type", "Income Type", "نوع"]),
+        amount: pickColumn(raw.columns.incomeSources, ["Amount", "Income Amount", "مبلغ", "القيمة"]),
       },
       obligations: {
-        name: pickColumn(raw.columns.obligations, ["Name", "Obligation Name", "Ø¨Ù†Ùƒ Ø§Ù„Ø¥Ù…Ø§Ø±Ø§Øª", "Bank", "Ø§Ù„Ø§Ø³Ù…", "Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…"]),
-        category: pickColumn(raw.columns.obligations, ["Category", "Loan", "Type", "ÙØ¦Ø©", "Ù†ÙˆØ¹"]),
-        amount: pickColumn(raw.columns.obligations, ["Amount", "Monthly Amount", "Ù…Ø¨Ù„Øº", "Ø§Ù„Ù‚ÙŠÙ…Ø©"]),
+        name: pickColumn(raw.columns.obligations, ["Name", "Obligation Name", "بنك الإمارات", "Bank", "الاسم", "الالتزام"]),
+        category: pickColumn(raw.columns.obligations, ["Category", "Loan", "Type", "فئة", "نوع"]),
+        amount: pickColumn(raw.columns.obligations, ["Amount", "Monthly Amount", "مبلغ", "القيمة"]),
         frequency: pickColumn(raw.columns.obligations, ["Frequency", "Recurring"]),
-        dueDate: pickColumn(raw.columns.obligations, ["Due Date", "Due Day", "ØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ø³ØªØ­Ù‚Ø§Ù‚", "ÙŠÙˆÙ… Ø§Ù„Ø§Ø³ØªØ­Ù‚Ø§Ù‚"]),
+        dueDate: pickColumn(raw.columns.obligations, ["Due Date", "Due Day", "تاريخ الاستحقاق", "يوم الاستحقاق"]),
         startDate: pickColumn(raw.columns.obligations, ["Start Date"]),
-        endDate: pickColumn(raw.columns.obligations, ["End Date", "ØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ù†ØªÙ‡Ø§Ø¡"]),
+        endDate: pickColumn(raw.columns.obligations, ["End Date", "تاريخ الانتهاء"]),
         allocationMethod: pickColumn(raw.columns.obligations, ["Allocation Method", "Allocation", "Spread"]),
         savedAmount: pickColumn(raw.columns.obligations, ["Saved Amount", "Saved"]),
-        notes: pickColumn(raw.columns.obligations, ["Notes", "Ù…Ù„Ø§Ø­Ø¸Ø§Øª"]),
+        notes: pickColumn(raw.columns.obligations, ["Notes", "ملاحظات"]),
       },
       creditCards: {
-        cardName: pickColumn(raw.columns.creditCards, ["Card Name", "Name", "Ø§Ø³Ù… Ø§Ù„Ø¨Ø·Ø§Ù‚Ø©"]),
-        provider: pickColumn(raw.columns.creditCards, ["Provider", "Bank", "Ø¨Ù†Ùƒ", "Ù…Ø²ÙˆØ¯"]),
-        balance: pickColumn(raw.columns.creditCards, ["Balance", "Current Balance", "Ø§Ù„Ø±ØµÙŠØ¯"]),
-        limit: pickColumn(raw.columns.creditCards, ["Limit", "Credit Limit", "Ø§Ù„Ø­Ø¯"]),
-        minimumPayment: pickColumn(raw.columns.creditCards, ["Minimum Payment", "Minimum Payment Due", "Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ø¯Ù†Ù‰"]),
-        statementTotal: pickColumn(raw.columns.creditCards, ["Statement Total", "Statement Total Due", "Ø§Ù„Ù…Ø³ØªØ­Ù‚"]),
-        dueDate: pickColumn(raw.columns.creditCards, ["Due Date", "ØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ø³ØªØ­Ù‚Ø§Ù‚"]),
-        apr: pickColumn(raw.columns.creditCards, ["APR", "APR / Profit Rate", "Profit Rate", "Ù†Ø³Ø¨Ø©"]),
-        notes: pickColumn(raw.columns.creditCards, ["Notes", "Ù…Ù„Ø§Ø­Ø¸Ø§Øª"]),
+        cardName: pickColumn(raw.columns.creditCards, ["Card Name", "Name", "اسم البطاقة"]),
+        provider: pickColumn(raw.columns.creditCards, ["Provider", "Bank", "بنك", "مزود"]),
+        balance: pickColumn(raw.columns.creditCards, ["Balance", "Current Balance", "الرصيد"]),
+        limit: pickColumn(raw.columns.creditCards, ["Limit", "Credit Limit", "الحد"]),
+        minimumPayment: pickColumn(raw.columns.creditCards, ["Minimum Payment", "Minimum Payment Due", "الحد الأدنى"]),
+        statementTotal: pickColumn(raw.columns.creditCards, ["Statement Total", "Statement Total Due", "المستحق"]),
+        dueDate: pickColumn(raw.columns.creditCards, ["Due Date", "تاريخ الاستحقاق"]),
+        apr: pickColumn(raw.columns.creditCards, ["APR", "APR / Profit Rate", "Profit Rate", "نسبة"]),
+        notes: pickColumn(raw.columns.creditCards, ["Notes", "ملاحظات"]),
       },
       goals: {
-        name: pickColumn(raw.columns.goals, ["Goal Name", "Name", "Ø§Ù„Ù‡Ø¯Ù"]),
-        type: pickColumn(raw.columns.goals, ["Type", "Goal Type", "Ù†ÙˆØ¹"]),
-        targetAmount: pickColumn(raw.columns.goals, ["Target Amount", "Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù"]),
-        currentAmount: pickColumn(raw.columns.goals, ["Current Amount", "Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ø­Ø§Ù„ÙŠ"]),
-        targetDate: pickColumn(raw.columns.goals, ["Target Date", "ØªØ§Ø±ÙŠØ® Ø§Ù„Ù‡Ø¯Ù"]),
-        priority: pickColumn(raw.columns.goals, ["Priority", "Ø§Ù„Ø£ÙˆÙ„ÙˆÙŠØ©"]),
-        notes: pickColumn(raw.columns.goals, ["Notes", "Ù…Ù„Ø§Ø­Ø¸Ø§Øª"]),
+        name: pickColumn(raw.columns.goals, ["Goal Name", "Name", "الهدف"]),
+        type: pickColumn(raw.columns.goals, ["Type", "Goal Type", "نوع"]),
+        targetAmount: pickColumn(raw.columns.goals, ["Target Amount", "المبلغ المستهدف"]),
+        currentAmount: pickColumn(raw.columns.goals, ["Current Amount", "المبلغ الحالي"]),
+        targetDate: pickColumn(raw.columns.goals, ["Target Date", "تاريخ الهدف"]),
+        priority: pickColumn(raw.columns.goals, ["Priority", "الأولوية"]),
+        notes: pickColumn(raw.columns.goals, ["Notes", "ملاحظات"]),
       },
     };
   }
@@ -3071,12 +3071,12 @@ export default function Home() {
 
   async function completeLogin() {
     if (!login.email || !login.password) {
-      setAuthError(validationMessage("Enter your email and password.", "Ø£Ø¯Ø®Ù„ Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ ÙˆÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±."));
+      setAuthError(validationMessage("Enter your email and password.", "أدخل البريد الإلكتروني وكلمة المرور."));
       return;
     }
 
     if (!isValidEmail(login.email)) {
-      setAuthError(validationMessage("Enter a valid email address.", "Ø§Ù„Ø±Ø¬Ø§Ø¡ Ø¥Ø¯Ø®Ø§Ù„ Ø¨Ø±ÙŠØ¯ Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ ØµØ­ÙŠØ­."));
+      setAuthError(validationMessage("Enter a valid email address.", "الرجاء إدخال بريد إلكتروني صحيح."));
       return;
     }
 
@@ -3119,11 +3119,11 @@ export default function Home() {
     if (!betaUser || betaUser.passwordHash !== betaPasswordHash(login.password)) {
       setAuthError(validationMessage(
         betaUser ? "Invalid email or password. Please check your credentials or use Try Demo." : "This user does not exist in the beta users registry. Please register or use Try Demo.",
-        betaUser ? "Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ø£Ùˆ ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± ØºÙŠØ± ØµØ­ÙŠØ­Ø©. Ø§Ù„Ø±Ø¬Ø§Ø¡ Ø§Ù„ØªØ­Ù‚Ù‚ Ù…Ù† Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø£Ùˆ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù†Ø³Ø®Ø© Ø§Ù„ØªØ¬Ø±ÙŠØ¨ÙŠØ©." : "Ù‡Ø°Ø§ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯ ÙÙŠ Ø³Ø¬Ù„ Ù…Ø³ØªØ®Ø¯Ù…ÙŠ Ø¨ÙŠØªØ§. Ø§Ù„Ø±Ø¬Ø§Ø¡ Ø§Ù„ØªØ³Ø¬ÙŠÙ„ Ø£Ùˆ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù†Ø³Ø®Ø© Ø§Ù„ØªØ¬Ø±ÙŠØ¨ÙŠØ©.",
+        betaUser ? "البريد الإلكتروني أو كلمة المرور غير صحيحة. الرجاء التحقق من البيانات أو استخدام النسخة التجريبية." : "هذا المستخدم غير موجود في سجل مستخدمي بيتا. الرجاء التسجيل أو استخدام النسخة التجريبية.",
       ));
       setSessionStatus(validationMessage(
         "Login source: debtiq.users.registry.v1. No user session was created.",
-        "Ù…ØµØ¯Ø± ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„: debtiq.users.registry.v1. Ù„Ù… ÙŠØªÙ… Ø¥Ù†Ø´Ø§Ø¡ Ø¬Ù„Ø³Ø© Ù…Ø³ØªØ®Ø¯Ù….",
+        "مصدر تسجيل الدخول: debtiq.users.registry.v1. لم يتم إنشاء جلسة مستخدم.",
       ));
       setSessionMode("signedOut");
       setCurrentUserId("");
@@ -3136,43 +3136,43 @@ export default function Home() {
 
   function sendResetLink() {
     if (!reset.email) {
-      setAuthError(validationMessage("Enter your email to send a reset link.", "Ø£Ø¯Ø®Ù„ Ø¨Ø±ÙŠØ¯Ùƒ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ù„Ø¥Ø±Ø³Ø§Ù„ Ø±Ø§Ø¨Ø· Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„ØªØ¹ÙŠÙŠÙ†."));
+      setAuthError(validationMessage("Enter your email to send a reset link.", "أدخل بريدك الإلكتروني لإرسال رابط إعادة التعيين."));
       return;
     }
 
     if (!isValidEmail(reset.email)) {
-      setAuthError(validationMessage("Enter a valid email address.", "Ø§Ù„Ø±Ø¬Ø§Ø¡ Ø¥Ø¯Ø®Ø§Ù„ Ø¨Ø±ÙŠØ¯ Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ ØµØ­ÙŠØ­."));
+      setAuthError(validationMessage("Enter a valid email address.", "الرجاء إدخال بريد إلكتروني صحيح."));
       return;
     }
 
     setAuthError("");
-    setSessionStatus(validationMessage("If this email exists, a password reset link will be sent.", "Ø¥Ø°Ø§ ÙƒØ§Ù† Ù‡Ø°Ø§ Ø§Ù„Ø¨Ø±ÙŠØ¯ Ù…ÙˆØ¬ÙˆØ¯Ø§Ù‹ØŒ Ø³ÙŠØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø±Ø§Ø¨Ø· Ø¥Ø¹Ø§Ø¯Ø© ØªØ¹ÙŠÙŠÙ† ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±."));
+    setSessionStatus(validationMessage("If this email exists, a password reset link will be sent.", "إذا كان هذا البريد موجوداً، سيتم إرسال رابط إعادة تعيين كلمة المرور."));
     setForgotPassword(false);
   }
 
   function completeRegistration() {
     if (!registration.fullName || !registration.mobile || !registration.email || !registration.password) {
-      setAuthError(validationMessage("Complete all registration fields to continue.", "Ø£ÙƒÙ…Ù„ Ø¬Ù…ÙŠØ¹ Ø­Ù‚ÙˆÙ„ Ø§Ù„ØªØ³Ø¬ÙŠÙ„ Ù„Ù„Ù…ØªØ§Ø¨Ø¹Ø©."));
+      setAuthError(validationMessage("Complete all registration fields to continue.", "أكمل جميع حقول التسجيل للمتابعة."));
       return;
     }
 
     if (!isValidEmail(registration.email)) {
-      setAuthError(validationMessage("Enter a valid email address.", "Ø§Ù„Ø±Ø¬Ø§Ø¡ Ø¥Ø¯Ø®Ø§Ù„ Ø¨Ø±ÙŠØ¯ Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ ØµØ­ÙŠØ­."));
+      setAuthError(validationMessage("Enter a valid email address.", "الرجاء إدخال بريد إلكتروني صحيح."));
       return;
     }
 
     if (!isValidSaudiMobile(registration.mobile)) {
-      setAuthError(validationMessage("Enter a valid Saudi mobile number.", "Ø§Ù„Ø±Ø¬Ø§Ø¡ Ø¥Ø¯Ø®Ø§Ù„ Ø±Ù‚Ù… Ø¬ÙˆØ§Ù„ Ø³Ø¹ÙˆØ¯ÙŠ ØµØ­ÙŠØ­."));
+      setAuthError(validationMessage("Enter a valid Saudi mobile number.", "الرجاء إدخال رقم جوال سعودي صحيح."));
       return;
     }
 
     if (!isStrongPassword(registration.password)) {
-      setAuthError(validationMessage("Password does not meet the security requirements.", "ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ù„Ø§ ØªØ­Ù‚Ù‚ Ù…ØªØ·Ù„Ø¨Ø§Øª Ø§Ù„Ø£Ù…Ø§Ù†."));
+      setAuthError(validationMessage("Password does not meet the security requirements.", "كلمة المرور لا تحقق متطلبات الأمان."));
       return;
     }
 
     if (registration.confirmPassword && registration.password !== registration.confirmPassword) {
-      setAuthError(validationMessage("Password and confirm password must match.", "ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± ÙˆØªØ£ÙƒÙŠØ¯ ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± ØºÙŠØ± Ù…ØªØ·Ø§Ø¨Ù‚ÙŠÙ†."));
+      setAuthError(validationMessage("Password and confirm password must match.", "كلمة المرور وتأكيد كلمة المرور غير متطابقين."));
       return;
     }
 
@@ -3180,7 +3180,7 @@ export default function Home() {
     const userId = userIdFromEmail(normalizedEmail);
     const existingUser = findRegisteredBetaUser(normalizedEmail);
     if (existingUser) {
-      setAuthError(validationMessage("An account already exists for this email. Please log in instead.", "ÙŠÙˆØ¬Ø¯ Ø­Ø³Ø§Ø¨ Ø¨Ù‡Ø°Ø§ Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ. Ø§Ù„Ø±Ø¬Ø§Ø¡ ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ø¨Ø¯Ù„Ø§Ù‹ Ù…Ù† Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ø¬Ø¯ÙŠØ¯."));
+      setAuthError(validationMessage("An account already exists for this email. Please log in instead.", "يوجد حساب بهذا البريد الإلكتروني. الرجاء تسجيل الدخول بدلاً من إنشاء حساب جديد."));
       return;
     }
 
@@ -3269,7 +3269,7 @@ export default function Home() {
 
     const skipBlockingOnboardingValidation = true;
     if (!skipBlockingOnboardingValidation && onboardingAmounts.some((amount) => amount < 0)) {
-      setAuthError(validationMessage("Amounts cannot be negative.", "Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø£Ù† ØªÙƒÙˆÙ† Ø§Ù„Ù…Ø¨Ø§Ù„Øº Ø³Ø§Ù„Ø¨Ø©."));
+      setAuthError(validationMessage("Amounts cannot be negative.", "لا يمكن أن تكون المبالغ سالبة."));
       setOnboardingDebug((current) => ({ ...current, lastValidation: "negative-amount", generationStatus: "error" }));
       setOnboardingAction("");
       onboardingProcessingRef.current = false;
@@ -3277,7 +3277,7 @@ export default function Home() {
     }
 
     if (!skipBlockingOnboardingValidation && onboarding.annualBonus > 0 && !onboarding.annualBonusMonth) {
-      setAuthError(validationMessage("Select an expected month for bonus income.", "Ø§Ø®ØªØ± Ø§Ù„Ø´Ù‡Ø± Ø§Ù„Ù…ØªÙˆÙ‚Ø¹ Ù„Ù„Ø¨ÙˆÙ†Øµ."));
+      setAuthError(validationMessage("Select an expected month for bonus income.", "اختر الشهر المتوقع للبونص."));
       setOnboardingDebug((current) => ({ ...current, lastValidation: "missing-bonus-month", generationStatus: "error" }));
       setOnboardingAction("");
       onboardingProcessingRef.current = false;
@@ -3470,7 +3470,7 @@ export default function Home() {
       console.error("Onboarding completion failed", errorDetails);
       setLastOnboardingError(errorMessage);
       setLastOnboardingErrorStack(errorStack || "");
-      setAuthError(errorMessage || validationMessage("Something went wrong while continuing setup.", "Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯."));
+      setAuthError(errorMessage || validationMessage("Something went wrong while continuing setup.", "حدث خطأ أثناء متابعة الإعداد."));
       setOnboardingDebug((current) => ({ ...current, lastValidation: "runtime-error", generationStatus: "error" }));
       setOnboardingAction("");
       onboardingProcessingRef.current = false;
@@ -3516,7 +3516,7 @@ export default function Home() {
                 Guaranteed
               </label>
               <SelectField
-                label={language === "ar" ? "ÙƒÙŠÙ ØªÙØ¶Ù„ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù‡Ø°Ø§ Ø§Ù„Ø¨ÙˆÙ†ØµØŸ" : "How would you like to use this bonus?"}
+                label={language === "ar" ? "كيف تفضل استخدام هذا البونص؟" : "How would you like to use this bonus?"}
                 value={getBonusAllocation(income)}
                 options={bonusAllocationOptions}
                 getOptionLabel={bonusAllocationLabel}
@@ -3532,43 +3532,43 @@ export default function Home() {
 
   const landingPainPoints = language === "ar"
     ? [
-        { icon: "ðŸ’³", text: "ÙƒÙ„ Ø´Ù‡Ø± Ø£Ù‚ÙˆÙ„ Ø³Ø£ØºÙ„Ù‚ Ø§Ù„Ø¨Ø·Ø§Ù‚Ø§Øª... Ø«Ù… Ø£Ø±Ø¬Ø¹ Ù„Ù†ÙØ³ Ø§Ù„Ù†Ù‚Ø·Ø©." },
-        { icon: "ðŸ ", text: "Ø¹Ù†Ø¯ÙŠ Ø£Ù‡Ø¯Ø§Ù ÙƒØ«ÙŠØ±Ø©... Ù„ÙƒÙ† Ù„Ø§ Ø£Ø¹Ø±Ù Ù…Ù† Ø£ÙŠÙ† Ø£Ø¨Ø¯Ø£." },
-        { icon: "ðŸ“…", text: "ØªÙØ§Ø¬Ø¦Ù†ÙŠ Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„ÙƒØ¨ÙŠØ±Ø© ÙƒÙ„ Ø³Ù†Ø©." },
-        { icon: "ðŸ’°", text: "Ø±Ø§ØªØ¨ÙŠ Ø¬ÙŠØ¯... Ù„ÙƒÙ† Ù„Ø§ Ø£Ø¹Ø±Ù Ø£ÙŠÙ† ØªØ°Ù‡Ø¨ Ø£Ù…ÙˆØ§Ù„ÙŠ." },
-        { icon: "ðŸŽ¯", text: "Ø£Ø±ÙŠØ¯ Ø´Ø±Ø§Ø¡ Ø¨ÙŠØª Ø£Ùˆ Ø³ÙŠØ§Ø±Ø©... Ù„ÙƒÙ† Ù„Ø§ Ø£Ø¹Ø±Ù ÙƒÙ… Ø£Ø­ØªØ§Ø¬ ÙØ¹Ù„ÙŠØ§Ù‹." },
+        { icon: "💳", text: "كل شهر أقول سأغلق البطاقات... ثم أرجع لنفس النقطة." },
+        { icon: "🏠", text: "عندي أهداف كثيرة... لكن لا أعرف من أين أبدأ." },
+        { icon: "📅", text: "تفاجئني الالتزامات الكبيرة كل سنة." },
+        { icon: "💰", text: "راتبي جيد... لكن لا أعرف أين تذهب أموالي." },
+        { icon: "🎯", text: "أريد شراء بيت أو سيارة... لكن لا أعرف كم أحتاج فعلياً." },
       ]
     : [
-        { icon: "ðŸ’³", text: "Every month I say I will close the cards... then I end up in the same place." },
-        { icon: "ðŸ ", text: "I have many goals... but I do not know where to start." },
-        { icon: "ðŸ“…", text: "Large yearly obligations surprise me." },
-        { icon: "ðŸ’°", text: "My salary is good... but I do not know where my money goes." },
-        { icon: "ðŸŽ¯", text: "I want to buy a home or car... but I do not know what I really need." },
+        { icon: "💳", text: "Every month I say I will close the cards... then I end up in the same place." },
+        { icon: "🏠", text: "I have many goals... but I do not know where to start." },
+        { icon: "📅", text: "Large yearly obligations surprise me." },
+        { icon: "💰", text: "My salary is good... but I do not know where my money goes." },
+        { icon: "🎯", text: "I want to buy a home or car... but I do not know what I really need." },
       ];
   const landingBenefits = language === "ar"
     ? [
-        { icon: "ðŸ’°", text: "Ø§Ø¹Ø±Ù Ø£ÙŠÙ† ÙŠØ°Ù‡Ø¨ Ø±Ø§ØªØ¨Ùƒ ÙƒÙ„ Ø´Ù‡Ø±." },
-        { icon: "ðŸ“…", text: "Ø§Ø¹Ø±Ù Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„Ù‚Ø§Ø¯Ù…Ø© Ù‚Ø¨Ù„ Ø£Ù† ØªÙØ§Ø¬Ø¦Ùƒ." },
-        { icon: "ðŸ’³", text: "Ø§Ø¹Ø±Ù Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ø¨Ø·Ø§Ù‚Ø§ØªÙƒ Ø£ØµØ¨Ø­Øª Ø¹Ø¨Ø¦Ø§Ù‹ Ø¹Ù„ÙŠÙƒ." },
-        { icon: "ðŸŽ¯", text: "Ø§Ø¹Ø±Ù Ù…ØªÙ‰ Ø³ØªØµÙ„ Ø¥Ù„Ù‰ Ø£Ù‡Ø¯Ø§ÙÙƒ Ø§Ù„Ù…Ø§Ù„ÙŠØ©." },
-        { icon: "ðŸ“ˆ", text: "Ø´Ø§Ù‡Ø¯ ÙƒÙŠÙ Ø³ÙŠÙƒÙˆÙ† ÙˆØ¶Ø¹Ùƒ Ø§Ù„Ù…Ø§Ù„ÙŠ Ø®Ù„Ø§Ù„ Ø§Ù„Ø£Ø´Ù‡Ø± Ø§Ù„Ù‚Ø§Ø¯Ù…Ø©." },
-        { icon: "ðŸ–¨", text: "Ø§Ø·Ø¨Ø¹ ØªÙ‚Ø±ÙŠØ±Ø§Ù‹ ÙˆØ§Ø¶Ø­Ø§Ù‹ Ù„ÙˆØ¶Ø¹Ùƒ Ø§Ù„Ù…Ø§Ù„ÙŠ." },
+        { icon: "💰", text: "اعرف أين يذهب راتبك كل شهر." },
+        { icon: "📅", text: "اعرف الالتزامات القادمة قبل أن تفاجئك." },
+        { icon: "💳", text: "اعرف إذا كانت بطاقاتك أصبحت عبئاً عليك." },
+        { icon: "🎯", text: "اعرف متى ستصل إلى أهدافك المالية." },
+        { icon: "📈", text: "شاهد كيف سيكون وضعك المالي خلال الأشهر القادمة." },
+        { icon: "🖨", text: "اطبع تقريراً واضحاً لوضعك المالي." },
       ]
     : [
-        { icon: "ðŸ’°", text: "Know where your salary goes each month." },
-        { icon: "ðŸ“…", text: "See upcoming obligations before they surprise you." },
-        { icon: "ðŸ’³", text: "Know when your cards are becoming a burden." },
-        { icon: "ðŸŽ¯", text: "Know when you can reach your financial goals." },
-        { icon: "ðŸ“ˆ", text: "See what your money may look like in the coming months." },
-        { icon: "ðŸ–¨", text: "Print a clear report of your financial picture." },
+        { icon: "💰", text: "Know where your salary goes each month." },
+        { icon: "📅", text: "See upcoming obligations before they surprise you." },
+        { icon: "💳", text: "Know when your cards are becoming a burden." },
+        { icon: "🎯", text: "Know when you can reach your financial goals." },
+        { icon: "📈", text: "See what your money may look like in the coming months." },
+        { icon: "🖨", text: "Print a clear report of your financial picture." },
       ];
   const landingFlow = language === "ar"
     ? [
-        { label: "Ø§Ù„Ø±Ø§ØªØ¨", value: "SAR 24,000", tone: "bg-emerald-500" },
-        { label: "Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª", value: "- SAR 12,400", tone: "bg-amber-500" },
-        { label: "ØªÙ†Ø¨ÙŠÙ‡ Ø§Ù„Ø¨Ø·Ø§Ù‚Ø©", value: "Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù…Ø±ØªÙØ¹", tone: "bg-red-500" },
-        { label: "Ø§Ù„Ø£Ù‡Ø¯Ø§Ù", value: "42%", tone: "bg-sky-500" },
-        { label: "Ø§Ù„Ù…ØªØ¨Ù‚ÙŠ", value: "SAR 4,850", tone: "bg-mint" },
+        { label: "الراتب", value: "SAR 24,000", tone: "bg-emerald-500" },
+        { label: "الالتزامات", value: "- SAR 12,400", tone: "bg-amber-500" },
+        { label: "تنبيه البطاقة", value: "استخدام مرتفع", tone: "bg-red-500" },
+        { label: "الأهداف", value: "42%", tone: "bg-sky-500" },
+        { label: "المتبقي", value: "SAR 4,850", tone: "bg-mint" },
       ]
     : [
         { label: "Salary", value: "SAR 24,000", tone: "bg-emerald-500" },
@@ -3598,25 +3598,25 @@ export default function Home() {
           <p className="text-sm font-black text-emerald-900 dark:text-emerald-100">
             {isIosDevice
               ? language === "ar"
-                ? "Ù„Ø¥Ø¶Ø§ÙØ© Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ Ø¥Ù„Ù‰ Ø¬Ù‡Ø§Ø²Ùƒ:"
+                ? "لإضافة ديبت آي كيو إلى جهازك:"
                 : "Add DebtIQ to your iPhone:"
               : language === "ar"
-                ? "Ø£Ø¶Ù Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ Ø¥Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©"
+                ? "أضف ديبت آي كيو إلى الشاشة الرئيسية"
                 : "Add DebtIQ to your home screen"}
           </p>
           {isIosDevice ? (
             <ol className="mt-3 list-decimal space-y-1 ps-5 text-sm font-bold leading-6 text-emerald-800 dark:text-emerald-100">
-              <li>{language === "ar" ? "Ø§Ø¶ØºØ· Ø²Ø± Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©" : "Tap the Share button"}</li>
-              <li>{language === "ar" ? "Ø§Ø®ØªØ± Add to Home Screen" : "Choose Add to Home Screen"}</li>
-              <li>{language === "ar" ? "Ø§Ø¶ØºØ· Ø¥Ø¶Ø§ÙØ©" : "Tap Add"}</li>
+              <li>{language === "ar" ? "اضغط زر المشاركة" : "Tap the Share button"}</li>
+              <li>{language === "ar" ? "اختر Add to Home Screen" : "Choose Add to Home Screen"}</li>
+              <li>{language === "ar" ? "اضغط إضافة" : "Tap Add"}</li>
             </ol>
           ) : (
             <p className="mt-2 text-sm font-bold text-emerald-800 dark:text-emerald-100">
-              {language === "ar" ? "Ø«Ø¨Ù‘Øª Ø§Ù„ØªØ·Ø¨ÙŠÙ‚ Ù„ØªÙØªØ­Ù‡ Ø¨Ø³Ø±Ø¹Ø© Ù…Ø«Ù„ ØªØ·Ø¨ÙŠÙ‚Ø§Øª Ø§Ù„Ø¬ÙˆØ§Ù„." : "Install the app for quick access like a mobile app."}
+              {language === "ar" ? "ثبّت التطبيق لتفتحه بسرعة مثل تطبيقات الجوال." : "Install the app for quick access like a mobile app."}
             </p>
           )}
           <p className="mt-2 text-xs font-black text-emerald-800 dark:text-emerald-100">
-            {installNotice || validationMessage("If the icon already exists, do not add it again.", "Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ø§Ù„Ø£ÙŠÙ‚ÙˆÙ†Ø© Ù…ÙˆØ¬ÙˆØ¯Ø© Ù…Ø³Ø¨Ù‚Ø§Ù‹ØŒ Ù„Ø§ ØªØ¶ÙÙ‡Ø§ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.")}
+            {installNotice || validationMessage("If the icon already exists, do not add it again.", "إذا كانت الأيقونة موجودة مسبقاً، لا تضفها مرة أخرى.")}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {isIosDevice ? (
@@ -3625,7 +3625,7 @@ export default function Home() {
                 onClick={installApp}
                 type="button"
               >
-                {language === "ar" ? "ØªØ«Ø¨ÙŠØª Ø§Ù„ØªØ·Ø¨ÙŠÙ‚" : "Install App"}
+                {language === "ar" ? "تثبيت التطبيق" : "Install App"}
               </button>
             ) : (
               <>
@@ -3634,14 +3634,14 @@ export default function Home() {
                   onClick={installApp}
                   type="button"
                 >
-                  {language === "ar" ? "Ø¥Ø¶Ø§ÙØ©" : "Add"}
+                  {language === "ar" ? "إضافة" : "Add"}
                 </button>
                 <button
                   className="h-10 rounded-lg border border-emerald-200 bg-white px-4 text-sm font-black text-emerald-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   onClick={dismissInstallPrompt}
                   type="button"
                 >
-                  {language === "ar" ? "Ù„Ø§Ø­Ù‚Ø§Ù‹" : "Later"}
+                  {language === "ar" ? "لاحقاً" : "Later"}
                 </button>
               </>
             )}
@@ -3703,7 +3703,7 @@ export default function Home() {
                   <div className="leading-tight">
                     <p className="text-2xl font-black tracking-tight sm:text-4xl">DebtIQ</p>
                     <p className="text-[9px] font-black uppercase tracking-[0.14em] text-emerald-700 dark:text-mint sm:text-[11px] sm:tracking-[0.18em]">Financial Opportunity Intelligence</p>
-                    <p className="mt-1 text-sm font-bold text-slate-500 dark:text-slate-300">Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ</p>
+                    <p className="mt-1 text-sm font-bold text-slate-500 dark:text-slate-300">ديبت آي كيو</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -3711,14 +3711,14 @@ export default function Home() {
                     className="h-10 rounded-lg border border-slate-200 bg-white/85 px-3 text-sm font-bold backdrop-blur dark:border-white/10 dark:bg-white/5"
                     onClick={toggleLanguage}
                   >
-                    {language === "en" ? "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©" : "English"}
+                    {language === "en" ? "العربية" : "English"}
                   </button>
                   {sessionMode !== "signedOut" && (
                     <button
                       className="h-10 rounded-lg bg-ink px-3 text-sm font-bold text-white dark:bg-mint dark:text-ink"
                       onClick={() => router.push("/app")}
                     >
-                      {language === "ar" ? "Ø§Ø°Ù‡Ø¨ Ø¥Ù„Ù‰ Ø§Ù„ØªØ·Ø¨ÙŠÙ‚" : "Go to App"}
+                      {language === "ar" ? "اذهب إلى التطبيق" : "Go to App"}
                     </button>
                   )}
                   {sessionMode === "signedOut" && (
@@ -3726,7 +3726,7 @@ export default function Home() {
                       className="hidden h-10 rounded-lg bg-ink px-3 text-sm font-bold text-white dark:bg-mint dark:text-ink sm:block"
                       onClick={openLoginFromLanding}
                     >
-                      {language === "ar" ? "ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„" : "Login"}
+                      {language === "ar" ? "تسجيل الدخول" : "Login"}
                     </button>
                   )}
                   {!isStandaloneApp && !isIosDevice && !pwaInstallPromptSeen && (
@@ -3736,7 +3736,7 @@ export default function Home() {
                       type="button"
                     >
                       <Smartphone size={16} />
-                      {language === "ar" ? "ØªØ«Ø¨ÙŠØª Ø§Ù„ØªØ·Ø¨ÙŠÙ‚" : "Install App"}
+                      {language === "ar" ? "تثبيت التطبيق" : "Install App"}
                     </button>
                   )}
                   <button
@@ -3752,25 +3752,25 @@ export default function Home() {
               <div className="grid flex-1 items-center gap-10 py-14 lg:grid-cols-[1.02fr_0.98fr] lg:py-20">
                 <div className="max-w-3xl">
                   <p className="text-sm font-black uppercase tracking-wide text-emerald-700 dark:text-mint">
-                    {language === "ar" ? "Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ" : "DebtIQ / Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ"}
+                    {language === "ar" ? "ديبت آي كيو" : "DebtIQ / ديبت آي كيو"}
                   </p>
                   <h1 className="mt-5 text-5xl font-black leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
-                    {language === "ar" ? "Ù‡Ù„ ØªØ¹Ø±Ù ÙØ¹Ù„Ø§Ù‹ Ø£ÙŠÙ† ÙŠØ°Ù‡Ø¨ Ø±Ø§ØªØ¨Ùƒ ÙƒÙ„ Ø´Ù‡Ø±ØŸ" : "Do you really know where your salary goes every month?"}
+                    {language === "ar" ? "هل تعرف فعلاً أين يذهب راتبك كل شهر؟" : "Do you really know where your salary goes every month?"}
                   </h1>
                   <p className="mt-6 max-w-2xl text-lg font-semibold leading-8 text-slate-600 dark:text-slate-200">
                     {language === "ar"
-                      ? "Ø£ØºÙ„Ø¨ Ø§Ù„Ù†Ø§Ø³ Ù„Ø§ ØªØ¹Ø§Ù†ÙŠ Ù…Ù† Ù…Ø´ÙƒÙ„Ø© Ø¯Ø®Ù„... Ø¨Ù„ Ù…Ù† Ø¹Ø¯Ù… ÙˆØ¶ÙˆØ­ Ø§Ù„ØµÙˆØ±Ø© Ø§Ù„Ù…Ø§Ù„ÙŠØ©."
+                      ? "أغلب الناس لا تعاني من مشكلة دخل... بل من عدم وضوح الصورة المالية."
                       : "Most people do not have an income problem. They have a visibility problem."}
                   </p>
                   <p className="mt-4 max-w-2xl text-base font-black leading-7 text-emerald-700 dark:text-mint">
-                    {language === "ar" ? "Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ ÙŠØ³Ø§Ø¹Ø¯Ùƒ Ø¹Ù„Ù‰ Ø±Ø¤ÙŠØ© Ø§Ù„ØµÙˆØ±Ø© ÙƒØ§Ù…Ù„Ø©." : "DebtIQ helps you see the full picture."}
+                    {language === "ar" ? "ديبت آي كيو يساعدك على رؤية الصورة كاملة." : "DebtIQ helps you see the full picture."}
                   </p>
                   <div className="mt-9 grid gap-3 sm:flex">
                     <button className="h-12 rounded-lg bg-ink px-6 text-sm font-black text-white shadow-premium transition hover:-translate-y-0.5 dark:bg-mint dark:text-ink" onClick={openRegistrationFromLanding}>
-                      {language === "ar" ? "Ø§Ø¨Ø¯Ø£ Ù…Ø¬Ø§Ù†Ø§Ù‹" : "Start Free"}
+                      {language === "ar" ? "ابدأ مجاناً" : "Start Free"}
                     </button>
                     <button className="h-12 rounded-lg border border-slate-200 bg-white/85 px-6 text-sm font-black backdrop-blur transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/5" onClick={openDemoFromLanding}>
-                      {language === "ar" ? "Ø¬Ø±Ù‘Ø¨ Ø§Ù„Ø¯ÙŠÙ…Ùˆ" : "Try Demo"}
+                      {language === "ar" ? "جرّب الديمو" : "Try Demo"}
                     </button>
                   </div>
                   <div className="mt-5">{installExperience}</div>
@@ -3780,12 +3780,12 @@ export default function Home() {
                   <div className="mb-5 flex items-center justify-between gap-3">
                     <div>
                       <p className="text-xs font-black uppercase tracking-[0.18em] text-mint">
-                        {language === "ar" ? "Ù„Ù…Ø­Ø© Ù…Ø§Ù„ÙŠØ©" : "Financial Preview"}
+                        {language === "ar" ? "لمحة مالية" : "Financial Preview"}
                       </p>
-                      <h2 className="mt-2 text-2xl font-black">{language === "ar" ? "Ø§Ù„ØµÙˆØ±Ø© Ø§Ù„Ø´Ù‡Ø±ÙŠØ©" : "Monthly picture"}</h2>
+                      <h2 className="mt-2 text-2xl font-black">{language === "ar" ? "الصورة الشهرية" : "Monthly picture"}</h2>
                     </div>
                     <div className="rounded-lg border border-emerald-300/25 bg-emerald-400/10 px-3 py-2 text-xs font-black text-mint">
-                      {language === "ar" ? "ÙˆØ§Ø¶Ø­" : "Clear"}
+                      {language === "ar" ? "واضح" : "Clear"}
                     </div>
                   </div>
                   <div className="landing-flow-panel">
@@ -3811,18 +3811,18 @@ export default function Home() {
             <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
               <div>
                 <p className="text-sm font-black uppercase tracking-wide text-emerald-700 dark:text-mint">
-                  {language === "ar" ? "Ù…Ø«Ø§Ù„ Ù…Ù† Ø§Ù„ÙˆØ§Ù‚Ø¹" : "Example Financial Snapshot"}
+                  {language === "ar" ? "مثال من الواقع" : "Example Financial Snapshot"}
                 </p>
                 <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
-                  {language === "ar" ? "Ù‡ÙƒØ°Ø§ ØªØªØ­ÙˆÙ„ Ø§Ù„Ø£Ø±Ù‚Ø§Ù… Ø¥Ù„Ù‰ Ù‚Ø±Ø§Ø± ÙˆØ§Ø¶Ø­" : "This is how numbers become a clear next step"}
+                  {language === "ar" ? "هكذا تتحول الأرقام إلى قرار واضح" : "This is how numbers become a clear next step"}
                 </h2>
               </div>
               <div className="landing-snapshot p-6 sm:p-7">
                 <div className="grid gap-3 sm:grid-cols-3">
                   {[
-                    [language === "ar" ? "Ø§Ù„Ø¯Ø®Ù„ Ø§Ù„Ø´Ù‡Ø±ÙŠ" : "Monthly Income", "SAR 42,000"],
-                    [language === "ar" ? "Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„Ø´Ù‡Ø±ÙŠØ©" : "Monthly Obligations", "SAR 38,000"],
-                    [language === "ar" ? "Ø§Ù„Ù…ØªØ¨Ù‚ÙŠ" : "Remaining", "SAR 4,000"],
+                    [language === "ar" ? "الدخل الشهري" : "Monthly Income", "SAR 42,000"],
+                    [language === "ar" ? "الالتزامات الشهرية" : "Monthly Obligations", "SAR 38,000"],
+                    [language === "ar" ? "المتبقي" : "Remaining", "SAR 4,000"],
                   ].map(([label, value]) => (
                     <div key={label} className="rounded-lg border border-slate-200 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
                       <p className="text-xs font-black uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
@@ -3832,11 +3832,11 @@ export default function Home() {
                 </div>
                 <div className="mt-4 rounded-lg border border-emerald-300/25 bg-emerald-400/10 p-4">
                   <p className="text-xs font-black uppercase tracking-wide text-emerald-700 dark:text-mint">
-                    {language === "ar" ? "ØªÙˆØµÙŠØ© Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ" : "DebtIQ Recommendation"}
+                    {language === "ar" ? "توصية ديبت آي كيو" : "DebtIQ Recommendation"}
                   </p>
                   <p className="mt-2 text-base font-black leading-8">
                     {language === "ar"
-                      ? "Ø®ØµØµ 2,000 Ø±ÙŠØ§Ù„ Ù„ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„Ø·ÙˆØ§Ø±Ø¦ Ùˆ1,500 Ø±ÙŠØ§Ù„ Ù„ØªØ³Ø±ÙŠØ¹ Ø³Ø¯Ø§Ø¯ Ø§Ù„Ø¯ÙŠÙˆÙ†."
+                      ? "خصص 2,000 ريال لصندوق الطوارئ و1,500 ريال لتسريع سداد الديون."
                       : "Allocate SAR 2,000 to your emergency fund and SAR 1,500 to accelerate debt payoff."}
                   </p>
                 </div>
@@ -3847,8 +3847,8 @@ export default function Home() {
           <section className="relative z-10 px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
               <div className="max-w-2xl">
-                <p className="text-sm font-black uppercase tracking-wide text-emerald-700 dark:text-mint">{language === "ar" ? "Ù‡Ù„ Ù‡Ø°Ø§ ÙŠØ´Ø¨Ù‡ÙƒØŸ" : "Does this sound like you?"}</p>
-                <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">{language === "ar" ? "Ù„Ø­Ø¸Ø§Øª Ø¨Ø³ÙŠØ·Ø© Ù„ÙƒÙ†Ù‡Ø§ ØªØªÙƒØ±Ø± ÙƒÙ„ Ø´Ù‡Ø±" : "Small money moments that repeat every month"}</h2>
+                <p className="text-sm font-black uppercase tracking-wide text-emerald-700 dark:text-mint">{language === "ar" ? "هل هذا يشبهك؟" : "Does this sound like you?"}</p>
+                <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">{language === "ar" ? "لحظات بسيطة لكنها تتكرر كل شهر" : "Small money moments that repeat every month"}</h2>
               </div>
               <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                 {landingPainPoints.map((pain) => (
@@ -3864,8 +3864,8 @@ export default function Home() {
           <section className="px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
               <div className="max-w-2xl">
-                <p className="text-sm font-black uppercase tracking-wide text-emerald-700 dark:text-mint">{language === "ar" ? "Ù…Ø§Ø°Ø§ Ø³ÙŠØ³Ø§Ø¹Ø¯Ùƒ Ø£Ù† ØªØ±Ù‰ØŸ" : "What will it help you see?"}</p>
-                <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">{language === "ar" ? "ØµÙˆØ±Ø© Ù…Ø§Ù„ÙŠØ© Ø£ÙˆØ¶Ø­ Ø¨Ø¯ÙˆÙ† ØªØ¹Ù‚ÙŠØ¯" : "A clearer money picture without the noise"}</h2>
+                <p className="text-sm font-black uppercase tracking-wide text-emerald-700 dark:text-mint">{language === "ar" ? "ماذا سيساعدك أن ترى؟" : "What will it help you see?"}</p>
+                <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">{language === "ar" ? "صورة مالية أوضح بدون تعقيد" : "A clearer money picture without the noise"}</h2>
               </div>
               <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {landingBenefits.map((benefit) => (
@@ -3881,26 +3881,26 @@ export default function Home() {
           <section className="px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-2">
               <div className="landing-soft-card p-6">
-                <p className="text-2xl" aria-hidden="true">ðŸ‘¨</p>
-                <h3 className="mt-2 text-2xl font-black">{language === "ar" ? "ÙƒØ±ÙŠÙ…" : "Karim"}</h3>
+                <p className="text-2xl" aria-hidden="true">👨</p>
+                <h3 className="mt-2 text-2xl font-black">{language === "ar" ? "كريم" : "Karim"}</h3>
                 <p className="mt-3 text-base font-semibold leading-8 text-slate-600 dark:text-slate-200">
                   {language === "ar"
-                    ? "ÙƒØ§Ù† ÙŠØ¹ØªÙ‚Ø¯ Ø£Ù† Ø§Ù„Ù…Ø´ÙƒÙ„Ø© ÙÙŠ Ø§Ù„Ø±Ø§ØªØ¨. Ø«Ù… Ø§ÙƒØªØ´Ù Ø£Ù† Ø§Ù„Ù…Ø´ÙƒÙ„Ø© ÙƒØ§Ù†Øª ÙÙŠ Ø¹Ø¯Ù… Ø±Ø¤ÙŠØ© Ø§Ù„ØµÙˆØ±Ø© Ø§Ù„Ù…Ø§Ù„ÙŠØ© ÙƒØ§Ù…Ù„Ø©."
+                    ? "كان يعتقد أن المشكلة في الراتب. ثم اكتشف أن المشكلة كانت في عدم رؤية الصورة المالية كاملة."
                     : "He thought the problem was his salary. Then he realized the real issue was not seeing his full financial picture."}
                 </p>
               </div>
               <div className="landing-soft-card p-6">
-                <p className="text-2xl" aria-hidden="true">ðŸ‘©</p>
-                <h3 className="mt-2 text-2xl font-black">{language === "ar" ? "ÙƒØ±ÙŠÙ…Ø©" : "Karima"}</h3>
+                <p className="text-2xl" aria-hidden="true">👩</p>
+                <h3 className="mt-2 text-2xl font-black">{language === "ar" ? "كريمة" : "Karima"}</h3>
                 <p className="mt-3 text-base font-semibold leading-8 text-slate-600 dark:text-slate-200">
                   {language === "ar"
-                    ? "ÙƒØ§Ù†Øª ØªØ¯ÙŠØ± Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„Ù…Ù†Ø²Ù„ ÙˆØ§Ù„Ù…Ø¯Ø§Ø±Ø³. ÙˆØ§ÙƒØªØ´ÙØª Ø£Ù†Ù‡Ø§ ØªØ³ØªØ·ÙŠØ¹ Ø§Ù„ØªØ®Ø·ÙŠØ· Ù„Ù„Ù…Ø³ØªÙ‚Ø¨Ù„ Ø¨Ø·Ø±ÙŠÙ‚Ø© Ø£Ø¨Ø³Ø·."
+                    ? "كانت تدير التزامات المنزل والمدارس. واكتشفت أنها تستطيع التخطيط للمستقبل بطريقة أبسط."
                     : "She was managing home obligations and school fees. She discovered she could plan for the future in a simpler way."}
                 </p>
               </div>
               <div className="lg:col-span-2">
                 <button className="h-12 rounded-lg bg-ink px-6 text-sm font-black text-white shadow-premium transition hover:-translate-y-0.5 dark:bg-mint dark:text-ink" onClick={openRegistrationFromLanding}>
-                  {language === "ar" ? "Ø§ÙƒØªØ´Ù ÙˆØ¶Ø¹Ùƒ Ø§Ù„Ù…Ø§Ù„ÙŠ Ù…Ø«Ù„ ÙƒØ±ÙŠÙ… ÙˆÙƒØ±ÙŠÙ…Ø©" : "Discover your financial picture like Karim and Karima"}
+                  {language === "ar" ? "اكتشف وضعك المالي مثل كريم وكريمة" : "Discover your financial picture like Karim and Karima"}
                 </button>
               </div>
             </div>
@@ -3909,11 +3909,11 @@ export default function Home() {
           <section className="px-4 py-12 sm:px-6 lg:px-8">
             <div className="landing-trust mx-auto max-w-7xl p-6 sm:p-8">
               <p className="text-sm font-black uppercase tracking-wide text-emerald-700 dark:text-mint">
-                {language === "ar" ? "Ù„Ù…Ø§Ø°Ø§ ÙŠØ³ØªØ®Ø¯Ù… Ø§Ù„Ù†Ø§Ø³ Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆØŸ" : "Why do people use DebtIQ?"}
+                {language === "ar" ? "لماذا يستخدم الناس ديبت آي كيو؟" : "Why do people use DebtIQ?"}
               </p>
               <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {(language === "ar"
-                  ? ["Ù„Ø§ ØªØ­ØªØ§Ø¬ Ø¥Ù„Ù‰ Ø¥Ø¯Ø®Ø§Ù„ ÙƒÙ„ Ø´ÙŠØ¡ Ø§Ù„ÙŠÙˆÙ….", "Ø§Ø¨Ø¯Ø£ Ø¨Ù…Ø§ ØªØ¹Ø±ÙÙ‡ Ø§Ù„Ø¢Ù†.", "Ø£Ø¶Ù Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª ØªØ¯Ø±ÙŠØ¬ÙŠØ§Ù‹.", "Ø§Ø­ØªÙØ¸ Ø¨ØµÙˆØ±Ø© Ø£ÙˆØ¶Ø­ Ù„ÙˆØ¶Ø¹Ùƒ Ø§Ù„Ù…Ø§Ù„ÙŠ."]
+                  ? ["لا تحتاج إلى إدخال كل شيء اليوم.", "ابدأ بما تعرفه الآن.", "أضف البيانات تدريجياً.", "احتفظ بصورة أوضح لوضعك المالي."]
                   : ["You do not need to enter everything today.", "Start with what you know now.", "Add details gradually.", "Keep a clearer picture of your money."]
                 ).map((item) => (
                   <div key={item} className="rounded-lg border border-slate-200 bg-white/65 p-4 text-sm font-black leading-7 dark:border-white/10 dark:bg-white/5">
@@ -3926,18 +3926,18 @@ export default function Home() {
 
           <section className="px-4 pb-20 pt-8 sm:px-6 lg:px-8">
             <div className="landing-final-cta mx-auto max-w-4xl p-8 text-center sm:p-10">
-              <h2 className="text-4xl font-black tracking-tight sm:text-5xl">{language === "ar" ? "Ø§Ø¨Ø¯Ø£ Ø§Ù„ÙŠÙˆÙ…." : "Start today."}</h2>
+              <h2 className="text-4xl font-black tracking-tight sm:text-5xl">{language === "ar" ? "ابدأ اليوم." : "Start today."}</h2>
               <p className="mx-auto mt-4 max-w-2xl text-sm font-semibold leading-7 text-slate-600 dark:text-slate-200">
                 {language === "ar"
-                  ? "ÙˆØ®Ù„Ø§Ù„ Ø¯Ù‚Ø§Ø¦Ù‚ Ø³ØªØ­ØµÙ„ Ø¹Ù„Ù‰ ØµÙˆØ±Ø© Ø£ÙˆØ¶Ø­ Ù„ÙˆØ¶Ø¹Ùƒ Ø§Ù„Ù…Ø§Ù„ÙŠ."
+                  ? "وخلال دقائق ستحصل على صورة أوضح لوضعك المالي."
                   : "In a few minutes, you can have a clearer picture of your money."}
               </p>
               <div className="mt-6 grid gap-3 sm:flex sm:justify-center">
                 <button className="h-12 rounded-lg bg-ink px-6 text-sm font-black text-white shadow-premium dark:bg-mint dark:text-ink" onClick={openRegistrationFromLanding}>
-                  {language === "ar" ? "Ø§Ø¨Ø¯Ø£ Ù…Ø¬Ø§Ù†Ø§Ù‹" : "Start Free"}
+                  {language === "ar" ? "ابدأ مجاناً" : "Start Free"}
                 </button>
                 <button className="h-12 rounded-lg border border-slate-200 bg-white px-6 text-sm font-black dark:border-white/10 dark:bg-white/5" onClick={openDemoFromLanding}>
-                  {language === "ar" ? "Ø¬Ø±Ù‘Ø¨ Ø§Ù„Ø¯ÙŠÙ…Ùˆ" : "Try Demo"}
+                  {language === "ar" ? "جرّب الديمو" : "Try Demo"}
                 </button>
               </div>
             </div>
@@ -3977,7 +3977,7 @@ export default function Home() {
               href="/landing"
               className="mt-4 flex h-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm font-bold text-slate-700 transition hover:border-mint dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
             >
-              {language === "ar" ? "Ø§Ù„Ø¹ÙˆØ¯Ø© Ù„Ù„Ø±Ø¦ÙŠØ³ÙŠØ©" : "Back to Home"}
+              {language === "ar" ? "العودة للرئيسية" : "Back to Home"}
             </a>
 
             {!isStandaloneApp && !isIosDevice && !pwaInstallPromptSeen && (
@@ -3987,7 +3987,7 @@ export default function Home() {
                 type="button"
               >
                 <Smartphone size={16} />
-                {language === "ar" ? "ØªØ«Ø¨ÙŠØª Ø§Ù„ØªØ·Ø¨ÙŠÙ‚" : "Install App"}
+                {language === "ar" ? "تثبيت التطبيق" : "Install App"}
               </button>
             )}
 
@@ -4096,7 +4096,7 @@ export default function Home() {
                     className="h-11 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
                     onClick={toggleLanguage}
                   >
-                    {language === "en" ? "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©" : "English"}
+                    {language === "en" ? "العربية" : "English"}
                   </button>
                   <button
                     className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
@@ -4237,7 +4237,7 @@ export default function Home() {
                     <h3 className="mt-2 text-xl font-black leading-tight sm:text-2xl">{onboardingStep === 0 ? "Choose setup method" : `Step ${onboardingStep} of 4`}</h3>
                     {sessionMode === "real" && (
                       <p className="mt-2 text-sm font-bold text-slate-500 dark:text-slate-300">
-                        {language === "ar" ? "ØªØ§Ø¨Ø¹ Ø¥Ø¹Ø¯Ø§Ø¯ Ù…Ù„ÙÙƒ Ø§Ù„Ù…Ø§Ù„ÙŠ" : "Continue setting up your financial profile"}
+                        {language === "ar" ? "تابع إعداد ملفك المالي" : "Continue setting up your financial profile"}
                       </p>
                     )}
                   </div>
@@ -4246,7 +4246,7 @@ export default function Home() {
                       <span key={step} className={`h-2 w-7 rounded-full sm:w-8 ${step <= onboardingStep ? "bg-mint" : "bg-slate-200 dark:bg-white/10"}`} />
                     ))}
                     <button type="button" className="ms-1 text-xs font-black text-emerald-700 underline dark:text-mint" onClick={resetOnboardingForCurrentUser}>
-                      {language === "ar" ? "Ø§Ø¨Ø¯Ø£ Ù…Ù† Ø¬Ø¯ÙŠØ¯" : "Start over"}
+                      {language === "ar" ? "ابدأ من جديد" : "Start over"}
                     </button>
                   </div>
                 </div>
@@ -4333,10 +4333,10 @@ export default function Home() {
                     <div className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
                       <div className="grid gap-3 sm:grid-cols-2">
                         <SelectField
-                          label={language === "ar" ? "Ø§Ù„Ø¯ÙˆÙ„Ø©" : "Country"}
+                          label={language === "ar" ? "الدولة" : "Country"}
                           value={profile.country}
                           options={["", ...countryOptions]}
-                          getOptionLabel={(value) => (value ? countryLabel(value) : language === "ar" ? "Ø§Ø®ØªØ± Ø§Ù„Ø¯ÙˆÙ„Ø©" : "Select country")}
+                          getOptionLabel={(value) => (value ? countryLabel(value) : language === "ar" ? "اختر الدولة" : "Select country")}
                           onChange={(value) =>
                             setProfile((current) => ({
                               ...current,
@@ -4346,27 +4346,27 @@ export default function Home() {
                           }
                         />
                         <SelectField
-                          label={language === "ar" ? "Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©" : "City"}
+                          label={language === "ar" ? "المدينة" : "City"}
                           value={profile.city}
                           options={["", ...(profile.country ? cityOptionsByCountry[profile.country as Country] : ["Other"])]}
-                          getOptionLabel={(value) => (value ? cityLabel(value) : language === "ar" ? "Ø§Ø®ØªØ± Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©" : "Select city")}
+                          getOptionLabel={(value) => (value ? cityLabel(value) : language === "ar" ? "اختر المدينة" : "Select city")}
                           onChange={(value) => setProfile((current) => ({ ...current, city: value }))}
                         />
                         {(profile.city === "Other" || profile.country === "Other" || (profile.country && profile.city && !cityOptionsByCountry[profile.country as Country]?.includes(profile.city))) && (
-                          <Field label={language === "ar" ? "Ø§ÙƒØªØ¨ Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©" : "Manual city"} value={profile.city === "Other" ? "" : profile.city} onChange={(value) => setProfile((current) => ({ ...current, city: value }))} />
+                          <Field label={language === "ar" ? "اكتب المدينة" : "Manual city"} value={profile.city === "Other" ? "" : profile.city} onChange={(value) => setProfile((current) => ({ ...current, city: value }))} />
                         )}
                         <SelectField
-                          label={language === "ar" ? "Ø§Ù„Ø­Ø§Ù„Ø© Ø§Ù„Ø§Ø¬ØªÙ…Ø§Ø¹ÙŠØ©" : "Marital Status"}
+                          label={language === "ar" ? "الحالة الاجتماعية" : "Marital Status"}
                           value={profile.maritalStatus}
                           options={["", ...maritalStatusOptions]}
-                          getOptionLabel={(value) => (value ? maritalStatusLabel(value) : language === "ar" ? "Ø§Ø®ØªØ± Ø§Ù„Ø­Ø§Ù„Ø©" : "Select status")}
+                          getOptionLabel={(value) => (value ? maritalStatusLabel(value) : language === "ar" ? "اختر الحالة" : "Select status")}
                           onChange={(value) => setProfile((current) => ({ ...current, maritalStatus: value as MaritalStatus | "" }))}
                         />
                         <SelectField
-                          label={language === "ar" ? "Ù‚Ø·Ø§Ø¹ Ø§Ù„Ø¹Ù…Ù„" : "Employment Sector"}
+                          label={language === "ar" ? "قطاع العمل" : "Employment Sector"}
                           value={profile.employmentSector}
                           options={["", ...employmentSectorOptions]}
-                          getOptionLabel={(value) => (value ? employmentSectorLabel(value) : language === "ar" ? "Ø§Ø®ØªØ± Ø§Ù„Ù‚Ø·Ø§Ø¹" : "Select sector")}
+                          getOptionLabel={(value) => (value ? employmentSectorLabel(value) : language === "ar" ? "اختر القطاع" : "Select sector")}
                           onChange={(value) => setProfile((current) => ({ ...current, employmentSector: value as EmploymentSector | "" }))}
                         />
                       </div>
@@ -4456,7 +4456,7 @@ export default function Home() {
                                 Guaranteed
                               </label>
                               <SelectField
-                                label={language === "ar" ? "ÙƒÙŠÙ ØªÙØ¶Ù„ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù‡Ø°Ø§ Ø§Ù„Ø¨ÙˆÙ†ØµØŸ" : "How would you like to use this bonus?"}
+                                label={language === "ar" ? "كيف تفضل استخدام هذا البونص؟" : "How would you like to use this bonus?"}
                                 value={getBonusAllocation(income)}
                                 options={bonusAllocationOptions}
                                 getOptionLabel={bonusAllocationLabel}
@@ -4525,7 +4525,7 @@ export default function Home() {
                     <div className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
                       <h4 className="font-black">{t.onboarding.commonObligations}</h4>
                       <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
-                        Did we miss something? School fees? Wife&apos;s birthday? Car insurance? ðŸ˜Š
+                        Did we miss something? School fees? Wife&apos;s birthday? Car insurance? 😊
                       </p>
                       <div className="grid gap-2 sm:grid-cols-3">
                         {commonObligationOptions.map((option) => (
@@ -4663,7 +4663,7 @@ export default function Home() {
 
                 {onboardingAction && (
                   <p className="mt-5 rounded-lg bg-mint/10 px-3 py-2 text-sm font-bold text-emerald-800 dark:text-mint">
-                    {validationMessage("Processing...", "Ø¬Ø§Ø±ÙŠ Ø§Ù„Ù…Ø¹Ø§Ù„Ø¬Ø©...")}
+                    {validationMessage("Processing...", "جاري المعالجة...")}
                   </p>
                 )}
 
@@ -4709,7 +4709,7 @@ export default function Home() {
                     disabled={Boolean(onboardingAction)}
                     onClick={onboardingStep === 4 ? () => handleCompleteOnboarding("generate") : handleContinueStep}
                   >
-                    {onboardingAction ? validationMessage("Processing...", "Ø¬Ø§Ø±ÙŠ Ø§Ù„Ù…Ø¹Ø§Ù„Ø¬Ø©...") : onboardingStep === 4 ? "Generate Dashboard" : t.common.next}
+                    {onboardingAction ? validationMessage("Processing...", "جاري المعالجة...") : onboardingStep === 4 ? "Generate Dashboard" : t.common.next}
                     <ChevronRight size={17} />
                   </button>
                   <button
@@ -4718,7 +4718,7 @@ export default function Home() {
                     disabled={Boolean(onboardingAction)}
                     onClick={handleSkipOrAddLater}
                   >
-                    {onboardingAction ? validationMessage("Processing...", "Ø¬Ø§Ø±ÙŠ Ø§Ù„Ù…Ø¹Ø§Ù„Ø¬Ø©...") : "Skip for now / Add later"}
+                    {onboardingAction ? validationMessage("Processing...", "جاري المعالجة...") : "Skip for now / Add later"}
                   </button>
                   {onboardingStep === 1 && (
                     <div className="col-span-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black text-amber-900 dark:border-amber-300/30 dark:bg-amber-300/10 dark:text-amber-100">
@@ -4736,10 +4736,10 @@ export default function Home() {
               <div className="grid gap-5">
                 {sessionMode === "real" && (
                   <div className="rounded-lg border border-mint/30 bg-mint/10 p-5 shadow-sm">
-                    <h3 className="text-xl font-black">{language === "ar" ? "Ù…Ø±Ø­Ø¨Ø§Ù‹ Ø¨Ùƒ ÙÙŠ Ø¯ÙŠØ¨Øª Ø¢ÙŠ ÙƒÙŠÙˆ." : "Welcome to DebtIQ."}</h3>
+                    <h3 className="text-xl font-black">{language === "ar" ? "مرحباً بك في ديبت آي كيو." : "Welcome to DebtIQ."}</h3>
                     <p className="mt-2 text-sm font-bold leading-6 text-slate-600 dark:text-slate-200">
                       {language === "ar"
-                        ? "Ø§Ø¨Ø¯Ø£ Ø¨Ø¥Ø¶Ø§ÙØ© Ø¯Ø®Ù„Ùƒ ÙˆØ§Ù„ØªØ²Ø§Ù…Ø§ØªÙƒ ÙˆØ¨Ø·Ø§Ù‚Ø§ØªÙƒ Ù…Ù† Ø§Ù„Ø£Ù‚Ø³Ø§Ù… Ø§Ù„ØªØ§Ù„ÙŠØ©."
+                        ? "ابدأ بإضافة دخلك والتزاماتك وبطاقاتك من الأقسام التالية."
                         : "Start by adding your income, obligations, and cards from the dashboard tabs."}
                     </p>
                   </div>
@@ -5394,7 +5394,7 @@ export default function Home() {
                       {releaseInsights.length === 0 && (
                         <p className="text-sm text-slate-500 dark:text-slate-300">
                           {language === "ar"
-                            ? "Ø£Ø¶Ù ØªÙˆØ§Ø±ÙŠØ® Ø§Ù†ØªÙ‡Ø§Ø¡ Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ù„Ù…Ø¹Ø±ÙØ© Ù…ØªÙ‰ Ø³ÙŠØªØ­Ø±Ø± Ø¬Ø²Ø¡ Ù…Ù† Ø¯Ø®Ù„Ùƒ Ù…Ø³ØªÙ‚Ø¨Ù„Ø§Ù‹."
+                            ? "أضف تواريخ انتهاء الالتزامات لمعرفة متى سيتحرر جزء من دخلك مستقبلاً."
                             : "Add end dates to obligations to unlock future cash flow insights."}
                         </p>
                       )}
@@ -5829,10 +5829,10 @@ export default function Home() {
                   <h3 className="font-black">{t.common.profile}</h3>
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     <SelectField
-                      label={language === "ar" ? "Ø§Ù„Ø¯ÙˆÙ„Ø©" : "Country"}
+                      label={language === "ar" ? "الدولة" : "Country"}
                       value={profile.country}
                       options={["", ...countryOptions]}
-                      getOptionLabel={(value) => (value ? countryLabel(value) : language === "ar" ? "Ø§Ø®ØªØ± Ø§Ù„Ø¯ÙˆÙ„Ø©" : "Select country")}
+                      getOptionLabel={(value) => (value ? countryLabel(value) : language === "ar" ? "اختر الدولة" : "Select country")}
                       onChange={(value) =>
                         setProfile((current) => ({
                           ...current,
@@ -5842,34 +5842,34 @@ export default function Home() {
                       }
                     />
                     <SelectField
-                      label={language === "ar" ? "Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©" : "City"}
+                      label={language === "ar" ? "المدينة" : "City"}
                       value={profile.city}
                       options={["", ...(profile.country ? cityOptionsByCountry[profile.country as Country] : ["Other"])]}
-                      getOptionLabel={(value) => (value ? cityLabel(value) : language === "ar" ? "Ø§Ø®ØªØ± Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©" : "Select city")}
+                      getOptionLabel={(value) => (value ? cityLabel(value) : language === "ar" ? "اختر المدينة" : "Select city")}
                       onChange={(value) => setProfile((current) => ({ ...current, city: value }))}
                     />
                     {(profile.city === "Other" || profile.country === "Other" || (profile.country && profile.city && !cityOptionsByCountry[profile.country as Country]?.includes(profile.city))) && (
-                      <Field label={language === "ar" ? "Ø§ÙƒØªØ¨ Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©" : "Manual city"} value={profile.city === "Other" ? "" : profile.city} onChange={(value) => setProfile((current) => ({ ...current, city: value }))} />
+                      <Field label={language === "ar" ? "اكتب المدينة" : "Manual city"} value={profile.city === "Other" ? "" : profile.city} onChange={(value) => setProfile((current) => ({ ...current, city: value }))} />
                     )}
-                    <Field label={language === "ar" ? "Ø¬Ù‡Ø© Ø§Ù„Ø¹Ù…Ù„" : "Employer"} value={profile.employer} onChange={(value) => setProfile((current) => ({ ...current, employer: value }))} />
+                    <Field label={language === "ar" ? "جهة العمل" : "Employer"} value={profile.employer} onChange={(value) => setProfile((current) => ({ ...current, employer: value }))} />
                     <SelectField
-                      label={language === "ar" ? "Ø§Ù„Ø­Ø§Ù„Ø© Ø§Ù„Ø§Ø¬ØªÙ…Ø§Ø¹ÙŠØ©" : "Marital Status"}
+                      label={language === "ar" ? "الحالة الاجتماعية" : "Marital Status"}
                       value={profile.maritalStatus}
                       options={["", ...maritalStatusOptions]}
-                      getOptionLabel={(value) => (value ? maritalStatusLabel(value) : language === "ar" ? "Ø§Ø®ØªØ± Ø§Ù„Ø­Ø§Ù„Ø©" : "Select status")}
+                      getOptionLabel={(value) => (value ? maritalStatusLabel(value) : language === "ar" ? "اختر الحالة" : "Select status")}
                       onChange={(value) => setProfile((current) => ({ ...current, maritalStatus: value as MaritalStatus | "" }))}
                     />
                     <SelectField
-                      label={language === "ar" ? "Ù‚Ø·Ø§Ø¹ Ø§Ù„Ø¹Ù…Ù„" : "Employment Sector"}
+                      label={language === "ar" ? "قطاع العمل" : "Employment Sector"}
                       value={profile.employmentSector}
                       options={["", ...employmentSectorOptions]}
-                      getOptionLabel={(value) => (value ? employmentSectorLabel(value) : language === "ar" ? "Ø§Ø®ØªØ± Ø§Ù„Ù‚Ø·Ø§Ø¹" : "Select sector")}
+                      getOptionLabel={(value) => (value ? employmentSectorLabel(value) : language === "ar" ? "اختر القطاع" : "Select sector")}
                       onChange={(value) => setProfile((current) => ({ ...current, employmentSector: value as EmploymentSector | "" }))}
                     />
                   </div>
                   <div className="mt-6 flex items-center justify-between">
                     <div>
-                      <h4 className="font-black">{language === "ar" ? "Ù…ØµØ§Ø±ÙŠÙ Ù†Ù…Ø· Ø§Ù„Ø­ÙŠØ§Ø©" : "Lifestyle Expenses"}</h4>
+                      <h4 className="font-black">{language === "ar" ? "مصاريف نمط الحياة" : "Lifestyle Expenses"}</h4>
                       <p className="text-xs font-bold text-slate-500 dark:text-slate-400">Total: {currency.format(totalLifestyleExpenses)}</p>
                     </div>
                     <button className="grid size-10 place-items-center rounded-lg bg-ink text-white dark:bg-mint dark:text-ink" onClick={addLifestyleExpense} aria-label="Add lifestyle expense">
@@ -5937,11 +5937,11 @@ export default function Home() {
           <div className="rounded-lg border border-white/70 bg-white/95 px-3 py-2 text-xs font-black shadow-premium backdrop-blur dark:border-white/10 dark:bg-slate-950/95">
             {hasUnsavedChanges
               ? language === "ar"
-                ? "â— Ù„Ø¯ÙŠÙƒ ØªØ¹Ø¯ÙŠÙ„Ø§Øª ØºÙŠØ± Ù…Ø­ÙÙˆØ¸Ø©"
-                : "â— Unsaved changes"
+                ? "● لديك تعديلات غير محفوظة"
+                : "● Unsaved changes"
               : language === "ar"
-                ? "âœ“ Ø¬Ù…ÙŠØ¹ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª Ù…Ø­ÙÙˆØ¸Ø©"
-                : "âœ“ All changes saved"}
+                ? "✓ جميع التعديلات محفوظة"
+                : "✓ All changes saved"}
           </div>
           <button
             className={`h-12 rounded-lg px-5 text-sm font-black shadow-premium ${
@@ -5951,7 +5951,7 @@ export default function Home() {
             }`}
             onClick={() => saveUserData(undefined, t.common.savedSuccessfully)}
           >
-            {language === "ar" ? "Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª" : "Save Changes"}
+            {language === "ar" ? "حفظ التعديلات" : "Save Changes"}
           </button>
         </div>
       )}
@@ -5967,27 +5967,27 @@ export default function Home() {
 
         <div className="report-grid">
           <div>
-            <span>{language === "ar" ? "Ø§Ù„Ø¯Ø®Ù„ Ø§Ù„Ø´Ù‡Ø±ÙŠ" : "Monthly income"}</span>
+            <span>{language === "ar" ? "الدخل الشهري" : "Monthly income"}</span>
             <strong>{currency.format(snapshot.totalIncome)}</strong>
           </div>
           <div>
-            <span>{language === "ar" ? "Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„Ø´Ù‡Ø±ÙŠØ©" : "Monthly obligations"}</span>
+            <span>{language === "ar" ? "الالتزامات الشهرية" : "Monthly obligations"}</span>
             <strong>{currency.format(snapshot.totalMonthlyObligations)}</strong>
           </div>
           <div>
-            <span>{language === "ar" ? "Ù…ØµØ§Ø±ÙŠÙ Ù†Ù…Ø· Ø§Ù„Ø­ÙŠØ§Ø©" : "Lifestyle expenses"}</span>
+            <span>{language === "ar" ? "مصاريف نمط الحياة" : "Lifestyle expenses"}</span>
             <strong>{currency.format(totalLifestyleExpenses)}</strong>
           </div>
           <div>
-            <span>{language === "ar" ? "Ø§Ù„ÙØ§Ø¦Ø¶ Ø£Ùˆ Ø§Ù„Ø¹Ø¬Ø²" : "Surplus / deficit"}</span>
+            <span>{language === "ar" ? "الفائض أو العجز" : "Surplus / deficit"}</span>
             <strong>{currency.format(snapshot.cashFlow)}</strong>
           </div>
           <div>
-            <span>{language === "ar" ? "Ø¶ØºØ· Ø§Ù„Ø¯ÙŠÙ†" : "Debt pressure"}</span>
+            <span>{language === "ar" ? "ضغط الدين" : "Debt pressure"}</span>
             <strong>{scoreLabel(snapshot.debtScore)}</strong>
           </div>
           <div>
-            <span>{language === "ar" ? "Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ø¨Ø·Ø§Ù‚Ø§Øª" : "Credit card utilization"}</span>
+            <span>{language === "ar" ? "استخدام البطاقات" : "Credit card utilization"}</span>
             <strong>{highestUtilizationCard ? `${Math.round(highestUtilizationCard.utilization)}%` : "0%"}</strong>
           </div>
           <div>
@@ -6005,14 +6005,14 @@ export default function Home() {
         </div>
 
         <section>
-          <h2>{language === "ar" ? "Ù…Ù„Ø®Øµ ØªÙ†ÙÙŠØ°ÙŠ" : "Executive Summary"}</h2>
-          <p>{language === "ar" ? `Ø¯Ø®Ù„Ùƒ Ø§Ù„Ø´Ù‡Ø±ÙŠ ${currency.format(snapshot.totalIncome)}ØŒ ÙˆØ§Ù„ØªØ²Ø§Ù…Ø§ØªÙƒ Ø§Ù„Ø´Ù‡Ø±ÙŠØ© ${currency.format(snapshot.totalMonthlyObligations)}ØŒ ÙˆÙ…ØµØ§Ø±ÙŠÙ Ù†Ù…Ø· Ø§Ù„Ø­ÙŠØ§Ø© ${currency.format(totalLifestyleExpenses)}.` : `Your monthly income is ${currency.format(snapshot.totalIncome)}, monthly obligations are ${currency.format(snapshot.totalMonthlyObligations)}, and lifestyle expenses are ${currency.format(totalLifestyleExpenses)}.`}</p>
-          <p>{language === "ar" ? `Ø§Ù„Ù…ØªØ¨Ù‚ÙŠ Ù…Ù† Ø§Ù„Ø±Ø§ØªØ¨ Ø­Ø§Ù„ÙŠØ§Ù‹ ${currency.format(snapshot.cashFlow)}. Ø£ÙƒØ¨Ø± Ø§Ù„Ù…Ø®Ø§Ø·Ø± ØªØ¸Ù‡Ø± ÙÙŠ Ø¶ØºØ· Ø§Ù„Ø¯ÙŠÙ† ÙˆØ§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ø¨Ø·Ø§Ù‚Ø§Øª ÙˆØ§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„Ù‚Ø§Ø¯Ù…Ø©.` : `Your current remaining salary position is ${currency.format(snapshot.cashFlow)}. The main risks are debt pressure, credit utilization, and upcoming obligations.`}</p>
+          <h2>{language === "ar" ? "ملخص تنفيذي" : "Executive Summary"}</h2>
+          <p>{language === "ar" ? `دخلك الشهري ${currency.format(snapshot.totalIncome)}، والتزاماتك الشهرية ${currency.format(snapshot.totalMonthlyObligations)}، ومصاريف نمط الحياة ${currency.format(totalLifestyleExpenses)}.` : `Your monthly income is ${currency.format(snapshot.totalIncome)}, monthly obligations are ${currency.format(snapshot.totalMonthlyObligations)}, and lifestyle expenses are ${currency.format(totalLifestyleExpenses)}.`}</p>
+          <p>{language === "ar" ? `المتبقي من الراتب حالياً ${currency.format(snapshot.cashFlow)}. أكبر المخاطر تظهر في ضغط الدين واستخدام البطاقات والالتزامات القادمة.` : `Your current remaining salary position is ${currency.format(snapshot.cashFlow)}. The main risks are debt pressure, credit utilization, and upcoming obligations.`}</p>
         </section>
 
         <section>
-          <h2>{language === "ar" ? "ØªÙˆØ²ÙŠØ¹ Ø§Ù„Ø±Ø§ØªØ¨" : "Salary Distribution"}</h2>
-          <p>{language === "ar" ? "Ø§Ù„Ø¯Ø®Ù„ Ø§Ù„Ø´Ù‡Ø±ÙŠ" : "Monthly Income"}: {currency.format(snapshot.totalIncome)}</p>
+          <h2>{language === "ar" ? "توزيع الراتب" : "Salary Distribution"}</h2>
+          <p>{language === "ar" ? "الدخل الشهري" : "Monthly Income"}: {currency.format(snapshot.totalIncome)}</p>
           <div className="report-bars">
             {salaryDistribution.map((item) => (
               <div key={item.label}>
@@ -6024,23 +6024,23 @@ export default function Home() {
         </section>
 
         <section>
-          <h2>{language === "ar" ? "Ø£ÙƒØ¨Ø± Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„Ù…Ø¤Ø«Ø±Ø© Ø¹Ù„Ù‰ Ø§Ù„ØªØ¯ÙÙ‚ Ø§Ù„Ù†Ù‚Ø¯ÙŠ" : "Top obligations affecting cash flow"}</h2>
-          {topObligations.length === 0 && <p>{language === "ar" ? "Ù„Ø§ ØªÙˆØ¬Ø¯ Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø´Ù‡Ø±ÙŠØ© Ø¨Ø¹Ø¯." : "No monthly obligations added yet."}</p>}
+          <h2>{language === "ar" ? "أكبر الالتزامات المؤثرة على التدفق النقدي" : "Top obligations affecting cash flow"}</h2>
+          {topObligations.length === 0 && <p>{language === "ar" ? "لا توجد التزامات شهرية بعد." : "No monthly obligations added yet."}</p>}
           {topObligations.map((obligation) => (
             <p key={obligation.label}>{obligation.label}: {currency.format(obligation.value)}</p>
           ))}
         </section>
 
         <section>
-          <h2>{language === "ar" ? "Ø§Ù„Ø§Ù„ØªØ²Ø§Ù…Ø§Øª Ø§Ù„Ù‚Ø§Ø¯Ù…Ø©" : "Upcoming obligations"}</h2>
+          <h2>{language === "ar" ? "الالتزامات القادمة" : "Upcoming obligations"}</h2>
           {upcomingObligations.slice(0, 5).map((obligation) => (
             <p key={obligation.id}>{obligation.name}: {currency.format(obligation.monthlyAmount)} - {dateFormatter.format(new Date(obligation.dueDate))}</p>
           ))}
         </section>
 
         <section>
-          <h2>{language === "ar" ? "Ù…Ù„Ø®Øµ Ø§Ù„Ø£Ù‡Ø¯Ø§Ù" : "Goals summary"}</h2>
-          {goals.length === 0 && <p>{language === "ar" ? "Ù„Ù… ØªØªÙ… Ø¥Ø¶Ø§ÙØ© Ø£Ù‡Ø¯Ø§Ù Ø¨Ø¹Ø¯." : "No goals added yet."}</p>}
+          <h2>{language === "ar" ? "ملخص الأهداف" : "Goals summary"}</h2>
+          {goals.length === 0 && <p>{language === "ar" ? "لم تتم إضافة أهداف بعد." : "No goals added yet."}</p>}
           {goals.map((goal) => (
             <p key={goal.id}>{goal.name}: {currency.format(goal.currentAmount)} / {currency.format(goal.targetAmount)}</p>
           ))}
@@ -6051,7 +6051,7 @@ export default function Home() {
             <h2>{t.common.upcomingExtraIncome}</h2>
             {annualBonusIncomeSources.map((income) => (
               <p key={income.id}>
-                <strong>{income.name || (language === "ar" ? "Ø¨ÙˆÙ†Øµ" : "Bonus")}</strong>: {currency.format(income.amount)} - {income.expectedMonth || (language === "ar" ? "Ø´Ù‡Ø± Ù…ØªÙˆÙ‚Ø¹" : "Expected month")} - {bonusAllocationLabel(getBonusAllocation(income))}
+                <strong>{income.name || (language === "ar" ? "بونص" : "Bonus")}</strong>: {currency.format(income.amount)} - {income.expectedMonth || (language === "ar" ? "شهر متوقع" : "Expected month")} - {bonusAllocationLabel(getBonusAllocation(income))}
               </p>
             ))}
           </section>
@@ -6060,7 +6060,7 @@ export default function Home() {
         <section>
           <h2>{t.common.actionPlan}</h2>
           {actionPlan.map((action, index) => (
-            <p key={action}><strong>{language === "ar" ? `Ø§Ù„Ø£ÙˆÙ„ÙˆÙŠØ© ${index + 1}` : `Priority ${index + 1}`}:</strong> {action}</p>
+            <p key={action}><strong>{language === "ar" ? `الأولوية ${index + 1}` : `Priority ${index + 1}`}:</strong> {action}</p>
           ))}
         </section>
 
@@ -6075,17 +6075,17 @@ export default function Home() {
       {showUnsavedDialog && (
         <div className="fixed inset-0 z-50 grid place-items-end bg-ink/55 p-4 sm:place-items-center">
           <div className="w-full max-w-md rounded-lg bg-white p-5 shadow-premium dark:bg-slate-950">
-            <h3 className="text-xl font-black">{language === "ar" ? "Ù„Ø¯ÙŠÙƒ ØªØ¹Ø¯ÙŠÙ„Ø§Øª ØºÙŠØ± Ù…Ø­ÙÙˆØ¸Ø©." : "You have unsaved changes."}</h3>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">{language === "ar" ? "Ù…Ø§Ø°Ø§ ØªØ±ÙŠØ¯ Ø£Ù† ØªÙØ¹Ù„ØŸ" : "What would you like to do?"}</p>
+            <h3 className="text-xl font-black">{language === "ar" ? "لديك تعديلات غير محفوظة." : "You have unsaved changes."}</h3>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">{language === "ar" ? "ماذا تريد أن تفعل؟" : "What would you like to do?"}</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <button className="h-11 rounded-lg bg-emerald-600 text-sm font-black text-white dark:bg-mint dark:text-ink" onClick={continuePendingActionAfterSave}>
-                {language === "ar" ? "Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª" : "Save Changes"}
+                {language === "ar" ? "حفظ التعديلات" : "Save Changes"}
               </button>
               <button className="h-11 rounded-lg border border-red-200 text-sm font-black text-red-700 dark:border-red-400/30 dark:text-red-300" onClick={leavePendingActionAnyway}>
-                {language === "ar" ? "Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ø®Ø±ÙˆØ¬" : "Leave Anyway"}
+                {language === "ar" ? "متابعة الخروج" : "Leave Anyway"}
               </button>
               <button className="h-11 rounded-lg border border-slate-200 text-sm font-black dark:border-white/10" onClick={() => setShowUnsavedDialog(false)}>
-                {language === "ar" ? "Ø¥Ù„ØºØ§Ø¡" : "Cancel"}
+                {language === "ar" ? "إلغاء" : "Cancel"}
               </button>
             </div>
           </div>
@@ -6095,8 +6095,8 @@ export default function Home() {
       {showDraftRecovery && draftRecoveryData && (
         <div className="fixed inset-0 z-50 grid place-items-end bg-ink/55 p-4 sm:place-items-center">
           <div className="w-full max-w-md rounded-lg bg-white p-5 shadow-premium dark:bg-slate-950">
-            <h3 className="text-xl font-black">{language === "ar" ? "ØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ ØªØ¹Ø¯ÙŠÙ„Ø§Øª ØºÙŠØ± Ù…ÙƒØªÙ…Ù„Ø©." : "Unsaved draft found."}</h3>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">{language === "ar" ? "Ù‡Ù„ ØªØ±ØºØ¨ ÙÙŠ Ø§Ø³ØªØ¹Ø§Ø¯ØªÙ‡Ø§ØŸ" : "Would you like to restore it?"}</p>
+            <h3 className="text-xl font-black">{language === "ar" ? "تم العثور على تعديلات غير مكتملة." : "Unsaved draft found."}</h3>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">{language === "ar" ? "هل ترغب في استعادتها؟" : "Would you like to restore it?"}</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <button
                 className="h-11 rounded-lg bg-ink text-sm font-black text-white dark:bg-mint dark:text-ink"
@@ -6106,7 +6106,7 @@ export default function Home() {
                   setShowDraftRecovery(false);
                 }}
               >
-                {language === "ar" ? "Ø§Ø³ØªØ¹Ø§Ø¯Ø©" : "Restore"}
+                {language === "ar" ? "استعادة" : "Restore"}
               </button>
               <button
                 className="h-11 rounded-lg border border-slate-200 text-sm font-black dark:border-white/10"
@@ -6116,7 +6116,7 @@ export default function Home() {
                   setShowDraftRecovery(false);
                 }}
               >
-                {language === "ar" ? "ØªØ¬Ø§Ù‡Ù„" : "Ignore"}
+                {language === "ar" ? "تجاهل" : "Ignore"}
               </button>
             </div>
           </div>
