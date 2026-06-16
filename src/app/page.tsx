@@ -46,6 +46,7 @@ import {
   supabase,
   supabaseAnonKeyLoaded,
   supabaseClientCreated,
+  supabaseDiagnosticInfo,
   supabaseUrlLoaded,
   testSupabaseAuthConnection,
   type SupabaseHealthCheck,
@@ -1174,6 +1175,9 @@ export default function Home() {
   const [isStandaloneApp, setIsStandaloneApp] = useState(false);
   const [supabaseHealth, setSupabaseHealth] = useState<SupabaseHealthCheck>({
     success: false,
+    getSession: { success: false, message: "Not checked yet." },
+    getUser: { success: false, message: "Not checked yet." },
+    request: { endpoint: "Not checked yet.", authMethod: "Not checked yet.", headersSent: [] },
     message: "Not checked yet.",
   });
   const [supabaseHealthChecked, setSupabaseHealthChecked] = useState(false);
@@ -3830,8 +3834,19 @@ export default function Home() {
       <p>Supabase URL loaded: {supabaseUrlLoaded ? "yes" : "no"}</p>
       <p>Supabase key loaded: {supabaseAnonKeyLoaded ? "yes" : "no"}</p>
       <p>Supabase client created: {supabaseClientCreated ? "yes" : "no"}</p>
+      <p>URL host: {supabaseDiagnosticInfo.urlHost}</p>
+      <p>URL path: {supabaseDiagnosticInfo.urlPath || "/"}</p>
+      <p>URL valid root: {supabaseDiagnosticInfo.urlLooksValid ? "yes" : "no"}</p>
+      {supabaseDiagnosticInfo.urlIssue && <p>URL issue: {supabaseDiagnosticInfo.urlIssue}</p>}
+      <p>Key length: {supabaseDiagnosticInfo.keyLength}</p>
+      <p>Key prefix length: {supabaseDiagnosticInfo.keyPrefixLength}</p>
+      <p>Client init: {supabaseDiagnosticInfo.sdkCreateClientUsage}</p>
+      <p>Auth endpoint tested: {supabaseHealth.request.endpoint}</p>
+      <p>Auth method: {supabaseHealth.request.authMethod}</p>
+      <p>Headers sent: {supabaseHealth.request.headersSent.join(", ") || "none"}</p>
       <p>Auth connection test: {!supabaseHealthChecked ? "checking" : supabaseHealth.success ? "success" : "failure"}</p>
-      {supabaseHealth.status && <p>Auth response status: {supabaseHealth.status}</p>}
+      <p>getSession: {supabaseHealth.getSession.success ? "success" : "failure"} - {supabaseHealth.getSession.message}</p>
+      <p>getUser: {supabaseHealth.getUser.success ? "success" : "failure"} - {supabaseHealth.getUser.message}</p>
       <p>Error message: {supabaseHealth.success ? "none" : supabaseHealth.message}</p>
     </div>
   );
