@@ -41,7 +41,15 @@ import {
 } from "recharts";
 import * as XLSX from "xlsx";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
-import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import {
+  isSupabaseConfigured,
+  supabase,
+  supabaseAnonKeyLoaded,
+  supabaseClientCreated,
+  supabaseUrlLoaded,
+  testSupabaseAuthConnection,
+  type SupabaseHealthCheck,
+} from "@/lib/supabase";
 import {
   calculateSnapshot,
   getMonthlyObligationImpact,
@@ -1164,6 +1172,11 @@ export default function Home() {
   const [pwaInstallPromptSeen, setPwaInstallPromptSeen] = useState(false);
   const [isIosDevice, setIsIosDevice] = useState(false);
   const [isStandaloneApp, setIsStandaloneApp] = useState(false);
+  const [supabaseHealth, setSupabaseHealth] = useState<SupabaseHealthCheck>({
+    success: false,
+    message: "Not checked yet.",
+  });
+  const [supabaseHealthChecked, setSupabaseHealthChecked] = useState(false);
   const t = translations[language];
   const themeWriteReadyRef = useRef(false);
   const onboardingProcessingRef = useRef(false);
@@ -1235,6 +1248,18 @@ export default function Home() {
     const storedLanguage = window.localStorage.getItem(languageStorageKey);
     if (storedLanguage === "en" || storedLanguage === "ar") setLanguage(storedLanguage);
     setPwaInstallPromptSeen(window.localStorage.getItem(pwaInstallPromptSeenStorageKey) === "1");
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    testSupabaseAuthConnection().then((result) => {
+      if (!mounted) return;
+      setSupabaseHealth(result);
+      setSupabaseHealthChecked(true);
+    });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -3150,11 +3175,9 @@ export default function Home() {
       });
 
       if (error || !authData.user) {
-        setAuthError(validationMessage(
-          "Invalid email or password. Please check your credentials or use Try Demo.",
-          "البريد الإلكتروني أو كلمة المرور غير صحيحة. الرجاء التحقق من البيانات أو استخدام النسخة التجريبية.",
-        ));
-        setSessionStatus("Login source: Supabase. No user session was created.");
+        const message = error?.message || "Supabase did not return an authenticated user.";
+        setAuthError(message);
+        setSessionStatus(`Login source: Supabase. Error: ${message}`);
         setSessionMode("signedOut");
         setCurrentUserId("");
         clearUserData();
@@ -3309,11 +3332,17 @@ export default function Home() {
     const normalizedEmail = normalizeEmail(registration.email);
     const userId = userIdFromEmail(normalizedEmail);
     if (isSupabaseConfigured && supabase) {
-      const { data: existingProfile } = await supabase
+      const { data: existingProfile, error: existingProfileError } = await supabase
         .from("profiles")
         .select("id")
         .eq("email", normalizedEmail)
         .maybeSingle<{ id: string }>();
+
+      if (existingProfileError) {
+        setAuthError(existingProfileError.message);
+        setSessionStatus(`Supabase duplicate email check failed: ${existingProfileError.message}`);
+        return;
+      }
 
       if (existingProfile) {
         setAuthError(validationMessage("An account already exists for this email. Please log in instead.", "يوجد حساب بهذا البريد الإلكتروني. الرجاء تسجيل الدخول بدلاً من إنشاء حساب جديد."));
@@ -3796,6 +3825,16 @@ export default function Home() {
   const registeredUsersCount = registryUsersForDiagnostics.length;
   const loginSourceUsersCount = registryUsersForDiagnostics.length;
   const userStoreMismatch = registeredUsersCount !== loginSourceUsersCount;
+  const supabaseDiagnosticsPanel = (
+    <div className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-black text-sky-900 dark:border-sky-400/20 dark:bg-sky-400/10 dark:text-sky-100">
+      <p>Supabase URL loaded: {supabaseUrlLoaded ? "yes" : "no"}</p>
+      <p>Supabase key loaded: {supabaseAnonKeyLoaded ? "yes" : "no"}</p>
+      <p>Supabase client created: {supabaseClientCreated ? "yes" : "no"}</p>
+      <p>Auth connection test: {!supabaseHealthChecked ? "checking" : supabaseHealth.success ? "success" : "failure"}</p>
+      {supabaseHealth.status && <p>Auth response status: {supabaseHealth.status}</p>}
+      <p>Error message: {supabaseHealth.success ? "none" : supabaseHealth.message}</p>
+    </div>
+  );
   const installExperience = showInstallExperience ? (
     <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 shadow-sm dark:border-emerald-400/20 dark:bg-emerald-400/10">
       <div className="flex items-start gap-3">
@@ -4367,6 +4406,7 @@ export default function Home() {
                       </p>
                     ))}
                   </div>
+                  {supabaseDiagnosticsPanel}
                   <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
                     <p>User source: {userSourceMode === "supabase" ? "Supabase" : "Local beta registry"}</p>
                     <p>Registered users: {registeredUsersCount}</p>
@@ -4402,6 +4442,7 @@ export default function Home() {
                         onChange={(value) => setLogin((current) => ({ ...current, password: value }))}
                         onToggle={() => setShowLoginPassword((current) => !current)}
                       />
+                      {supabaseDiagnosticsPanel}
                       <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
                         <p>User source: {userSourceMode === "supabase" ? "Supabase" : "Local beta registry"}</p>
                         <p>Registered users: {registeredUsersCount}</p>
