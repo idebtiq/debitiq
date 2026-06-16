@@ -695,6 +695,53 @@ function hasOwnedData(data: UserOwnedData) {
   );
 }
 
+function unknownRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" ? value as Record<string, unknown> : {};
+}
+
+function safeJson(value: unknown) {
+  return JSON.stringify(value, null, 2);
+}
+
+function summarizeSupabaseUser(user: unknown) {
+  if (!user) return null;
+  const record = unknownRecord(user);
+  return {
+    id: record.id,
+    email: record.email,
+    role: record.role,
+    aud: record.aud,
+    created_at: record.created_at,
+    confirmed_at: record.confirmed_at,
+    email_confirmed_at: record.email_confirmed_at,
+    last_sign_in_at: record.last_sign_in_at,
+  };
+}
+
+function summarizeSupabaseSession(session: unknown) {
+  if (!session) return null;
+  const record = unknownRecord(session);
+  return {
+    present: true,
+    token_type: record.token_type,
+    expires_at: record.expires_at,
+    expires_in: record.expires_in,
+    user: summarizeSupabaseUser(record.user),
+    access_token: record.access_token ? "<redacted>" : null,
+    refresh_token: record.refresh_token ? "<redacted>" : null,
+  };
+}
+
+function summarizeSupabaseError(error: unknown) {
+  if (!error) return { code: "", message: "", status: "" };
+  const record = unknownRecord(error);
+  return {
+    code: String(record.code || record.name || ""),
+    message: String(record.message || error),
+    status: String(record.status || ""),
+  };
+}
+
 function pickColumn(columns: string[], candidates: string[]) {
   const normalizedCandidates = candidates.map(normalizeKey);
   return columns.find((column) => {
@@ -813,6 +860,17 @@ type SupabaseProfileRow = {
   updated_at?: string | null;
 };
 
+type SignupDiagnostic = {
+  status: "idle" | "success" | "failed";
+  email: string;
+  user: string;
+  session: string;
+  errorCode: string;
+  errorMessage: string;
+  errorStatus: string;
+  profileInsert: string;
+};
+
 type ImportError = {
   section: string;
   message: string;
@@ -862,6 +920,17 @@ const emptyLogin: LoginForm = {
 
 const emptyReset: ResetForm = {
   email: "",
+};
+
+const emptySignupDiagnostic: SignupDiagnostic = {
+  status: "idle",
+  email: "",
+  user: "Not attempted.",
+  session: "Not attempted.",
+  errorCode: "",
+  errorMessage: "",
+  errorStatus: "",
+  profileInsert: "Not attempted.",
 };
 
 const emptyUserData: UserOwnedData = {
@@ -1181,6 +1250,7 @@ export default function Home() {
     message: "Not checked yet.",
   });
   const [supabaseHealthChecked, setSupabaseHealthChecked] = useState(false);
+  const [signupDiagnostic, setSignupDiagnostic] = useState<SignupDiagnostic>(emptySignupDiagnostic);
   const t = translations[language];
   const themeWriteReadyRef = useRef(false);
   const onboardingProcessingRef = useRef(false);
@@ -3097,6 +3167,7 @@ export default function Home() {
     setOnboardingMode("quick");
     setOnboardingStep(1);
     setAuthError("");
+    setSignupDiagnostic(emptySignupDiagnostic);
     setLastOnboardingError("");
     setFlow("register");
     setActive("profile");
@@ -3336,53 +3407,132 @@ export default function Home() {
     const normalizedEmail = normalizeEmail(registration.email);
     const userId = userIdFromEmail(normalizedEmail);
     if (isSupabaseConfigured && supabase) {
-      const { data: existingProfile, error: existingProfileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("email", normalizedEmail)
-        .maybeSingle<{ id: string }>();
+      setSignupDiagnostic({ ...emptySignupDiagnostic, email: normalizedEmail });
+      let supabaseUserId = "";
+      try {
+        const { data: existingProfile, error: existingProfileError } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("email", normalizedEmail)
+          .maybeSingle<{ id: string }>();
 
-      if (existingProfileError) {
-        setAuthError(existingProfileError.message);
-        setSessionStatus(`Supabase duplicate email check failed: ${existingProfileError.message}`);
-        return;
-      }
+        if (existingProfileError) {
+          setAuthError(existingProfileError.message);
+          setSessionStatus(`Supabase duplicate email check failed: ${existingProfileError.message}`);
+          setSignupDiagnostic({
+            ...emptySignupDiagnostic,
+            status: "failed",
+            email: normalizedEmail,
+            errorCode: String(existingProfileError.code || ""),
+            errorMessage: existingProfileError.message,
+            errorStatus: "",
+            profileInsert: "Not attempted because duplicate email check failed before signUp.",
+          });
+          return;
+        }
 
-      if (existingProfile) {
-        setAuthError(validationMessage("An account already exists for this email. Please log in instead.", "يوجد حساب بهذا البريد الإلكتروني. الرجاء تسجيل الدخول بدلاً من إنشاء حساب جديد."));
-        return;
-      }
+        if (existingProfile) {
+          setAuthError(validationMessage("An account already exists for this email. Please log in instead.", "يوجد حساب بهذا البريد الإلكتروني. الرجاء تسجيل الدخول بدلاً من إنشاء حساب جديد."));
+          setSignupDiagnostic({
+            ...emptySignupDiagnostic,
+            status: "failed",
+            email: normalizedEmail,
+            errorCode: "duplicate_profile",
+            errorMessage: "A profile already exists for this email.",
+            profileInsert: "Not attempted because duplicate email check found an existing profile.",
+          });
+          return;
+        }
 
-      const { data: authData, error } = await supabase.auth.signUp({
-        email: normalizedEmail,
-        password: registration.password,
-        options: {
-          data: {
-            full_name: registration.fullName,
-            mobile: normalizeSaudiMobile(registration.mobile),
+        console.info("DebtIQ signup attempt", { email: normalizedEmail });
+        const signUpResponse = await supabase.auth.signUp({
+          email: normalizedEmail,
+          password: registration.password,
+          options: {
+            data: {
+              full_name: registration.fullName,
+              mobile: normalizeSaudiMobile(registration.mobile),
+            },
           },
-        },
-      });
+        });
+        const { data: authData, error } = signUpResponse;
+        const signupError = summarizeSupabaseError(error);
+        const signupDiagnosticBase: SignupDiagnostic = {
+          status: error || !authData.user ? "failed" : "success",
+          email: normalizedEmail,
+          user: safeJson(summarizeSupabaseUser(authData.user)),
+          session: safeJson(summarizeSupabaseSession(authData.session)),
+          errorCode: signupError.code,
+          errorMessage: signupError.message,
+          errorStatus: signupError.status,
+          profileInsert: "Not attempted yet.",
+        };
+        console.info("DebtIQ signup response", {
+          email: normalizedEmail,
+          data: {
+            user: summarizeSupabaseUser(authData.user),
+            session: summarizeSupabaseSession(authData.session),
+          },
+          error: signupError,
+        });
+        setSignupDiagnostic(signupDiagnosticBase);
 
-      if (error || !authData.user) {
-        setAuthError(error?.message || validationMessage("Could not create your account. Please try again.", "تعذر إنشاء الحساب. الرجاء المحاولة مرة أخرى."));
-        return;
-      }
+        if (error || !authData.user) {
+          setAuthError(error?.message || validationMessage("Could not create your account. Please try again.", "تعذر إنشاء الحساب. الرجاء المحاولة مرة أخرى."));
+          return;
+        }
 
-      const createdAt = new Date().toISOString();
-      const supabaseUserId = authData.user.id;
-      const profilePayload = {
-        id: supabaseUserId,
-        email: normalizedEmail,
-        full_name: registration.fullName,
-        mobile: normalizeSaudiMobile(registration.mobile),
-        role: "consumer",
-        created_at: createdAt,
-        updated_at: createdAt,
-      };
-      const { error: profileError } = await supabase.from("profiles").upsert(profilePayload);
-      if (profileError) {
-        setAuthError(profileError.message || validationMessage("Account created, but profile setup failed. Please contact the DebtIQ team.", "تم إنشاء الحساب، لكن فشل إعداد الملف الشخصي. الرجاء التواصل مع فريق ديبت آي كيو."));
+        const createdAt = new Date().toISOString();
+        supabaseUserId = authData.user.id;
+        const profilePayload = {
+          id: supabaseUserId,
+          email: normalizedEmail,
+          full_name: registration.fullName,
+          mobile: normalizeSaudiMobile(registration.mobile),
+          role: "consumer",
+          created_at: createdAt,
+          updated_at: createdAt,
+        };
+        const profileInsertResponse = await supabase
+          .from("profiles")
+          .upsert(profilePayload)
+          .select("id, full_name, mobile, email, role, created_at, updated_at")
+          .maybeSingle();
+        const profileInsertSummary = {
+          data: profileInsertResponse.data,
+          error: profileInsertResponse.error
+            ? {
+                code: profileInsertResponse.error.code,
+                message: profileInsertResponse.error.message,
+                details: profileInsertResponse.error.details,
+                hint: profileInsertResponse.error.hint,
+              }
+            : null,
+          status: profileInsertResponse.status,
+          statusText: profileInsertResponse.statusText,
+        };
+        console.info("DebtIQ profile insert response", { email: normalizedEmail, profileInsertResponse: profileInsertSummary });
+        setSignupDiagnostic({
+          ...signupDiagnosticBase,
+          profileInsert: safeJson(profileInsertSummary),
+        });
+        if (profileInsertResponse.error) {
+          setAuthError(profileInsertResponse.error.message || validationMessage("Account created, but profile setup failed. Please contact the DebtIQ team.", "تم إنشاء الحساب، لكن فشل إعداد الملف الشخصي. الرجاء التواصل مع فريق ديبت آي كيو."));
+          return;
+        }
+      } catch (error) {
+        const signupError = summarizeSupabaseError(error);
+        console.error("DebtIQ signup exception", { email: normalizedEmail, error });
+        setSignupDiagnostic({
+          ...emptySignupDiagnostic,
+          status: "failed",
+          email: normalizedEmail,
+          errorCode: signupError.code,
+          errorMessage: signupError.message,
+          errorStatus: signupError.status,
+          profileInsert: "Not attempted because signUp threw an exception.",
+        });
+        setAuthError(signupError.message || validationMessage("Could not create your account. Please try again.", "تعذر إنشاء الحساب. الرجاء المحاولة مرة أخرى."));
         return;
       }
 
@@ -4422,6 +4572,25 @@ export default function Home() {
                     ))}
                   </div>
                   {supabaseDiagnosticsPanel}
+                  {signupDiagnostic.status !== "idle" && (
+                    <div className={`rounded-lg border px-3 py-3 text-xs font-bold ${
+                      signupDiagnostic.status === "success"
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-300/30 dark:bg-emerald-300/10 dark:text-emerald-100"
+                        : "border-red-200 bg-red-50 text-red-900 dark:border-red-300/30 dark:bg-red-300/10 dark:text-red-100"
+                    }`}>
+                      <p className="text-sm font-black">{signupDiagnostic.status === "success" ? "SIGNUP SUCCESS" : "SIGNUP FAILED"}</p>
+                      <p className="mt-2">email: {signupDiagnostic.email || "none"}</p>
+                      <p>error.code: {signupDiagnostic.errorCode || "none"}</p>
+                      <p>error.message: {signupDiagnostic.errorMessage || "none"}</p>
+                      <p>error.status: {signupDiagnostic.errorStatus || "none"}</p>
+                      <p className="mt-2 font-black">data.user</p>
+                      <pre className="mt-1 max-h-36 overflow-auto whitespace-pre-wrap rounded bg-white/70 p-2 text-[11px] dark:bg-black/30">{signupDiagnostic.user}</pre>
+                      <p className="mt-2 font-black">data.session</p>
+                      <pre className="mt-1 max-h-36 overflow-auto whitespace-pre-wrap rounded bg-white/70 p-2 text-[11px] dark:bg-black/30">{signupDiagnostic.session}</pre>
+                      <p className="mt-2 font-black">profile insert response</p>
+                      <pre className="mt-1 max-h-36 overflow-auto whitespace-pre-wrap rounded bg-white/70 p-2 text-[11px] dark:bg-black/30">{signupDiagnostic.profileInsert}</pre>
+                    </div>
+                  )}
                   <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
                     <p>User source: {userSourceMode === "supabase" ? "Supabase" : "Local beta registry"}</p>
                     <p>Registered users: {registeredUsersCount}</p>
