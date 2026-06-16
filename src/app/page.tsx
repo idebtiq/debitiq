@@ -519,20 +519,39 @@ function readJson<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
   try {
     const raw = window.localStorage.getItem(key);
-    return raw ? ({ ...fallback, ...JSON.parse(raw) } as T) : fallback;
-  } catch {
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw) as unknown;
+    if (Array.isArray(fallback)) return (Array.isArray(parsed) ? parsed : fallback) as T;
+    if (fallback === null || typeof fallback !== "object") return parsed as T;
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return ({ ...fallback, ...parsed } as T);
+    return fallback;
+  } catch (error) {
+    console.warn(`Recovered from corrupted localStorage key: ${key}`, error);
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      // Ignore storage cleanup failures.
+    }
     return fallback;
   }
 }
 
 function writeJson(key: string, value: unknown) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(key, JSON.stringify(value));
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.warn(`Unable to write localStorage key: ${key}`, error);
+  }
 }
 
 function removeStoredItem(key: string) {
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(key);
+  try {
+    window.localStorage.removeItem(key);
+  } catch (error) {
+    console.warn(`Unable to remove localStorage key: ${key}`, error);
+  }
 }
 
 function createClientId(prefix = "id") {
@@ -1037,6 +1056,11 @@ export default function Home() {
   });
   const [lastOnboardingError, setLastOnboardingError] = useState("");
   const [lastOnboardingErrorStack, setLastOnboardingErrorStack] = useState("");
+  const [stepOneActionDebug, setStepOneActionDebug] = useState({
+    clicked: "no",
+    validation: "not-run",
+    lastError: "none",
+  });
   const [debugOnboarding, setDebugOnboarding] = useState(false);
   const [registration, setRegistration] = useState<RegistrationForm>(emptyRegistration);
   const [login, setLogin] = useState<LoginForm>(emptyLogin);
@@ -1386,14 +1410,67 @@ export default function Home() {
 
   function getNextOnboardingStep(step = onboardingStep) {
     if (step <= 0) return 1;
-    if (onboardingMode === "quick" && step === 1) return 3;
     return Math.min(4, step + 1);
   }
 
   function getPreviousOnboardingStep(step = onboardingStep) {
     if (step <= 1) return 1;
-    if (onboardingMode === "quick" && step === 3) return 1;
     return Math.max(1, step - 1);
+  }
+
+  function validateStepOne() {
+    const amounts = [
+      onboarding.monthlyNetSalary,
+      onboarding.basicSalary,
+      onboarding.housingAllowance,
+      onboarding.transportAllowance,
+      onboarding.otherAllowance,
+      onboarding.otherIncome,
+      onboarding.annualBonus,
+    ];
+    if (amounts.some((amount) => Number.isNaN(amount) || amount < 0)) {
+      return validationMessage("Step 1 amounts must be valid and cannot be negative.", "يجب أن تكون مبالغ الخطوة الأولى صحيحة وغير سالبة.");
+    }
+    return "";
+  }
+
+  function writeOnboardingCheckpointSafely(nextStep: number) {
+    if (typeof window === "undefined" || sessionMode !== "real" || !currentUserId) return "";
+    try {
+      const storedSession = readJson<StoredSession | null>(sessionStorageKey, null);
+      window.localStorage.setItem(sessionStorageKey, JSON.stringify({
+        ...storedSession,
+        mode: "real",
+        userId: currentUserId,
+        authProvider: storedSession?.authProvider || "local-registration",
+        onboardingStatus: "incomplete",
+        onboardingStep: nextStep,
+        onboardingMode,
+      } satisfies StoredSession));
+      window.localStorage.setItem(onboardingProgressStorageKey(currentUserId), JSON.stringify({
+        userId: currentUserId,
+        email: normalizeEmail(profile.email || registration.email),
+        savedAt: new Date().toISOString(),
+        registration: {
+          fullName: profile.fullName || registration.fullName,
+          mobile: profile.mobile || registration.mobile,
+          email: profile.email || registration.email,
+          registrationSuccess: true,
+        },
+        onboarding,
+        onboardingMode,
+        onboardingStep: nextStep,
+        incomeEntryMode,
+        selectedChecklistItems,
+        selectedGoalStarters,
+        profile,
+      } satisfies OnboardingProgress));
+      return "";
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn("Recovered while writing onboarding checkpoint", error);
+      return validationMessage(`Recovered from local storage issue: ${message}`, `تم تجاوز مشكلة في التخزين المحلي: ${message}`);
+    }
   }
 
   function moveOnboardingStep(step: number, action: string) {
@@ -1409,6 +1486,25 @@ export default function Home() {
 
   function handleContinueStep() {
     try {
+      if (onboardingStep === 1) {
+        setStepOneActionDebug({ clicked: "yes", validation: "running", lastError: "none" });
+        setOnboardingAction("continue-step-1");
+        const validationError = validateStepOne();
+        if (validationError) {
+          setAuthError(validationError);
+          setStepOneActionDebug({ clicked: "yes", validation: "failed", lastError: validationError });
+          setOnboardingDebug((current) => ({ ...current, lastAction: "continue-step-1", lastValidation: "failed-step-1", generationStatus: "idle" }));
+          setOnboardingAction("");
+          return;
+        }
+        const storageRecovery = writeOnboardingCheckpointSafely(2);
+        setAuthError(storageRecovery);
+        setStepOneActionDebug({ clicked: "yes", validation: "passed", lastError: storageRecovery || "none" });
+        setOnboardingDebug((current) => ({ ...current, lastAction: "continue-step-1", lastValidation: "passed-step-1", generationStatus: "idle" }));
+        setOnboardingStep(2);
+        window.setTimeout(() => setOnboardingAction(""), 250);
+        return;
+      }
       if (onboardingStep >= 4) {
         setAuthError(validationMessage("Use Generate Dashboard to complete setup.", "استخدم إنشاء لوحة التحكم لإكمال الإعداد."));
         setOnboardingDebug((current) => ({ ...current, lastAction: "continue", lastValidation: "blocked-final-step", generationStatus: "idle" }));
@@ -4429,7 +4525,7 @@ export default function Home() {
                   </div>
                 )}
 
-                {onboardingStep === 2 && onboardingMode === "full" && (
+                {onboardingStep === 2 && (
                   <div className="mt-5 grid gap-4">
                     <div>
                       <h4 className="font-black">{t.onboarding.lifestyle}</h4>
@@ -4678,6 +4774,14 @@ export default function Home() {
                   >
                     {onboardingAction ? validationMessage("Processing...", "جاري المعالجة...") : "Skip for now / Add later"}
                   </button>
+                  {onboardingStep === 1 && (
+                    <div className="col-span-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black text-amber-900 dark:border-amber-300/30 dark:bg-amber-300/10 dark:text-amber-100">
+                      <p>Step 1 action debug</p>
+                      <p>clicked: {stepOneActionDebug.clicked}</p>
+                      <p>validation: {stepOneActionDebug.validation}</p>
+                      <p>last error: {stepOneActionDebug.lastError}</p>
+                    </div>
+                  )}
                 </div>}
               </div>
             )}
