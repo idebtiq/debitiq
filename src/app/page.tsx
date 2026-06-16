@@ -536,6 +536,11 @@ function removeStoredItem(key: string) {
   window.localStorage.removeItem(key);
 }
 
+function createClientId(prefix = "id") {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 function normalizeUserData(data: UserOwnedData): UserOwnedData {
   return {
     ...emptyUserData,
@@ -1011,6 +1016,7 @@ export default function Home() {
     lastValidation: "not-run",
     generationStatus: "idle",
   });
+  const [lastOnboardingError, setLastOnboardingError] = useState("");
   const [debugOnboarding, setDebugOnboarding] = useState(false);
   const [registration, setRegistration] = useState<RegistrationForm>(emptyRegistration);
   const [login, setLogin] = useState<LoginForm>(emptyLogin);
@@ -3006,6 +3012,7 @@ export default function Home() {
     if (onboardingProcessingRef.current) return;
     onboardingProcessingRef.current = true;
     setOnboardingAction(action);
+    setLastOnboardingError("");
     setOnboardingDebug((current) => ({ ...current, lastAction: action, generationStatus: "processing" }));
 
     if (sessionMode === "real") {
@@ -3060,7 +3067,7 @@ export default function Home() {
       const withoutGeneratedSalary = incomeSources.filter((income) => income.name !== "Monthly net salary" && income.name !== "Detailed monthly income" && !isAnnualBonusIncome(income));
       const bonusIncome: IncomeSource[] = onboarding.annualBonus > 0
         ? [{
-            id: crypto.randomUUID(),
+            id: createClientId("bonus"),
             name: "Annual bonus",
             amount: onboarding.annualBonus,
             type: "Bonus",
@@ -3074,7 +3081,7 @@ export default function Home() {
         salaryTotal > 0
           ? [
               {
-                id: crypto.randomUUID(),
+                id: createClientId("income"),
                 name: incomeEntryMode === "detailed" ? "Detailed monthly income" : "Monthly net salary",
                 amount: salaryTotal,
                 type: "Salary" as IncomeType,
@@ -3165,31 +3172,39 @@ export default function Home() {
     setProfile(nextProfile);
     setDebts(nextDebts);
     setObligationEntries(nextObligations);
+    const nextGoals = Array.isArray(goals) ? goals.filter(Boolean) : [];
+    setGoals(nextGoals);
+    const nextUserData: UserOwnedData = {
+      profile: nextProfile,
+      debts: nextDebts,
+      creditCards,
+      incomeSources: nextIncomeSources,
+      obligationEntries: nextObligations,
+      goals: nextGoals,
+      leads,
+    };
+    const validationError = validateFinancialData(nextUserData);
+    if (validationError) {
+      throw new Error(`Onboarding validation failed: ${validationError}`);
+    }
     if (sessionMode === "real" && currentUserId) {
-      saveUserData(
-        {
-          profile: nextProfile,
-          debts: nextDebts,
-          creditCards,
-          incomeSources: nextIncomeSources,
-          obligationEntries: nextObligations,
-          goals,
-          leads,
-        },
-        t.common.savedSuccessfully,
-      );
       const storedSession = readJson<StoredSession | null>(sessionStorageKey, null);
+      writeJson(userStorageKey(currentUserId), nextUserData);
       writeJson(sessionStorageKey, {
         ...storedSession,
         mode: "real",
         userId: currentUserId,
         authProvider: storedSession?.authProvider || "local-registration",
         onboardingStatus: "complete",
-        onboardingStep,
+        onboardingStep: 4,
         onboardingMode,
       } satisfies StoredSession);
       removeStoredItem(onboardingProgressStorageKey(currentUserId));
+      removeStoredItem(draftStorageKey(currentUserId));
       removeStoredItem(registrationDraftStorageKey);
+      skipDirtyRef.current = true;
+      setHasUnsavedChanges(false);
+      setSaveStatus(t.common.savedSuccessfully);
       const registeredUser = readBetaUsersRegistry().find((user) => user.id === currentUserId);
       if (registeredUser) {
         upsertRegisteredBetaUser({
@@ -3211,7 +3226,20 @@ export default function Home() {
       onboardingProcessingRef.current = false;
     }, 250);
     } catch (error) {
-      console.error("Onboarding completion failed", error);
+      const storedSession = readJson<StoredSession | null>(sessionStorageKey, null);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      const errorDetails = {
+        action,
+        currentStep: onboardingStep,
+        onboardingStatus: storedSession?.onboardingStatus || "none",
+        userId: currentUserId || storedSession?.userId || "none",
+        sessionMode,
+        message: errorMessage,
+        stack: errorStack,
+      };
+      console.error("Onboarding completion failed", errorDetails);
+      setLastOnboardingError(`${errorDetails.message}${errorDetails.stack ? `\n${errorDetails.stack}` : ""}`);
       setAuthError(validationMessage("Something went wrong while continuing setup.", "حدث خطأ أثناء متابعة الإعداد."));
       setOnboardingDebug((current) => ({ ...current, lastValidation: "runtime-error", generationStatus: "error" }));
       setOnboardingAction("");
@@ -4413,6 +4441,7 @@ export default function Home() {
                     <p>last action: {onboardingDebug.lastAction}</p>
                     <p>last validation: {onboardingDebug.lastValidation}</p>
                     <p>generation status: {onboardingDebug.generationStatus}</p>
+                    {lastOnboardingError && <pre className="mt-2 max-h-32 overflow-auto whitespace-pre-wrap rounded bg-white/80 p-2 text-[11px] dark:bg-black/30">{lastOnboardingError}</pre>}
                   </div>
                 )}
 
@@ -5633,7 +5662,7 @@ export default function Home() {
         </div>
       </div>
 
-      {sessionMode === "real" && (
+      {sessionMode === "real" && flow !== "onboarding" && (
         <div className={`fixed bottom-4 z-40 ${language === "ar" ? "left-4" : "right-4"} grid gap-2`}>
           <div className="rounded-lg border border-white/70 bg-white/95 px-3 py-2 text-xs font-black shadow-premium backdrop-blur dark:border-white/10 dark:bg-slate-950/95">
             {hasUnsavedChanges
