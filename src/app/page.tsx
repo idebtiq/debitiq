@@ -22,7 +22,6 @@ import {
   Sun,
   Target,
   Trash2,
-  UserPlus,
   UserRound,
   WalletCards,
 } from "lucide-react";
@@ -809,6 +808,7 @@ const draftDataStoragePrefix = "debtiq.draft.v1.";
 const themeStorageKey = "debtiq.theme.v1";
 const languageStorageKey = "debtiq.language.v1";
 const installDismissedStorageKey = "debtiq.install.dismissed.v1";
+const pwaInstallPromptSeenStorageKey = "debtiq.pwa.installPromptSeen.v1";
 
 const emptyImportMappings: ImportMappings = {
   incomeSources: { name: "", type: "", amount: "" },
@@ -1078,6 +1078,8 @@ export default function Home() {
   const [sessionStatus, setSessionStatus] = useState("Sign in or create an account to use your own DebtIQ workspace.");
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const [installNotice, setInstallNotice] = useState("");
+  const [pwaInstallPromptSeen, setPwaInstallPromptSeen] = useState(false);
   const [isIosDevice, setIsIosDevice] = useState(false);
   const [isStandaloneApp, setIsStandaloneApp] = useState(false);
   const t = translations[language];
@@ -1150,6 +1152,7 @@ export default function Home() {
     if (storedTheme === "dark") setDarkMode(true);
     const storedLanguage = window.localStorage.getItem(languageStorageKey);
     if (storedLanguage === "en" || storedLanguage === "ar") setLanguage(storedLanguage);
+    setPwaInstallPromptSeen(window.localStorage.getItem(pwaInstallPromptSeenStorageKey) === "1");
   }, []);
 
   useEffect(() => {
@@ -1203,7 +1206,7 @@ export default function Home() {
     setIsIosDevice(isiOS);
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
-      const dismissed = window.localStorage.getItem(installDismissedStorageKey) === "1";
+      const dismissed = window.localStorage.getItem(installDismissedStorageKey) === "1" || window.localStorage.getItem(pwaInstallPromptSeenStorageKey) === "1";
       setDeferredInstallPrompt(event as BeforeInstallPromptEvent);
       if (!dismissed && !standalone) setShowInstallPrompt(true);
     };
@@ -1353,19 +1356,27 @@ export default function Home() {
 
   async function installApp() {
     if (isStandaloneApp || isIosDevice) return;
+    if (typeof window !== "undefined") window.localStorage.setItem(pwaInstallPromptSeenStorageKey, "1");
+    setPwaInstallPromptSeen(true);
+    setShowInstallPrompt(false);
+    setInstallNotice(validationMessage("If DebtIQ is already on your home screen, you do not need to add it again.", "إذا كان التطبيق موجوداً على الشاشة الرئيسية، لا تحتاج لإضافته مرة أخرى."));
     if (!deferredInstallPrompt) {
-      setShowInstallPrompt(true);
       return;
     }
     await deferredInstallPrompt.prompt();
-    const choice = await deferredInstallPrompt.userChoice.catch(() => ({ outcome: "dismissed" as const, platform: "" }));
+    await deferredInstallPrompt.userChoice.catch(() => ({ outcome: "dismissed" as const, platform: "" }));
     setDeferredInstallPrompt(null);
-    setShowInstallPrompt(choice.outcome !== "accepted");
+    setShowInstallPrompt(false);
   }
 
   function dismissInstallPrompt() {
     setShowInstallPrompt(false);
-    if (typeof window !== "undefined") window.localStorage.setItem(installDismissedStorageKey, "1");
+    setInstallNotice(validationMessage("If DebtIQ is already on your home screen, you do not need to add it again.", "إذا كان التطبيق موجوداً على الشاشة الرئيسية، لا تحتاج لإضافته مرة أخرى."));
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(installDismissedStorageKey, "1");
+      window.localStorage.setItem(pwaInstallPromptSeenStorageKey, "1");
+    }
+    setPwaInstallPromptSeen(true);
   }
 
   function navigateActive(nextActive: string) {
@@ -3487,7 +3498,12 @@ export default function Home() {
         { label: "Remaining Income", value: "SAR 4,850", tone: "bg-mint" },
       ];
 
-  const showInstallExperience = !isStandaloneApp && !isIosDevice && (showInstallPrompt || Boolean(deferredInstallPrompt));
+  const renderStoredSession = readJson<StoredSession | null>(sessionStorageKey, null);
+  const realOnboardingComplete = sessionMode === "real" && renderStoredSession?.onboardingStatus === "complete";
+  const appShellReady = flow === "app" && (sessionMode === "demo" || realOnboardingComplete);
+  const shouldShowPublicLanding = pathname === "/landing" || (sessionMode === "signedOut" && flow === "app");
+  const showInstallSurface = shouldShowPublicLanding || appShellReady;
+  const showInstallExperience = showInstallSurface && !isStandaloneApp && !isIosDevice && ((showInstallPrompt || Boolean(deferredInstallPrompt)) && !pwaInstallPromptSeen || Boolean(installNotice));
   const installExperience = showInstallExperience ? (
     <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 shadow-sm dark:border-emerald-400/20 dark:bg-emerald-400/10">
       <div className="flex items-start gap-3">
@@ -3515,6 +3531,9 @@ export default function Home() {
               {language === "ar" ? "ثبّت التطبيق لتفتحه بسرعة مثل تطبيقات الجوال." : "Install the app for quick access like a mobile app."}
             </p>
           )}
+          <p className="mt-2 text-xs font-black text-emerald-800 dark:text-emerald-100">
+            {installNotice || validationMessage("If the icon already exists, do not add it again.", "إذا كانت الأيقونة موجودة مسبقاً، لا تضفها مرة أخرى.")}
+          </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {isIosDevice ? (
               <button
@@ -3548,12 +3567,10 @@ export default function Home() {
     </div>
   ) : null;
 
-  const shouldShowPublicLanding = pathname === "/landing" || (pathname === "/" && sessionMode === "signedOut" && flow === "app");
-
   if (shouldShowPublicLanding) {
     return (
       <main className={darkMode ? "dark" : ""} dir={language === "ar" ? "rtl" : "ltr"} lang={language}>
-        <PWAInstallPrompt language={language} />
+        {showInstallSurface && <PWAInstallPrompt language={language} />}
         <div className="landing-page min-h-screen overflow-hidden bg-[#f6f8fb] text-ink dark:bg-[#07111f] dark:text-white">
           <section className="relative px-4 py-5 sm:px-6 lg:px-8">
             <div className="landing-scene absolute inset-0" aria-hidden="true" />
@@ -3593,7 +3610,7 @@ export default function Home() {
                       {language === "ar" ? "تسجيل الدخول" : "Login"}
                     </button>
                   )}
-                  {!isStandaloneApp && !isIosDevice && (
+                  {!isStandaloneApp && !isIosDevice && !pwaInstallPromptSeen && (
                     <button
                       className="hidden h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white/85 px-3 text-sm font-bold backdrop-blur dark:border-white/10 dark:bg-white/5 sm:flex"
                       onClick={installApp}
@@ -3813,10 +3830,10 @@ export default function Home() {
 
   return (
     <main className={darkMode ? "dark" : ""} dir={language === "ar" ? "rtl" : "ltr"} lang={language}>
-      <PWAInstallPrompt language={language} />
+      {showInstallSurface && <PWAInstallPrompt language={language} />}
       <div className="app-shell min-h-screen px-4 pb-5 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-ink dark:text-white sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[280px_1fr]">
-          <aside className="rounded-lg border border-white/70 bg-white/80 p-4 shadow-premium backdrop-blur dark:border-white/10 dark:bg-white/5 lg:sticky lg:top-5 lg:h-[calc(100vh-2.5rem)]">
+        <div className={`mx-auto grid gap-5 ${appShellReady ? "max-w-7xl lg:grid-cols-[280px_1fr]" : "max-w-3xl"}`}>
+          {appShellReady && <aside className="rounded-lg border border-white/70 bg-white/80 p-4 shadow-premium backdrop-blur dark:border-white/10 dark:bg-white/5 lg:sticky lg:top-5 lg:h-[calc(100vh-2.5rem)]">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="grid size-11 place-items-center rounded-lg bg-ink text-mint dark:bg-white dark:text-ink">
@@ -3843,7 +3860,7 @@ export default function Home() {
               {language === "ar" ? "العودة للرئيسية" : "Back to Home"}
             </a>
 
-            {!isStandaloneApp && !isIosDevice && (
+            {!isStandaloneApp && !isIosDevice && !pwaInstallPromptSeen && (
               <button
                 className="mt-3 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-ink text-sm font-bold text-white transition hover:bg-slate-800 dark:bg-mint dark:text-ink"
                 onClick={installApp}
@@ -3893,17 +3910,15 @@ export default function Home() {
                     : "Sign in, create an account, or explicitly open Demo Mode."}
               </p>
             </div>
-          </aside>
+          </aside>}
 
           <section className="grid gap-5">
-            <div className="rounded-lg border border-white/70 bg-white/85 p-5 shadow-premium backdrop-blur dark:border-white/10 dark:bg-white/5">
+            {appShellReady && <div className="rounded-lg border border-white/70 bg-white/85 p-5 shadow-premium backdrop-blur dark:border-white/10 dark:bg-white/5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm font-bold text-mint">Welcome back</p>
                   <h2 className="mt-1 text-2xl font-black sm:text-3xl">{profile.fullName || "DebtIQ"}</h2>
-                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                    {sessionMode === "signedOut" ? "Sign in to load your financial workspace" : `${profile.city || "Local"} - ${profile.employer || "Profile"}`}
-                  </p>
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{`${profile.city || "Local"} - ${profile.employer || "Profile"}`}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-2 sm:flex">
                   <input
@@ -3922,84 +3937,54 @@ export default function Home() {
                       event.target.value = "";
                     }}
                   />
-                  {sessionMode !== "signedOut" && (
-                    <>
-                      {sessionMode === "real" && (
-                        <button
-                          className={`flex h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-bold ${
-                            hasUnsavedChanges
-                              ? "bg-ink text-white dark:bg-mint dark:text-ink"
-                              : "border border-slate-200 bg-white text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
-                          }`}
-                          onClick={() => saveUserData(undefined, t.common.savedSuccessfully)}
-                          disabled={!hasUnsavedChanges}
-                        >
-                          <CheckCircle2 size={18} />
-                          {hasUnsavedChanges ? "Save Changes" : t.common.save}
-                        </button>
-                      )}
-                      <button
-                        className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        <Plus size={18} />
-                        {t.common.importData}
-                      </button>
-                      <button
-                        className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
-                        onClick={downloadTemplate}
-                      >
-                        <BarChart3 size={18} />
-                        {t.common.downloadTemplate}
-                      </button>
-                      <button
-                        className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
-                        onClick={() => window.print()}
-                      >
-                        <Printer size={18} />
-                        {t.common.printReport}
-                      </button>
-                    </>
+                  {sessionMode === "real" && (
+                    <button
+                      className={`flex h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-bold ${
+                        hasUnsavedChanges
+                          ? "bg-ink text-white dark:bg-mint dark:text-ink"
+                          : "border border-slate-200 bg-white text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
+                      }`}
+                      onClick={() => saveUserData(undefined, t.common.savedSuccessfully)}
+                      disabled={!hasUnsavedChanges}
+                    >
+                      <CheckCircle2 size={18} />
+                      {hasUnsavedChanges ? "Save Changes" : t.common.save}
+                    </button>
                   )}
+                  <button
+                    className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Plus size={18} />
+                    {t.common.importData}
+                  </button>
+                  <button
+                    className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
+                    onClick={downloadTemplate}
+                  >
+                    <BarChart3 size={18} />
+                    {t.common.downloadTemplate}
+                  </button>
+                  <button
+                    className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
+                    onClick={() => window.print()}
+                  >
+                    <Printer size={18} />
+                    {t.common.printReport}
+                  </button>
                   <button
                     className="h-11 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
                     onClick={toggleLanguage}
                   >
                     {language === "en" ? "العربية" : "English"}
                   </button>
-                  {sessionMode === "signedOut" ? (
-                    <>
-                      <button
-                        className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
-                        onClick={startDemoMode}
-                      >
-                        <BarChart3 size={18} />
-                        Demo Mode
-                      </button>
-                      <button
-                        className="flex h-11 items-center justify-center gap-2 rounded-lg bg-ink px-4 text-sm font-bold text-white dark:bg-mint dark:text-ink"
-                        onClick={startLogin}
-                      >
-                        <Smartphone size={18} />
-                        {t.common.login}
-                      </button>
-                      <button
-                        className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
-                        onClick={startRegistration}
-                      >
-                        <UserPlus size={18} />
-                        {t.common.createAccount}
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
-                      onClick={logout}
-                    >
-                      <LockKeyhole size={18} />
-                      Logout
-                    </button>
-                  )}
+                  <button
+                    className="flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
+                    onClick={logout}
+                  >
+                    <LockKeyhole size={18} />
+                    Logout
+                  </button>
                 </div>
               </div>
               <p className="mt-4 rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600 dark:bg-white/5 dark:text-slate-300">
@@ -4007,34 +3992,13 @@ export default function Home() {
                 {sessionMode === "real" && hasUnsavedChanges && <span className="ms-2 text-amber-700 dark:text-amber-300">{t.common.unsavedChanges}</span>}
                 {sessionMode === "real" && saveStatus && <span className="ms-2 text-emerald-700 dark:text-mint">{saveStatus}</span>}
               </p>
-            </div>
+            </div>}
 
-            {installExperience}
+            {appShellReady && installExperience}
 
-            {sessionMode === "demo" && (
+            {appShellReady && sessionMode === "demo" && (
               <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-black text-amber-900 shadow-sm dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-100">
                 Demo Mode {"\u2014"} sample data only
-              </div>
-            )}
-
-            {sessionMode === "signedOut" && (
-              <div className="rounded-lg border border-white/70 bg-white/85 p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
-                <p className="text-xs font-black uppercase text-mint">DebtIQ</p>
-                <h1 className="mt-2 max-w-3xl text-3xl font-black leading-tight sm:text-4xl">{t.landing.headline}</h1>
-                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">{t.landing.body}</p>
-                <div className="mt-5 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-                  {t.landing.benefits.map((benefit) => (
-                    <div key={benefit} className="flex gap-2 rounded-lg bg-slate-50 p-3 text-sm font-semibold text-slate-700 dark:bg-white/5 dark:text-slate-200">
-                      <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-mint" />
-                      <span>{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-5 grid gap-3 sm:flex">
-                  <button className="h-11 rounded-lg bg-ink px-5 text-sm font-bold text-white dark:bg-mint dark:text-ink" onClick={startRegistration}>{t.common.createAccount}</button>
-                  <button className="h-11 rounded-lg border border-slate-200 px-5 text-sm font-bold dark:border-white/10" onClick={startLogin}>{t.common.login}</button>
-                  <button className="h-11 rounded-lg border border-slate-200 px-5 text-sm font-bold dark:border-white/10" onClick={startDemoMode}>{t.common.tryDemo}</button>
-                </div>
               </div>
             )}
 
@@ -4582,6 +4546,7 @@ export default function Home() {
                   return (
                     <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs font-bold text-amber-900 dark:border-amber-300/40 dark:bg-amber-300/10 dark:text-amber-100">
                       <p>Onboarding debug</p>
+                      <p>render mode: {appShellReady ? "appShell" : "onboarding"}</p>
                       <p>current step: {onboardingStep}</p>
                       <p>next step target: {onboardingStep >= 4 ? "complete" : getNextOnboardingStep()}</p>
                       <p>active user: {profile.email || registration.email || "none"} / {currentUserId || "none"}</p>

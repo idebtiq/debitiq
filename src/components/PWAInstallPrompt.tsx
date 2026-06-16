@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 type Language = "ar" | "en";
 
-const dismissedKey = "debtiq-ios-install-prompt-dismissed";
+const dismissedKey = "debtiq.pwa.installPromptSeen.v1";
 
 function isIosSafari() {
   if (typeof window === "undefined") return false;
@@ -40,7 +40,7 @@ export function PWAInstallPrompt({ language }: { language: Language }) {
   }, []);
 
   function close(remember: boolean) {
-    if (remember) window.localStorage.setItem(dismissedKey, "1");
+    if (remember || typeof window !== "undefined") window.localStorage.setItem(dismissedKey, "1");
     setVisible(false);
   }
 
@@ -104,6 +104,10 @@ export function PWAInstallPrompt({ language }: { language: Language }) {
               </li>
             ))}
           </ol>
+
+          <p className="mt-3 rounded-xl bg-mint/10 px-3 py-2 text-xs font-black text-emerald-700 dark:text-mint">
+            {isArabic ? "إذا كانت الأيقونة موجودة مسبقاً، لا تضفها مرة أخرى." : "If the icon already exists, do not add it again."}
+          </p>
 
           <div className="mt-5 grid grid-cols-2 gap-2">
             <button
