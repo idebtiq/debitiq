@@ -41,6 +41,7 @@ import {
 } from "recharts";
 import * as XLSX from "xlsx";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import {
   calculateSnapshot,
   getMonthlyObligationImpact,
@@ -593,19 +594,62 @@ function readUserData(userId: string): UserOwnedData {
   return normalizeUserData(readJson<UserOwnedData>(userStorageKey(userId), emptyUserData));
 }
 
+function userDataFromProfile(profile: UserProfile): UserOwnedData {
+  return {
+    ...emptyUserData,
+    profile: {
+      ...emptyProfile,
+      ...profile,
+    },
+  };
+}
+
+function profileFromSupabaseRow(row: SupabaseProfileRow | null | undefined, fallbackEmail: string): UserProfile {
+  return {
+    ...emptyProfile,
+    fullName: row?.full_name || fallbackEmail,
+    mobile: row?.mobile || "",
+    email: normalizeEmail(row?.email || fallbackEmail),
+    country: row?.country || "",
+    city: row?.city || "",
+    employer: row?.employer || "",
+    employmentSector: row?.employment_sector || "",
+    maritalStatus: row?.marital_status || "",
+  };
+}
+
+function normalizeBetaRegisteredUser(user: BetaRegisteredUser): BetaRegisteredUser {
+  const normalizedEmail = normalizeEmail(user.normalizedEmail || user.email);
+  const deleted = user.deleted === true || user.status === "Deleted";
+  return {
+    ...user,
+    id: user.id || userIdFromEmail(normalizedEmail),
+    email: normalizedEmail,
+    normalizedEmail,
+    fullName: user.fullName || "Beta User",
+    mobile: user.mobile || "",
+    createdAt: user.createdAt || new Date().toISOString(),
+    lastLoginAt: user.lastLoginAt || user.createdAt || new Date().toISOString(),
+    status: deleted ? "Deleted" : user.status || "Active",
+    deleted,
+    onboardingStatus: user.onboardingStatus || "complete",
+    userType: "Real",
+  };
+}
+
 function readBetaUsersRegistry() {
-  return readJson<BetaRegisteredUser[]>(betaUsersRegistryStorageKey, []);
+  return readJson<BetaRegisteredUser[]>(betaUsersRegistryStorageKey, []).map(normalizeBetaRegisteredUser);
 }
 
 function writeBetaUsersRegistry(users: BetaRegisteredUser[]) {
   const deduped = new Map<string, BetaRegisteredUser>();
-  users.forEach((user) => deduped.set(user.normalizedEmail || normalizeEmail(user.email), { ...user, normalizedEmail: user.normalizedEmail || normalizeEmail(user.email) }));
+  users.map(normalizeBetaRegisteredUser).forEach((user) => deduped.set(user.normalizedEmail, user));
   writeJson(betaUsersRegistryStorageKey, [...deduped.values()]);
 }
 
 function findRegisteredBetaUser(email: string) {
   const normalizedEmail = normalizeEmail(email);
-  const user = readBetaUsersRegistry().find((item) => item.normalizedEmail === normalizedEmail && item.status !== "Deleted");
+  const user = readBetaUsersRegistry().find((item) => item.normalizedEmail === normalizedEmail && item.deleted !== true && item.status !== "Deleted");
 
   if (typeof window !== "undefined") {
     console.info(`duplicate email source = users registry; blocking source = ${user ? "users registry" : "none"}`);
@@ -715,7 +759,7 @@ type SessionMode = "signedOut" | "real" | "demo";
 type StoredSession = {
   mode: Exclude<SessionMode, "signedOut">;
   userId: string;
-  authProvider?: "local-registration" | "demo";
+  authProvider?: "local-registration" | "supabase" | "demo";
   onboardingStatus?: "incomplete" | "complete";
   onboardingStep?: number;
   onboardingMode?: OnboardingMode;
@@ -728,7 +772,11 @@ type BetaRegisteredUser = {
   fullName: string;
   mobile: string;
   createdAt: string;
-  status: "Active" | "Incomplete" | "Deleted";
+  lastLoginAt: string;
+  status: "Active" | "Incomplete" | "Inactive" | "Deleted";
+  deleted: boolean;
+  onboardingStatus: "incomplete" | "complete";
+  userType: "Real";
   passwordHash?: string;
 };
 
@@ -740,6 +788,20 @@ type UserOwnedData = {
   obligationEntries: ObligationEntry[];
   goals: Goal[];
   leads: Lead[];
+};
+
+type SupabaseProfileRow = {
+  id: string;
+  full_name?: string | null;
+  mobile?: string | null;
+  email?: string | null;
+  country?: Country | null;
+  city?: string | null;
+  employer?: string | null;
+  employment_sector?: EmploymentSector | null;
+  marital_status?: MaritalStatus | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 };
 
 type ImportError = {
@@ -1653,8 +1715,8 @@ export default function Home() {
       return;
     }
     if (storedSession?.mode === "real" && storedSession.userId) {
-      const registeredSessionUser = readBetaUsersRegistry().find((user) => user.id === storedSession.userId && user.status !== "Deleted");
-      const trustedProvider = storedSession.authProvider === "local-registration" && Boolean(registeredSessionUser);
+      const registeredSessionUser = readBetaUsersRegistry().find((user) => user.id === storedSession.userId && user.deleted !== true && user.status !== "Deleted");
+      const trustedProvider = storedSession.authProvider === "supabase" || (storedSession.authProvider === "local-registration" && Boolean(registeredSessionUser));
       if (!trustedProvider) {
         removeStoredItem(sessionStorageKey);
         applyUserData(emptyUserData);
@@ -3081,8 +3143,68 @@ export default function Home() {
     }
 
     const normalizedLoginEmail = normalizeEmail(login.email);
+    if (isSupabaseConfigured && supabase) {
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: normalizedLoginEmail,
+        password: login.password,
+      });
+
+      if (error || !authData.user) {
+        setAuthError(validationMessage(
+          "Invalid email or password. Please check your credentials or use Try Demo.",
+          "البريد الإلكتروني أو كلمة المرور غير صحيحة. الرجاء التحقق من البيانات أو استخدام النسخة التجريبية.",
+        ));
+        setSessionStatus("Login source: Supabase. No user session was created.");
+        setSessionMode("signedOut");
+        setCurrentUserId("");
+        clearUserData();
+        removeStoredItem(sessionStorageKey);
+        return;
+      }
+
+      const userId = authData.user.id;
+      const { data: profileRow, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, full_name, mobile, email, country, city, employer, marital_status, created_at, updated_at")
+        .eq("id", userId)
+        .maybeSingle<SupabaseProfileRow>();
+
+      if (profileError || !profileRow) {
+        setAuthError(validationMessage(
+          "Your account exists, but the profile could not be loaded. Please contact the DebtIQ team.",
+          "الحساب موجود، لكن تعذر تحميل الملف الشخصي. الرجاء التواصل مع فريق ديبت آي كيو.",
+        ));
+        setSessionStatus("Supabase profile load failed. No dashboard session was opened.");
+        setSessionMode("signedOut");
+        setCurrentUserId("");
+        clearUserData();
+        removeStoredItem(sessionStorageKey);
+        return;
+      }
+
+      const ownedData = userDataFromProfile(profileFromSupabaseRow(profileRow, authData.user.email || normalizedLoginEmail));
+      writeJson(sessionStorageKey, {
+        mode: "real",
+        userId,
+        authProvider: "supabase",
+        onboardingStatus: "complete",
+        onboardingStep: 4,
+        onboardingMode: "quick",
+      } satisfies StoredSession);
+      writeJson(userStorageKey(userId), ownedData);
+      applyUserData(ownedData);
+      setCurrentUserId(userId);
+      setSessionMode("real");
+      setAuthError("");
+      setSessionStatus(`Logged in as ${ownedData.profile.email}`);
+      setFlow("app");
+      setActive("dashboard");
+      return;
+    }
+
     const betaUser = findRegisteredBetaUser(normalizedLoginEmail);
     if (betaUser?.passwordHash && betaUser.passwordHash === betaPasswordHash(login.password)) {
+      const lastLoginAt = new Date().toISOString();
       const userData = readUserData(betaUser.id);
       const restoredData: UserOwnedData = {
         ...emptyUserData,
@@ -3106,6 +3228,14 @@ export default function Home() {
       } satisfies StoredSession);
       removeStoredItem(onboardingProgressStorageKey(betaUser.id));
       removeStoredItem(draftStorageKey(betaUser.id));
+      upsertRegisteredBetaUser({
+        ...betaUser,
+        status: "Active",
+        deleted: false,
+        onboardingStatus: "complete",
+        userType: "Real",
+        lastLoginAt,
+      });
       applyUserData(restoredData);
       setCurrentUserId(betaUser.id);
       setSessionMode("real");
@@ -3150,7 +3280,7 @@ export default function Home() {
     setForgotPassword(false);
   }
 
-  function completeRegistration() {
+  async function completeRegistration() {
     if (!registration.fullName || !registration.mobile || !registration.email || !registration.password) {
       setAuthError(validationMessage("Complete all registration fields to continue.", "أكمل جميع حقول التسجيل للمتابعة."));
       return;
@@ -3178,6 +3308,79 @@ export default function Home() {
 
     const normalizedEmail = normalizeEmail(registration.email);
     const userId = userIdFromEmail(normalizedEmail);
+    if (isSupabaseConfigured && supabase) {
+      const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("email", normalizedEmail)
+        .maybeSingle<{ id: string }>();
+
+      if (existingProfile) {
+        setAuthError(validationMessage("An account already exists for this email. Please log in instead.", "يوجد حساب بهذا البريد الإلكتروني. الرجاء تسجيل الدخول بدلاً من إنشاء حساب جديد."));
+        return;
+      }
+
+      const { data: authData, error } = await supabase.auth.signUp({
+        email: normalizedEmail,
+        password: registration.password,
+        options: {
+          data: {
+            full_name: registration.fullName,
+            mobile: normalizeSaudiMobile(registration.mobile),
+          },
+        },
+      });
+
+      if (error || !authData.user) {
+        setAuthError(error?.message || validationMessage("Could not create your account. Please try again.", "تعذر إنشاء الحساب. الرجاء المحاولة مرة أخرى."));
+        return;
+      }
+
+      const createdAt = new Date().toISOString();
+      const supabaseUserId = authData.user.id;
+      const profilePayload = {
+        id: supabaseUserId,
+        email: normalizedEmail,
+        full_name: registration.fullName,
+        mobile: normalizeSaudiMobile(registration.mobile),
+        role: "consumer",
+        created_at: createdAt,
+        updated_at: createdAt,
+      };
+      const { error: profileError } = await supabase.from("profiles").upsert(profilePayload);
+      if (profileError) {
+        setAuthError(profileError.message || validationMessage("Account created, but profile setup failed. Please contact the DebtIQ team.", "تم إنشاء الحساب، لكن فشل إعداد الملف الشخصي. الرجاء التواصل مع فريق ديبت آي كيو."));
+        return;
+      }
+
+      const ownedData = userDataFromProfile({
+        ...emptyProfile,
+        fullName: registration.fullName,
+        mobile: normalizeSaudiMobile(registration.mobile),
+        email: normalizedEmail,
+      });
+      writeJson(sessionStorageKey, {
+        mode: "real",
+        userId: supabaseUserId,
+        authProvider: "supabase",
+        onboardingStatus: "complete",
+        onboardingStep: 4,
+        onboardingMode: "quick",
+      } satisfies StoredSession);
+      writeJson(userStorageKey(supabaseUserId), ownedData);
+      removeStoredItem(registrationDraftStorageKey);
+      applyUserData(ownedData);
+      setCurrentUserId(supabaseUserId);
+      setSessionMode("real");
+      setAuthError("");
+      setSessionStatus(`Logged in as ${normalizedEmail}`);
+      setOnboardingMode("quick");
+      setOnboardingStep(4);
+      setFlow("app");
+      setActive("dashboard");
+      return;
+    }
+
     const existingUser = findRegisteredBetaUser(normalizedEmail);
     if (existingUser) {
       setAuthError(validationMessage("An account already exists for this email. Please log in instead.", "يوجد حساب بهذا البريد الإلكتروني. الرجاء تسجيل الدخول بدلاً من إنشاء حساب جديد."));
@@ -3218,7 +3421,11 @@ export default function Home() {
       fullName: ownedData.profile.fullName,
       mobile: ownedData.profile.mobile,
       createdAt,
+      lastLoginAt: createdAt,
       status: "Active",
+      deleted: false,
+      onboardingStatus: "complete",
+      userType: "Real",
       passwordHash: betaPasswordHash(registration.password),
     });
 
@@ -3582,9 +3789,10 @@ export default function Home() {
   const realOnboardingComplete = sessionMode === "real" && renderStoredSession?.onboardingStatus === "complete";
   const appShellReady = flow === "app" && (sessionMode === "demo" || realOnboardingComplete);
   const shouldShowPublicLanding = pathname === "/landing" || (sessionMode === "signedOut" && flow === "app");
+  const userSourceMode = isSupabaseConfigured ? "supabase" : "local-beta";
   const showInstallSurface = shouldShowPublicLanding || appShellReady;
   const showInstallExperience = showInstallSurface && !isStandaloneApp && !isIosDevice && ((showInstallPrompt || Boolean(deferredInstallPrompt)) && !pwaInstallPromptSeen || Boolean(installNotice));
-  const registryUsersForDiagnostics = readBetaUsersRegistry().filter((user) => user.status !== "Deleted");
+  const registryUsersForDiagnostics = readBetaUsersRegistry().filter((user) => user.deleted !== true && user.status !== "Deleted");
   const registeredUsersCount = registryUsersForDiagnostics.length;
   const loginSourceUsersCount = registryUsersForDiagnostics.length;
   const userStoreMismatch = registeredUsersCount !== loginSourceUsersCount;
@@ -4033,6 +4241,12 @@ export default function Home() {
           </aside>}
 
           <section className="grid gap-5">
+            {userSourceMode === "local-beta" && flow !== "onboarding" && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-black text-amber-900 shadow-sm dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-100">
+                {language === "ar" ? "وضع بيتا محلي: المستخدمون محفوظون في هذا المتصفح فقط." : "Local beta mode: users are stored only in this browser."}
+              </div>
+            )}
+
             {appShellReady && <div className="rounded-lg border border-white/70 bg-white/85 p-5 shadow-premium backdrop-blur dark:border-white/10 dark:bg-white/5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -4154,6 +4368,7 @@ export default function Home() {
                     ))}
                   </div>
                   <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+                    <p>User source: {userSourceMode === "supabase" ? "Supabase" : "Local beta registry"}</p>
                     <p>Registered users: {registeredUsersCount}</p>
                     <p>Login source users: {loginSourceUsersCount}</p>
                     {userStoreMismatch && <p className="text-red-600 dark:text-red-300">Warning: user store mismatch.</p>}
@@ -4188,6 +4403,7 @@ export default function Home() {
                         onToggle={() => setShowLoginPassword((current) => !current)}
                       />
                       <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+                        <p>User source: {userSourceMode === "supabase" ? "Supabase" : "Local beta registry"}</p>
                         <p>Registered users: {registeredUsersCount}</p>
                         <p>Login source users: {loginSourceUsersCount}</p>
                         {userStoreMismatch && <p className="text-red-600 dark:text-red-300">Warning: user store mismatch.</p>}

@@ -24,7 +24,12 @@ type BetaRegisteredUser = {
   fullName: string;
   mobile: string;
   createdAt: string;
+  lastLoginAt?: string;
   status: UserStatus;
+  deleted?: boolean;
+  onboardingStatus?: "incomplete" | "complete";
+  userType?: "Demo" | "Real";
+  passwordHash?: string;
 };
 
 type StoredUserData = {
@@ -115,6 +120,43 @@ function writeJson(key: string, value: unknown) {
   window.localStorage.setItem(key, JSON.stringify(value));
 }
 
+function normalizeEmail(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function userIdFromEmail(email: string) {
+  return email.trim().toLowerCase().replace(/[^\p{L}\p{N}]/gu, "") || `user-${Date.now()}`;
+}
+
+function normalizeBetaRegisteredUser(user: BetaRegisteredUser): BetaRegisteredUser {
+  const normalizedEmail = normalizeEmail(user.normalizedEmail || user.email);
+  const deleted = user.deleted === true || user.status === "Deleted";
+  return {
+    ...user,
+    id: user.id || userIdFromEmail(normalizedEmail),
+    email: normalizedEmail,
+    normalizedEmail,
+    fullName: user.fullName || "Beta User",
+    mobile: user.mobile || "",
+    createdAt: user.createdAt || new Date().toISOString(),
+    lastLoginAt: user.lastLoginAt || user.createdAt || new Date().toISOString(),
+    status: deleted ? "Deleted" : user.status || "Active",
+    deleted,
+    onboardingStatus: user.onboardingStatus || "complete",
+    userType: "Real",
+  };
+}
+
+function readBetaUsersRegistry() {
+  return readJson<BetaRegisteredUser[]>(betaUsersRegistryStorageKey, []).map(normalizeBetaRegisteredUser);
+}
+
+function writeBetaUsersRegistry(users: BetaRegisteredUser[]) {
+  const deduped = new Map<string, BetaRegisteredUser>();
+  users.map(normalizeBetaRegisteredUser).forEach((user) => deduped.set(user.normalizedEmail, user));
+  writeJson(betaUsersRegistryStorageKey, [...deduped.values()]);
+}
+
 function profileCompletion(data: StoredUserData) {
   const profile = data.profile || {};
   const checks = [
@@ -144,9 +186,9 @@ function betaUserToAdminUser(user: BetaRegisteredUser): AdminUser {
     employmentSector: profile.employmentSector || "",
     maritalStatus: profile.maritalStatus || "",
     createdAt: user.createdAt,
-    lastLogin: user.createdAt,
+    lastLogin: user.lastLoginAt || user.createdAt,
     userType: "Real",
-    status: user.status,
+    status: user.deleted ? "Deleted" : user.status,
     profileCompletion: profileCompletion(data),
     incomeSourceCount: (data.incomeSources || []).length,
     obligationCount: (data.obligationEntries || []).length,
@@ -192,19 +234,26 @@ export function AdminDashboardClient({
   const [adminError, setAdminError] = useState("");
 
   useEffect(() => {
-    const registry = readJson<BetaRegisteredUser[]>(betaUsersRegistryStorageKey, []);
+    if (!isDemoData) return;
+    const registry = readBetaUsersRegistry();
     if (registry.length === 0) return;
 
     setUsers(registry.map(betaUserToAdminUser));
     setUsingLocalBetaUsers(true);
-  }, []);
+  }, [isDemoData]);
 
   const userById = useMemo(() => new Map(users.map((user) => [user.id, user])), [users]);
   const realUsers = useMemo(() => users.filter((user) => user.userType === "Real" && user.status !== "Deleted"), [users]);
   const deletedUsers = useMemo(() => users.filter((user) => user.status === "Deleted"), [users]);
-  const registeredUsersCount = realUsers.length;
-  const loginSourceUsersCount = registeredUsersCount;
-  const userStoreMismatch = registeredUsersCount !== loginSourceUsersCount;
+  const rawRegistry = readBetaUsersRegistry();
+  const isSupabaseUserSourceConfigured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  const userSourceMode = isSupabaseUserSourceConfigured ? "Supabase" : "Local beta registry";
+  const rawRegistryUserCount = rawRegistry.length;
+  const activeRealUserCount = isSupabaseUserSourceConfigured ? realUsers.length : rawRegistry.filter((user) => user.userType === "Real" && user.deleted !== true && user.status !== "Deleted").length;
+  const deletedRegistryUserCount = rawRegistry.filter((user) => user.deleted === true || user.status === "Deleted").length;
+  const firstRegistryEmails = rawRegistry.slice(0, 5).map((user) => user.normalizedEmail || user.email);
+  const loginSourceUsersCount = activeRealUserCount;
+  const userStoreMismatch = activeRealUserCount !== loginSourceUsersCount;
   const demoUsers = useMemo(
     () => initialUsers.map((user) => ({ ...user, userType: "Demo" as const })).filter((user) => user.userType === "Demo"),
     [initialUsers],
@@ -298,10 +347,11 @@ export function AdminDashboardClient({
   }
 
   function updateUserStatus(userId: string, status: UserStatus) {
-    setUsers((current) => current.map((user) => (user.id === userId ? { ...user, status } : user)));
-    const registry = readJson<BetaRegisteredUser[]>(betaUsersRegistryStorageKey, []);
+    const deleted = status === "Deleted";
+    setUsers((current) => current.map((user) => (user.id === userId ? { ...user, status, userType: "Real" } : user)));
+    const registry = readBetaUsersRegistry();
     if (registry.length > 0) {
-      writeJson(betaUsersRegistryStorageKey, registry.map((user) => (user.id === userId ? { ...user, status } : user)));
+      writeBetaUsersRegistry(registry.map((user) => (user.id === userId ? { ...user, status, deleted, userType: "Real" } : user)));
     }
     setAdminMessage(`User marked ${status}.`);
   }
@@ -310,9 +360,9 @@ export function AdminDashboardClient({
     if (!confirm("Are you sure you want to delete this user and related demo/test data?")) return;
     const removedLeads = leads.filter((lead) => lead.userId === userId).length;
     setUsers((current) => current.map((user) => (user.id === userId ? { ...user, status: "Deleted" } : user)));
-    const registry = readJson<BetaRegisteredUser[]>(betaUsersRegistryStorageKey, []);
+    const registry = readBetaUsersRegistry();
     if (registry.length > 0) {
-      writeJson(betaUsersRegistryStorageKey, registry.map((user) => (user.id === userId ? { ...user, status: "Deleted" } : user)));
+      writeBetaUsersRegistry(registry.map((user) => (user.id === userId ? { ...user, status: "Deleted", deleted: true, userType: "Real" } : user)));
     }
     setLeads((current) => current.filter((lead) => lead.userId !== userId));
     setDeletedDataCount((current) => current + removedLeads + 5);
@@ -320,7 +370,12 @@ export function AdminDashboardClient({
   }
 
   function restoreDeletedUser(userId: string) {
-    updateUserStatus(userId, "Active");
+    setUsers((current) => current.map((user) => (user.id === userId ? { ...user, status: "Active", userType: "Real" } : user)));
+    const registry = readBetaUsersRegistry();
+    if (registry.length > 0) {
+      writeBetaUsersRegistry(registry.map((user) => (user.id === userId ? { ...user, status: "Active", deleted: false, userType: "Real" } : user)));
+    }
+    setAdminMessage("User restored.");
   }
 
   function resetDemoData() {
@@ -353,6 +408,12 @@ export function AdminDashboardClient({
           </div>
           <AdminLogout />
         </header>
+
+        {!isSupabaseUserSourceConfigured && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-black text-amber-900 shadow-sm dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-100">
+            Local beta mode: users are stored only in this browser.
+          </div>
+        )}
 
         <nav className="flex gap-2 overflow-x-auto rounded-lg border border-white/70 bg-white p-2 shadow-sm dark:border-white/10 dark:bg-white/5">
           {adminTabs.map((tab) => (
@@ -676,10 +737,15 @@ export function AdminDashboardClient({
           <div className="rounded-lg border border-white/70 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
             <h2 className="font-black">Admin Mode</h2>
             <div className="mt-4 grid gap-3 text-sm font-bold text-slate-700 dark:text-slate-200">
-              <p>Data mode: {usingLocalBetaUsers ? "Local beta users registry" : isDemoData ? "Demo/local mode" : "Supabase configured"}</p>
-              <p>Registered users: {registeredUsersCount}</p>
+              <p>User source: {userSourceMode}</p>
+              <p>Registry key: {betaUsersRegistryStorageKey}</p>
+              <p>Raw registry user count: {rawRegistryUserCount}</p>
+              <p>Active real user count: {activeRealUserCount}</p>
+              <p>Deleted user count: {deletedRegistryUserCount}</p>
               <p>Login source users: {loginSourceUsersCount}</p>
+              <p>First 5 emails in registry: {firstRegistryEmails.length ? firstRegistryEmails.join(", ") : "None"}</p>
               {userStoreMismatch && <p className="text-red-600 dark:text-red-300">Warning: user store mismatch.</p>}
+              <p>Data mode: {usingLocalBetaUsers ? "Local beta users registry" : isDemoData ? "Demo/local mode" : "Supabase configured"}</p>
               <p>Environment: Admin credentials are read from environment variables.</p>
               <p>Visible data: Aggregated analytics and operational records only.</p>
             </div>

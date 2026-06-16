@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { AdminDashboardClient } from "./AdminDashboardClient";
 import { adminCookieName, verifyAdminSessionValue } from "@/lib/admin-auth";
 import { seedAdminLeads, seedAdminUsers, seedOffers } from "@/lib/demo-data";
+import { supabase } from "@/lib/supabase";
+import type { AdminUser, MaritalStatus } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -27,9 +29,41 @@ export default async function AdminDashboardPage() {
 
   if (!isAdmin) return <Unauthorized />;
 
+  let initialUsers = seedAdminUsers;
+  if (isSupabaseConfigured && supabase) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("id, full_name, mobile, email, country, city, employer, marital_status, created_at")
+      .order("created_at", { ascending: false });
+
+    if (data) {
+      initialUsers = data.map((profile): AdminUser => ({
+        id: String(profile.id),
+        fullName: String(profile.full_name || "Supabase User"),
+        email: String(profile.email || ""),
+        mobile: String(profile.mobile || ""),
+        country: profile.country || "",
+        city: String(profile.city || ""),
+        employer: String(profile.employer || ""),
+        employmentSector: "",
+        maritalStatus: (profile.marital_status || "") as MaritalStatus | "",
+        createdAt: String(profile.created_at || new Date().toISOString()),
+        lastLogin: String(profile.created_at || new Date().toISOString()),
+        userType: "Real",
+        status: "Active",
+        profileCompletion: 25,
+        incomeSourceCount: 0,
+        obligationCount: 0,
+        creditCardCount: 0,
+        goalCount: 0,
+        leadCount: 0,
+      }));
+    }
+  }
+
   return (
     <AdminDashboardClient
-      initialUsers={seedAdminUsers}
+      initialUsers={initialUsers}
       initialOffers={seedOffers}
       initialLeads={seedAdminLeads}
       isDemoData={!isSupabaseConfigured}
