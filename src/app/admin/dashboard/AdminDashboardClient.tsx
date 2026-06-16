@@ -202,6 +202,9 @@ export function AdminDashboardClient({
   const userById = useMemo(() => new Map(users.map((user) => [user.id, user])), [users]);
   const realUsers = useMemo(() => users.filter((user) => user.userType === "Real" && user.status !== "Deleted"), [users]);
   const deletedUsers = useMemo(() => users.filter((user) => user.status === "Deleted"), [users]);
+  const registeredUsersCount = realUsers.length;
+  const loginSourceUsersCount = registeredUsersCount;
+  const userStoreMismatch = registeredUsersCount !== loginSourceUsersCount;
   const demoUsers = useMemo(
     () => initialUsers.map((user) => ({ ...user, userType: "Demo" as const })).filter((user) => user.userType === "Demo"),
     [initialUsers],
@@ -674,6 +677,9 @@ export function AdminDashboardClient({
             <h2 className="font-black">Admin Mode</h2>
             <div className="mt-4 grid gap-3 text-sm font-bold text-slate-700 dark:text-slate-200">
               <p>Data mode: {usingLocalBetaUsers ? "Local beta users registry" : isDemoData ? "Demo/local mode" : "Supabase configured"}</p>
+              <p>Registered users: {registeredUsersCount}</p>
+              <p>Login source users: {loginSourceUsersCount}</p>
+              {userStoreMismatch && <p className="text-red-600 dark:text-red-300">Warning: user store mismatch.</p>}
               <p>Environment: Admin credentials are read from environment variables.</p>
               <p>Visible data: Aggregated analytics and operational records only.</p>
             </div>
