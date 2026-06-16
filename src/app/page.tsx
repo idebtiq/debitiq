@@ -541,6 +541,21 @@ function createClientId(prefix = "id") {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
+function getCheckpointAgeMs(progress: OnboardingProgress | null) {
+  if (!progress?.savedAt) return Number.POSITIVE_INFINITY;
+  const savedAt = new Date(progress.savedAt).getTime();
+  return Number.isFinite(savedAt) ? Date.now() - savedAt : Number.POSITIVE_INFINITY;
+}
+
+function isOnboardingProgressOwnedBySession(progress: OnboardingProgress | null, session: StoredSession, data: UserOwnedData) {
+  if (!progress || session.mode !== "real") return false;
+  const progressEmail = normalizeEmail(progress.email || progress.registration.email);
+  const sessionEmail = normalizeEmail(data.profile.email);
+  const userMatches = !progress.userId || progress.userId === session.userId;
+  const emailMatches = !progressEmail || !sessionEmail || progressEmail === sessionEmail;
+  return userMatches && emailMatches && getCheckpointAgeMs(progress) <= 24 * 60 * 60 * 1000;
+}
+
 function normalizeUserData(data: UserOwnedData): UserOwnedData {
   return {
     ...emptyUserData,
@@ -654,6 +669,9 @@ type OnboardingForm = {
 type OnboardingMode = "quick" | "full";
 
 type OnboardingProgress = {
+  userId?: string;
+  email?: string;
+  savedAt?: string;
   registration: Pick<RegistrationForm, "fullName" | "mobile" | "email"> & { registrationSuccess: boolean };
   onboarding: OnboardingForm;
   onboardingMode: OnboardingMode;
@@ -789,6 +807,7 @@ const userDataStoragePrefix = "debtiq.user.v1.";
 const onboardingProgressStoragePrefix = "debtiq.onboarding.v1.";
 const draftDataStoragePrefix = "debtiq.draft.v1.";
 const themeStorageKey = "debtiq.theme.v1";
+const languageStorageKey = "debtiq.language.v1";
 const installDismissedStorageKey = "debtiq.install.dismissed.v1";
 
 const emptyImportMappings: ImportMappings = {
@@ -998,7 +1017,7 @@ export default function Home() {
   const pathname = usePathname();
   const router = useRouter();
   const [darkMode, setDarkMode] = useState(true);
-  const [language, setLanguage] = useState<"en" | "ar">("en");
+  const [language, setLanguage] = useState<"en" | "ar">("ar");
   const [profile, setProfile] = useState<UserProfile>(emptyProfile);
   const [debts, setDebts] = useState<Debt[]>([]);
   const [creditCards, setCreditCards] = useState<CreditCard[]>([]);
@@ -1129,6 +1148,8 @@ export default function Home() {
     const storedTheme = window.localStorage.getItem(themeStorageKey);
     if (storedTheme === "light") setDarkMode(false);
     if (storedTheme === "dark") setDarkMode(true);
+    const storedLanguage = window.localStorage.getItem(languageStorageKey);
+    if (storedLanguage === "en" || storedLanguage === "ar") setLanguage(storedLanguage);
   }, []);
 
   useEffect(() => {
@@ -1144,6 +1165,14 @@ export default function Home() {
     }
     window.localStorage.setItem(themeStorageKey, darkMode ? "dark" : "light");
   }, [darkMode]);
+
+  function toggleLanguage() {
+    setLanguage((current) => {
+      const nextLanguage = current === "en" ? "ar" : "en";
+      if (typeof window !== "undefined") window.localStorage.setItem(languageStorageKey, nextLanguage);
+      return nextLanguage;
+    });
+  }
   const bonusAllocationLabel = (allocation: string) => {
     if (language !== "ar") return allocation;
     const labels: Record<BonusAllocation, string> = {
@@ -1355,29 +1384,86 @@ export default function Home() {
     return Math.max(1, step - 1);
   }
 
-  function setOnboardingStepSafely(step: number, action: string) {
+  function moveOnboardingStep(step: number, action: string) {
     if (onboardingProcessingRef.current) return;
     const safeStep = Math.max(0, Math.min(4, step));
     setOnboardingAction(action);
-    setOnboardingDebug((current) => ({ ...current, lastAction: action, generationStatus: "idle" }));
+    setAuthError("");
+    setLastOnboardingError("");
+    setOnboardingDebug((current) => ({ ...current, lastAction: action, lastValidation: `next-step:${safeStep}`, generationStatus: "idle" }));
     setOnboardingStep(safeStep);
     window.setTimeout(() => setOnboardingAction(""), 250);
   }
 
-  function continueOnboarding() {
-    if (onboardingStep >= 4) {
-      completeOnboarding("generate");
-      return;
+  function handleContinueStep() {
+    try {
+      if (onboardingStep >= 4) {
+        setAuthError(validationMessage("Use Generate Dashboard to complete setup.", "استخدم إنشاء لوحة التحكم لإكمال الإعداد."));
+        setOnboardingDebug((current) => ({ ...current, lastAction: "continue", lastValidation: "blocked-final-step", generationStatus: "idle" }));
+        return;
+      }
+      moveOnboardingStep(getNextOnboardingStep(), "continue");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setLastOnboardingError(message);
+      setAuthError(validationMessage("Something went wrong while continuing setup.", "حدث خطأ أثناء متابعة الإعداد."));
+      setOnboardingAction("");
+      onboardingProcessingRef.current = false;
     }
-    setOnboardingStepSafely(getNextOnboardingStep(), "continue");
   }
 
-  function skipOnboardingStep() {
+  function handleBackStep() {
+    moveOnboardingStep(getPreviousOnboardingStep(), "back");
+  }
+
+  function handleSkipOrAddLater() {
     if (onboardingStep >= 4) {
-      completeOnboarding("skip-final");
+      handleCompleteOnboarding("skip-final");
       return;
     }
-    setOnboardingStepSafely(getNextOnboardingStep(), "skip-add-later");
+    moveOnboardingStep(getNextOnboardingStep(), "skip-add-later");
+  }
+
+  function handleCompleteOnboarding(action = "generate") {
+    if (onboardingStep < 4) {
+      setAuthError(validationMessage("Complete the current step first.", "أكمل الخطوة الحالية أولاً."));
+      setOnboardingDebug((current) => ({ ...current, lastAction: action, lastValidation: "blocked-before-final-step", generationStatus: "idle" }));
+      return;
+    }
+    completeOnboarding(action);
+  }
+
+  function resetOnboardingForCurrentUser() {
+    const identityProfile = {
+      ...emptyProfile,
+      fullName: profile.fullName || registration.fullName,
+      mobile: profile.mobile || registration.mobile,
+      email: normalizeEmail(profile.email || registration.email),
+    };
+    applyUserData({ ...emptyUserData, profile: identityProfile });
+    setOnboarding(emptyOnboarding);
+    setOnboardingMode("quick");
+    setIncomeEntryMode("total");
+    setSelectedChecklistItems([]);
+    setSelectedGoalStarters([]);
+    setAuthError("");
+    setLastOnboardingError("");
+    setOnboardingDebug({ lastAction: "start-over", lastValidation: "reset", generationStatus: "idle" });
+    setOnboardingStep(1);
+    if (currentUserId) {
+      const storedSession = readJson<StoredSession | null>(sessionStorageKey, null);
+      writeJson(sessionStorageKey, {
+        ...storedSession,
+        mode: "real",
+        userId: currentUserId,
+        authProvider: storedSession?.authProvider || "local-registration",
+        onboardingStatus: "incomplete",
+        onboardingStep: 1,
+        onboardingMode: "quick",
+      } satisfies StoredSession);
+      removeStoredItem(onboardingProgressStorageKey(currentUserId));
+      removeStoredItem(draftStorageKey(currentUserId));
+    }
   }
 
   function clearUserData() {
@@ -1394,6 +1480,29 @@ export default function Home() {
   useEffect(() => {
     const storedSession = readJson<StoredSession | null>(sessionStorageKey, null);
     const authMode = typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("mode");
+    if (authMode === "register") {
+      if (storedSession?.mode === "real" && storedSession.userId) {
+        removeStoredItem(onboardingProgressStorageKey(storedSession.userId));
+        removeStoredItem(draftStorageKey(storedSession.userId));
+      }
+      removeStoredItem(sessionStorageKey);
+      removeStoredItem(registrationDraftStorageKey);
+      applyUserData(emptyUserData);
+      setOnboarding(emptyOnboarding);
+      setOnboardingMode("quick");
+      setOnboardingStep(1);
+      setImportPreview(null);
+      setImportErrors([]);
+      setImportDuplicateWarnings([]);
+      setImportSummary("");
+      setImportWizardOpen(false);
+      setCurrentUserId("");
+      setSessionMode("signedOut");
+      setFlow("register");
+      setActive("profile");
+      setHasHydratedSession(true);
+      return;
+    }
     if (storedSession?.mode === "real" && storedSession.userId) {
       const trustedProvider = storedSession.authProvider === "supabase" || storedSession.authProvider === "local-registration";
       if (!trustedProvider) {
@@ -1418,11 +1527,15 @@ export default function Home() {
       const draft = readJson<UserOwnedData | null>(draftStorageKey(storedSession.userId), null);
       const onboardingProgress = readJson<OnboardingProgress | null>(onboardingProgressStorageKey(storedSession.userId), null);
       const onboardingIncomplete = storedSession.onboardingStatus === "incomplete";
+      const canResumeOnboarding = onboardingIncomplete && isOnboardingProgressOwnedBySession(onboardingProgress, storedSession, data);
+      if (onboardingIncomplete && onboardingProgress && !canResumeOnboarding) {
+        removeStoredItem(onboardingProgressStorageKey(storedSession.userId));
+      }
       applyUserData(data);
       setCurrentUserId(storedSession.userId);
       setSessionMode("real");
       if (onboardingIncomplete) {
-        if (onboardingProgress) {
+        if (canResumeOnboarding && onboardingProgress) {
           setRegistration((current) => ({
             ...current,
             fullName: onboardingProgress.registration.fullName,
@@ -1438,7 +1551,7 @@ export default function Home() {
           setProfile(onboardingProgress.profile);
         } else {
           setOnboardingMode(storedSession.onboardingMode || "quick");
-          setOnboardingStep(storedSession.onboardingStep ?? 0);
+          setOnboardingStep(1);
         }
         setSessionStatus("Continue setting up your financial profile");
         setFlow("onboarding");
@@ -1526,6 +1639,9 @@ export default function Home() {
       onboardingMode,
     } satisfies StoredSession);
     writeJson(onboardingProgressStorageKey(currentUserId), {
+      userId: currentUserId,
+      email: normalizeEmail(profile.email || registration.email),
+      savedAt: new Date().toISOString(),
       registration: {
         fullName: profile.fullName || registration.fullName,
         mobile: profile.mobile || registration.mobile,
@@ -2725,7 +2841,22 @@ export default function Home() {
   }
 
   function startRegistration() {
+    const previousSession = readJson<StoredSession | null>(sessionStorageKey, null);
+    if (previousSession?.mode === "real" && previousSession.userId) {
+      removeStoredItem(onboardingProgressStorageKey(previousSession.userId));
+      removeStoredItem(draftStorageKey(previousSession.userId));
+    }
+    removeStoredItem(sessionStorageKey);
+    removeStoredItem(registrationDraftStorageKey);
+    clearUserData();
+    setRegistration(emptyRegistration);
+    setLogin(emptyLogin);
+    setCurrentUserId("");
+    setSessionMode("signedOut");
+    setOnboardingMode("quick");
+    setOnboardingStep(1);
     setAuthError("");
+    setLastOnboardingError("");
     setFlow("register");
     setActive("profile");
   }
@@ -2849,7 +2980,10 @@ export default function Home() {
     };
 
     const savedProgress = readJson<OnboardingProgress | null>(onboardingProgressStorageKey(userId), null);
-    const onboardingIncomplete = Boolean(savedProgress) || !existingUser;
+    const progressSession: StoredSession = { mode: "real", userId, authProvider: "supabase", onboardingStatus: "incomplete" };
+    const canResumeProgress = isOnboardingProgressOwnedBySession(savedProgress, progressSession, ownedData);
+    if (savedProgress && !canResumeProgress) removeStoredItem(onboardingProgressStorageKey(userId));
+    const onboardingIncomplete = canResumeProgress || !existingUser;
 
     applyUserData(ownedData);
     setCurrentUserId(userId);
@@ -2859,13 +2993,13 @@ export default function Home() {
       userId,
       authProvider: "supabase",
       onboardingStatus: onboardingIncomplete ? "incomplete" : "complete",
-      onboardingStep: savedProgress?.onboardingStep ?? 0,
-      onboardingMode: savedProgress?.onboardingMode ?? "quick",
+      onboardingStep: canResumeProgress ? savedProgress?.onboardingStep ?? 1 : 1,
+      onboardingMode: canResumeProgress ? savedProgress?.onboardingMode ?? "quick" : "quick",
     } satisfies StoredSession);
     writeJson(userStorageKey(userId), ownedData);
     const draft = readJson<UserOwnedData | null>(draftStorageKey(userId), null);
     setAuthError("");
-    if (savedProgress) {
+    if (canResumeProgress && savedProgress) {
       setRegistration((current) => ({
         ...current,
         fullName: savedProgress.registration.fullName,
@@ -2880,7 +3014,7 @@ export default function Home() {
       setSelectedGoalStarters(savedProgress.selectedGoalStarters);
       setProfile(savedProgress.profile);
     } else {
-      setOnboardingStep(0);
+      setOnboardingStep(1);
       setOnboardingMode("quick");
     }
     setSessionStatus(onboardingIncomplete ? validationMessage("Continue setting up your financial profile", "تابع إعداد ملفك المالي") : `Logged in as ${login.email}`);
@@ -2952,7 +3086,9 @@ export default function Home() {
       },
     };
     const createdAt = new Date().toISOString();
-    const initialOnboardingStep = 0;
+    removeStoredItem(onboardingProgressStorageKey(userId));
+    removeStoredItem(draftStorageKey(userId));
+    const initialOnboardingStep = 1;
     const initialOnboardingMode: OnboardingMode = "quick";
     const registrationDraft: RegistrationDraft = {
       fullName: ownedData.profile.fullName,
@@ -2961,6 +3097,9 @@ export default function Home() {
       registrationSuccess: true,
     };
     const initialProgress: OnboardingProgress = {
+      userId,
+      email: normalizedEmail,
+      savedAt: new Date().toISOString(),
       registration: registrationDraft,
       onboarding,
       onboardingMode: initialOnboardingMode,
@@ -3434,7 +3573,7 @@ export default function Home() {
                 <div className="flex items-center gap-2">
                   <button
                     className="h-10 rounded-lg border border-slate-200 bg-white/85 px-3 text-sm font-bold backdrop-blur dark:border-white/10 dark:bg-white/5"
-                    onClick={() => setLanguage((current) => (current === "en" ? "ar" : "en"))}
+                    onClick={toggleLanguage}
                   >
                     {language === "en" ? "العربية" : "English"}
                   </button>
@@ -3824,7 +3963,7 @@ export default function Home() {
                   )}
                   <button
                     className="h-11 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold dark:border-white/10 dark:bg-white/5"
-                    onClick={() => setLanguage((current) => (current === "en" ? "ar" : "en"))}
+                    onClick={toggleLanguage}
                   >
                     {language === "en" ? "العربية" : "English"}
                   </button>
@@ -4012,6 +4151,9 @@ export default function Home() {
                     {[0, 1, 2, 3, 4].map((step) => (
                       <span key={step} className={`h-2 w-7 rounded-full sm:w-8 ${step <= onboardingStep ? "bg-mint" : "bg-slate-200 dark:bg-white/10"}`} />
                     ))}
+                    <button type="button" className="ms-1 text-xs font-black text-emerald-700 underline dark:text-mint" onClick={resetOnboardingForCurrentUser}>
+                      {language === "ar" ? "ابدأ من جديد" : "Start over"}
+                    </button>
                   </div>
                 </div>
 
@@ -4026,6 +4168,7 @@ export default function Home() {
                     <div className="grid gap-3 sm:grid-cols-2">
                       <button
                         className="rounded-lg border border-slate-200 p-5 text-left transition hover:border-mint dark:border-white/10"
+                        type="button"
                         onClick={() => {
                           setFlow("app");
                           setActive("dashboard");
@@ -4040,6 +4183,7 @@ export default function Home() {
                       </button>
                       <button
                         className="rounded-lg border border-slate-200 p-5 text-left transition hover:border-mint dark:border-white/10"
+                        type="button"
                         onClick={() => {
                           setOnboardingMode("quick");
                           setOnboardingStep(1);
@@ -4051,6 +4195,7 @@ export default function Home() {
                       </button>
                       <button
                         className="rounded-lg border border-slate-200 p-5 text-left transition hover:border-mint dark:border-white/10 sm:col-span-2"
+                        type="button"
                         onClick={() => {
                           setOnboardingMode("full");
                           setOnboardingStep(1);
@@ -4430,41 +4575,53 @@ export default function Home() {
 
                 {authError && <p className="mt-5 rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 dark:bg-red-400/10 dark:text-red-200">{authError}</p>}
 
-                {debugOnboarding && (
-                  <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs font-bold text-amber-900 dark:border-amber-300/40 dark:bg-amber-300/10 dark:text-amber-100">
-                    <p>Onboarding debug</p>
-                    <p>current step: {onboardingStep}</p>
-                    <p>mode: {onboardingMode}</p>
-                    <p>flow: {flow}</p>
-                    <p>status: {readJson<StoredSession | null>(sessionStorageKey, null)?.onboardingStatus || "none"}</p>
-                    <p>completion: {readJson<StoredSession | null>(sessionStorageKey, null)?.onboardingStatus === "complete" ? "complete" : "incomplete"}</p>
-                    <p>last action: {onboardingDebug.lastAction}</p>
-                    <p>last validation: {onboardingDebug.lastValidation}</p>
-                    <p>generation status: {onboardingDebug.generationStatus}</p>
-                    {lastOnboardingError && <pre className="mt-2 max-h-32 overflow-auto whitespace-pre-wrap rounded bg-white/80 p-2 text-[11px] dark:bg-black/30">{lastOnboardingError}</pre>}
-                  </div>
-                )}
+                {debugOnboarding && (() => {
+                  const storedSession = readJson<StoredSession | null>(sessionStorageKey, null);
+                  const checkpoint = currentUserId ? readJson<OnboardingProgress | null>(onboardingProgressStorageKey(currentUserId), null) : null;
+                  const checkpointAge = checkpoint?.savedAt ? Math.round(getCheckpointAgeMs(checkpoint) / 60000) : null;
+                  return (
+                    <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs font-bold text-amber-900 dark:border-amber-300/40 dark:bg-amber-300/10 dark:text-amber-100">
+                      <p>Onboarding debug</p>
+                      <p>current step: {onboardingStep}</p>
+                      <p>next step target: {onboardingStep >= 4 ? "complete" : getNextOnboardingStep()}</p>
+                      <p>active user: {profile.email || registration.email || "none"} / {currentUserId || "none"}</p>
+                      <p>checkpoint user: {checkpoint?.email || checkpoint?.registration.email || "none"} / {checkpoint?.userId || "none"}</p>
+                      <p>checkpoint age: {checkpointAge === null ? "missing" : `${checkpointAge} minutes`}</p>
+                      <p>mode: {onboardingMode}</p>
+                      <p>flow: {flow}</p>
+                      <p>onboardingStatus: {storedSession?.onboardingStatus || "none"}</p>
+                      <p>processing: {onboardingAction || onboardingProcessingRef.current ? "yes" : "no"}</p>
+                      <p>last action: {onboardingDebug.lastAction}</p>
+                      <p>last validation: {onboardingDebug.lastValidation}</p>
+                      <p>generation status: {onboardingDebug.generationStatus}</p>
+                      {lastOnboardingError && <pre className="mt-2 max-h-32 overflow-auto whitespace-pre-wrap rounded bg-white/80 p-2 text-[11px] dark:bg-black/30">{lastOnboardingError}</pre>}
+                    </div>
+                  );
+                })()}
 
                 {onboardingStep > 0 && <div className="mt-6 grid grid-cols-2 gap-3">
                   <button
                     className="h-11 rounded-lg border border-slate-200 text-sm font-bold disabled:opacity-40 dark:border-white/10"
+                    type="button"
                     disabled={onboardingStep === 1 || Boolean(onboardingAction)}
-                    onClick={() => setOnboardingStepSafely(getPreviousOnboardingStep(), "back")}
+                    onClick={handleBackStep}
                   >
                     Back
                   </button>
                   <button
                     className="flex h-11 items-center justify-center gap-2 rounded-lg bg-ink text-sm font-bold text-white disabled:opacity-60 dark:bg-mint dark:text-ink"
+                    type="button"
                     disabled={Boolean(onboardingAction)}
-                    onClick={continueOnboarding}
+                    onClick={onboardingStep === 4 ? () => handleCompleteOnboarding("generate") : handleContinueStep}
                   >
                     {onboardingAction ? validationMessage("Processing...", "جاري المعالجة...") : onboardingStep === 4 ? "Generate Dashboard" : t.common.next}
                     <ChevronRight size={17} />
                   </button>
                   <button
                     className="col-span-2 h-10 rounded-lg border border-dashed border-slate-300 text-sm font-bold disabled:opacity-60 dark:border-white/20"
+                    type="button"
                     disabled={Boolean(onboardingAction)}
-                    onClick={skipOnboardingStep}
+                    onClick={handleSkipOrAddLater}
                   >
                     {onboardingAction ? validationMessage("Processing...", "جاري المعالجة...") : "Skip for now / Add later"}
                   </button>
