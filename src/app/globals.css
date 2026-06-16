@@ -140,6 +140,11 @@ textarea {
   animation: landing-progress-pulse 3.2s ease-in-out infinite;
 }
 
+.friendly-reminder-card {
+  box-shadow: 0 16px 54px rgba(56, 214, 163, 0.12);
+  animation: friendly-reminder-glow 4.8s ease-in-out infinite;
+}
+
 @keyframes landing-card-flow {
   0%,
   100% {
@@ -152,6 +157,18 @@ textarea {
   }
 }
 
+@keyframes friendly-reminder-glow {
+  0%,
+  100% {
+    border-color: rgba(56, 214, 163, 0.24);
+    box-shadow: 0 16px 54px rgba(56, 214, 163, 0.1);
+  }
+  50% {
+    border-color: rgba(56, 214, 163, 0.44);
+    box-shadow: 0 18px 64px rgba(56, 214, 163, 0.18);
+  }
+}
+
 @keyframes landing-progress-pulse {
   0%,
   100% {
@@ -159,6 +176,14 @@ textarea {
   }
   50% {
     width: 78%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .friendly-reminder-card,
+  .landing-flow-card,
+  .landing-progress span {
+    animation: none;
   }
 }
 

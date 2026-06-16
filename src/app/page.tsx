@@ -242,7 +242,7 @@ const translations = {
     },
   },
   ar: {
-    common: { login: "تسجيل الدخول", createAccount: "إنشاء حساب", importData: "استيراد البيانات", downloadTemplate: "تحميل قالب ديبت آي كيو", cancel: "إلغاء", confirm: "تأكيد الاستيراد", tryDemo: "تجربة العرض", next: "التالي", back: "رجوع", save: "حفظ", savedSuccessfully: "تم الحفظ بنجاح", unsavedChanges: "تعديلات غير محفوظة", income: "الدخل", lifestyle: "نمط الحياة", obligations: "الالتزامات", goals: "الأهداف", forecast: "التوقعات", bonus: "البونص", suggestedActions: "التوصيات", profile: "الملف الشخصي", accountAccess: "الوصول للحساب", debtCenter: "مركز الديون", recommendations: "التوصيات", opportunities: "الفرص المحتملة", upcomingExtraIncome: "دخل إضافي قادم", financialGapForecast: "توقع العجز المالي", goalCompletionForecast: "توقع اكتمال الأهداف", creditCardIntelligence: "تحليل البطاقات الائتمانية", printReport: "طباعة التقرير", printPreview: "معاينة الطباعة", executiveSummary: "التقرير المالي التنفيذي", actionPlan: "الإجراءات المقترحة", profileCompletion: "اكتمال الملف المالي" },
+    common: { login: "تسجيل الدخول", createAccount: "إنشاء حساب", importData: "استيراد البيانات", downloadTemplate: "تحميل قالب ديبت آي كيو", cancel: "إلغاء", confirm: "تأكيد الاستيراد", tryDemo: "تجربة العرض", next: "التالي", back: "رجوع", save: "حفظ", savedSuccessfully: "تم الحفظ بنجاح", unsavedChanges: "تعديلات غير محفوظة", income: "دخلك الشهري", lifestyle: "مصروفاتك الشهرية", obligations: "التزاماتك القادمة", goals: "أهدافك المالية", forecast: "التوقعات", bonus: "البونص", suggestedActions: "نصائح قد تساعدك", profile: "ملفك الشخصي", accountAccess: "الوصول للحساب", debtCenter: "البطاقات والديون", recommendations: "نصائح قد تساعدك", opportunities: "الفرص المحتملة", upcomingExtraIncome: "دخل إضافي قادم", financialGapForecast: "توقع العجز المالي", goalCompletionForecast: "توقع اكتمال الأهداف", creditCardIntelligence: "تحليل البطاقات الائتمانية", printReport: "طباعة التقرير", printPreview: "معاينة الطباعة", executiveSummary: "التقرير المالي التنفيذي", actionPlan: "خطوات مقترحة", profileCompletion: "اكتمال الملف المالي" },
     landing: {
       headline: "رتب دخلك والتزاماتك وأهدافك المالية في مكان واحد",
       body: "ديبت آي كيو يساعدك على فهم وضعك المالي، ترتيب دخلك، متابعة التزاماتك، التخطيط للمصاريف الكبيرة، واكتشاف العجز المالي قبل حدوثه.",
@@ -2006,6 +2006,32 @@ export default function Home() {
   const annualBonusIncomeSources = useMemo(() => incomeSources.filter(isAnnualBonusIncome), [incomeSources]);
   const extraIncomeEvents = useMemo(() => incomeSources.filter((income) => isAnnualBonusIncome(income) || income.recurring === false), [incomeSources]);
   const snapshot = useMemo(() => calculateSnapshot(monthlyIncomeSources, debts, obligationEntries, creditCards), [monthlyIncomeSources, debts, obligationEntries, creditCards]);
+  const showBetaSetupCard = sessionMode === "real" && monthlyIncomeSources.length === 0 && obligationEntries.length === 0 && creditCards.length === 0;
+  const friendlyReminderExamples = language === "ar"
+    ? ["رسوم المدارس؟", "عيد ميلاد الزوجة أو أحد الأبناء؟", "تأمين السيارة؟", "فاتورة الجوال أو الإنترنت؟", "إيجار أو صيانة البيت؟", "راتب العاملة أو تجديد الإقامة؟"]
+    : ["School fees?", "Wife's or child's birthday?", "Car insurance?", "Mobile or internet bill?", "Home rent or maintenance?", "Domestic worker salary or renewal?"];
+  const friendlyReminderCard = (
+    <div className="friendly-reminder-card rounded-lg border border-mint/30 bg-mint/10 p-5 shadow-sm">
+      <div className="flex items-start gap-3">
+        <div className="grid size-11 shrink-0 place-items-center rounded-lg bg-white text-xl shadow-sm dark:bg-white/10" aria-hidden="true">✨</div>
+        <div className="min-w-0">
+          <h3 className="text-lg font-black">{language === "ar" ? "هل نسينا شيئاً مهماً؟" : "Did we forget something important?"}</h3>
+          <p className="mt-2 text-sm font-semibold leading-7 text-slate-600 dark:text-slate-200">
+            {language === "ar"
+              ? "أحياناً المشكلة ليست في الراتب، بل في الأشياء الصغيرة التي تفاجئنا آخر الشهر."
+              : "Sometimes the issue is not the salary, but the small things that surprise us at the end of the month."}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {friendlyReminderExamples.map((item) => (
+              <span key={item} className="rounded-lg border border-white/60 bg-white/75 px-3 py-2 text-sm font-black text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-100">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
   const matches = useMemo(
     () =>
       offers.filter(
@@ -2069,16 +2095,16 @@ export default function Home() {
     const lower = item.name.toLowerCase();
     const recommendation =
       item.current < item.suggested * 0.75
-        ? `Your current ${lower} is below the suggested range. Keep it steady if this feels realistic.`
+        ? language === "ar" ? `بند ${item.name} أقل من النطاق الإرشادي. ممتاز إذا كان هذا مناسباً لحياتك.` : `Your current ${lower} is below the suggested range. Keep it steady if this feels realistic.`
         : item.current > item.suggested * 1.25
-          ? `Your current ${lower} is above the suggested range. Consider trimming this category gently.`
-          : `Your current ${lower} is within the suggested range.`;
+          ? language === "ar" ? `بند ${item.name} أعلى من النطاق الإرشادي. قد يكون من الأفضل تخفيفه قليلاً.` : `Your current ${lower} is above the suggested range. Consider trimming this category gently.`
+          : language === "ar" ? `بند ${item.name} ضمن النطاق الإرشادي.` : `Your current ${lower} is within the suggested range.`;
 
     return { ...item, recommendation };
   });
   const lifestyleWarnings = lifestyleBudgetGuidance
     .filter((item) => item.current > item.suggested * 1.25 && item.name !== "Savings")
-    .map((item) => `Based on your income, your ${item.name.toLowerCase()} budget may be high.`);
+    .map((item) => language === "ar" ? `قد يكون من الأفضل تخفيف بند ${item.name} قليلاً حسب دخلك.` : `Based on your income, your ${item.name.toLowerCase()} budget may benefit from a gentle trim.`);
   const topObligations = obligationEntries
     .map((obligation) => ({ label: obligation.name, value: getMonthlyObligationImpact(obligation) }))
     .filter((obligation) => obligation.value > 0)
@@ -2278,10 +2304,10 @@ export default function Home() {
       title: language === "ar" ? "توصية صندوق الطوارئ" : "Emergency fund recommendation",
       body:
         !emergencyFundForecast
-          ? language === "ar" ? "لم يتم تحديد صندوق الطوارئ بعد." : "Your emergency fund is not set."
+          ? language === "ar" ? "لم نضف صندوق طوارئ بعد. بداية بسيطة قد تكون كافية." : "No emergency fund is set yet. A small start can be enough."
           : snapshot.cashFlow > 0
           ? language === "ar" ? `حاول ادخار ${currency.format(recommendedEmergencySaving)} شهرياً في صندوق الطوارئ.` : `Try saving ${currency.format(recommendedEmergencySaving)} monthly in your emergency fund.`
-          : language === "ar" ? "أغلق العجز الشهري أولا، ثم أعد تشغيل مساهمات صندوق الطوارئ." : "Close the monthly deficit first, then restart emergency fund contributions.",
+          : language === "ar" ? "قد يكون من الأفضل ترتيب العجز الشهري أولاً، ثم العودة لصندوق الطوارئ." : "It may help to settle the monthly gap first, then return to emergency fund contributions.",
       tone: !emergencyFundForecast || snapshot.cashFlow <= 0 ? "warn" : "good",
     },
     {
@@ -2295,18 +2321,18 @@ export default function Home() {
       title: language === "ar" ? "تنبيه استخدام مرتفع للبطاقة الائتمانية" : "High credit card utilization warning",
       body:
         highestUtilizationCard && highestUtilizationCard.utilization >= 100
-          ? language === "ar" ? "إحدى البطاقات الائتمانية مستخدمة بالكامل." : "One credit card is fully utilized."
+          ? language === "ar" ? "هذه البطاقة تحتاج انتباه لأنها مستخدمة بالكامل تقريباً." : "This card needs attention because it is almost or fully utilized."
           : highestUtilizationCard && highestUtilizationCard.utilization > 80
-          ? language === "ar" ? `${highestUtilizationCard.cardName} عند استخدام ${Math.round(highestUtilizationCard.utilization)}%. أعط الأولوية للسداد أو خفض الاستخدام.` : `${highestUtilizationCard.cardName} is at ${Math.round(highestUtilizationCard.utilization)}% utilization. Prioritize payoff or limit reduction.`
-          : language === "ar" ? "استخدام البطاقات الائتمانية لا يظهر نمطا عالي الخطورة." : "Credit card utilization is not showing a high-risk pattern.",
+          ? language === "ar" ? `${highestUtilizationCard.cardName} عند استخدام ${Math.round(highestUtilizationCard.utilization)}%. قد يكون من الأفضل تخفيف استخدامها قليلاً.` : `${highestUtilizationCard.cardName} is at ${Math.round(highestUtilizationCard.utilization)}% utilization. It may help to reduce usage gently.`
+          : language === "ar" ? "استخدام البطاقات الائتمانية يبدو مستقراً حالياً." : "Credit card utilization looks steady for now.",
       tone: highestUtilizationCard && highestUtilizationCard.utilization > 80 ? "bad" : "good",
     },
     {
       title: language === "ar" ? "توصية مصاريف نمط الحياة" : "Lifestyle spending suggestion",
       body:
         totalLifestyleExpenses > snapshot.totalIncome * 0.35
-          ? language === "ar" ? "مصاريف نمط الحياة مرتفعة مقارنة بدخلك. راجع المطاعم والترفيه والاشتراكات والخدمات." : "Your lifestyle spending is high compared to your income. Review restaurants, entertainment, subscriptions, and utilities."
-          : language === "ar" ? "مصاريف نمط الحياة ضمن النطاق الإرشادي حاليا." : "Lifestyle spending is within the soft guidance range for now.",
+          ? language === "ar" ? "قد يكون من الأفضل تخفيف بعض بنود نمط الحياة قليلاً، مثل المطاعم أو الاشتراكات، بدون ضغط." : "It may help to trim some lifestyle categories gently, such as restaurants or subscriptions."
+          : language === "ar" ? "مصاريف نمط الحياة تبدو ضمن النطاق الإرشادي حالياً." : "Lifestyle spending looks within the soft guidance range for now.",
       tone: totalLifestyleExpenses > snapshot.totalIncome * 0.35 ? "warn" : "good",
     },
     {
@@ -2315,7 +2341,7 @@ export default function Home() {
         snapshot.totalDebt > 0 && snapshot.cashFlow > 0
           ? language === "ar" ? `لديك حالياً ${currency.format(snapshot.availableCashFlow)} متاحة شهرياً. فكر في تخصيص جزء منها لأهدافك.` : `You currently have ${currency.format(snapshot.availableCashFlow)} available monthly. Consider allocating part of this amount toward your goals.`
           : snapshot.totalDebt > 0
-            ? language === "ar" ? "تجنب إضافة دين جديد حتى يصبح التدفق النقدي إيجابيا." : "Avoid adding new debt until cash flow turns positive."
+            ? language === "ar" ? "قبل إضافة دين جديد، قد يكون من الأفضل تحسين التدفق النقدي قليلاً." : "Before adding new debt, it may help to improve cash flow a little."
             : language === "ar" ? "لا يوجد رصيد دين نشط مسجل." : "No active debt balance is recorded.",
       tone: snapshot.totalDebt > 0 && snapshot.cashFlow <= 0 ? "warn" : "good",
     },
@@ -4179,10 +4205,7 @@ export default function Home() {
                   </p>
                   <div className="mt-9 grid gap-3 sm:flex">
                     <button className="h-12 rounded-lg bg-ink px-6 text-sm font-black text-white shadow-premium transition hover:-translate-y-0.5 dark:bg-mint dark:text-ink" onClick={openRegistrationFromLanding}>
-                      {language === "ar" ? "ابدأ مجاناً" : "Start Free"}
-                    </button>
-                    <button className="h-12 rounded-lg border border-slate-200 bg-white/85 px-6 text-sm font-black backdrop-blur transition hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/5" onClick={openDemoFromLanding}>
-                      {language === "ar" ? "جرّب الديمو" : "Try Demo"}
+                      {language === "ar" ? "ابدأ الآن مجاناً" : "Start free"}
                     </button>
                   </div>
                   <div className="mt-5">{installExperience}</div>
@@ -4251,6 +4274,9 @@ export default function Home() {
                       ? "خصص 2,000 ريال لصندوق الطوارئ و1,500 ريال لتسريع سداد الديون."
                       : "Allocate SAR 2,000 to your emergency fund and SAR 1,500 to accelerate debt payoff."}
                   </p>
+                  <button className="mt-4 text-sm font-black text-emerald-700 underline underline-offset-4 dark:text-mint" onClick={openDemoFromLanding} type="button">
+                    {language === "ar" ? "جرّب مثال الصورة المالية" : "Try the financial picture demo"}
+                  </button>
                 </div>
               </div>
             </div>
@@ -4297,18 +4323,24 @@ export default function Home() {
                 <h3 className="mt-2 text-2xl font-black">{language === "ar" ? "كريم" : "Karim"}</h3>
                 <p className="mt-3 text-base font-semibold leading-8 text-slate-600 dark:text-slate-200">
                   {language === "ar"
-                    ? "كان يعتقد أن المشكلة في الراتب. ثم اكتشف أن المشكلة كانت في عدم رؤية الصورة المالية كاملة."
-                    : "He thought the problem was his salary. Then he realized the real issue was not seeing his full financial picture."}
+                    ? "راتبه جيد، لكن نهاية الشهر دائماً تضغطه. عنده بطاقة والتزامات، ويريد أن يعرف أين يذهب الراتب بهدوء."
+                    : "His salary is good, but the end of the month always feels tight. He has a card, obligations, and wants to understand where his salary goes."}
                 </p>
+                <button className="mt-4 h-10 rounded-lg border border-mint/40 px-4 text-sm font-black text-emerald-700 dark:text-mint" onClick={openDemoFromLanding} type="button">
+                  {language === "ar" ? "شاهد مثال كريم" : "View Karim's example"}
+                </button>
               </div>
               <div className="landing-soft-card p-6">
                 <p className="text-2xl" aria-hidden="true">👩</p>
                 <h3 className="mt-2 text-2xl font-black">{language === "ar" ? "كريمة" : "Karima"}</h3>
                 <p className="mt-3 text-base font-semibold leading-8 text-slate-600 dark:text-slate-200">
                   {language === "ar"
-                    ? "كانت تدير التزامات المنزل والمدارس. واكتشفت أنها تستطيع التخطيط للمستقبل بطريقة أبسط."
-                    : "She was managing home obligations and school fees. She discovered she could plan for the future in a simpler way."}
+                    ? "تبغى ترتب مصاريف البيت والمدارس بدون مفاجآت، وتبني صندوق طوارئ يحمي قرارات العائلة."
+                    : "She wants to organize home spending and school fees without surprises, while building an emergency fund for the family."}
                 </p>
+                <button className="mt-4 h-10 rounded-lg border border-mint/40 px-4 text-sm font-black text-emerald-700 dark:text-mint" onClick={openDemoFromLanding} type="button">
+                  {language === "ar" ? "شاهد مثال كريمة" : "View Karima's example"}
+                </button>
               </div>
               <div className="lg:col-span-2">
                 <button className="h-12 rounded-lg bg-ink px-6 text-sm font-black text-white shadow-premium transition hover:-translate-y-0.5 dark:bg-mint dark:text-ink" onClick={openRegistrationFromLanding}>
@@ -4346,12 +4378,12 @@ export default function Home() {
               </p>
               <div className="mt-6 grid gap-3 sm:flex sm:justify-center">
                 <button className="h-12 rounded-lg bg-ink px-6 text-sm font-black text-white shadow-premium dark:bg-mint dark:text-ink" onClick={openRegistrationFromLanding}>
-                  {language === "ar" ? "ابدأ مجاناً" : "Start Free"}
-                </button>
-                <button className="h-12 rounded-lg border border-slate-200 bg-white px-6 text-sm font-black dark:border-white/10 dark:bg-white/5" onClick={openDemoFromLanding}>
-                  {language === "ar" ? "جرّب الديمو" : "Try Demo"}
+                  {language === "ar" ? "ابدأ الآن مجاناً" : "Start free"}
                 </button>
               </div>
+              <button className="mt-4 text-sm font-black text-emerald-700 underline underline-offset-4 dark:text-mint" onClick={openDemoFromLanding} type="button">
+                {language === "ar" ? "أو شاهد مثال كريم وكريمة أولاً" : "Or view Karim and Karima's example first"}
+              </button>
             </div>
           </section>
         </div>
@@ -4405,7 +4437,7 @@ export default function Home() {
 
             <nav className="mt-6 grid grid-cols-2 gap-2 lg:grid-cols-1">
               {[
-                ["dashboard", "Dashboard", <LayoutDashboard key="i" size={18} />],
+                ["dashboard", language === "ar" ? "لوحتك المالية" : "Dashboard", <LayoutDashboard key="i" size={18} />],
                 ["income", t.common.income, <CircleDollarSign key="i" size={18} />],
                 ["lifestyle", t.common.lifestyle, <Calculator key="i" size={18} />],
                 ["obligations", t.common.obligations, <CreditCardIcon key="i" size={18} />],
@@ -5175,16 +5207,48 @@ export default function Home() {
 
             {flow === "app" && active === "dashboard" && (
               <div className="grid gap-5">
-                {sessionMode === "real" && (
-                  <div className="rounded-lg border border-mint/30 bg-mint/10 p-5 shadow-sm">
-                    <h3 className="text-xl font-black">{language === "ar" ? "مرحباً بك في ديبت آي كيو." : "Welcome to DebtIQ."}</h3>
-                    <p className="mt-2 text-sm font-bold leading-6 text-slate-600 dark:text-slate-200">
-                      {language === "ar"
-                        ? "ابدأ بإضافة دخلك والتزاماتك وبطاقاتك من الأقسام التالية."
-                        : "Start by adding your income, obligations, and cards from the dashboard tabs."}
-                    </p>
+                {showBetaSetupCard && (
+                  <div className="rounded-lg border border-mint/40 bg-gradient-to-br from-mint/15 via-white/85 to-white p-5 shadow-premium dark:from-mint/15 dark:via-white/5 dark:to-white/0">
+                    <div className="flex items-start gap-3">
+                      <div className="grid size-12 shrink-0 place-items-center rounded-lg bg-mint/20 text-2xl" aria-hidden="true">👋</div>
+                      <div className="min-w-0">
+                        <h3 className="text-xl font-black">{language === "ar" ? "مرحباً بك في ديبت آي كيو" : "Welcome to DebtIQ"}</h3>
+                        <p className="mt-2 text-[15px] font-bold leading-7 text-slate-600 dark:text-slate-200">
+                          {language === "ar"
+                            ? "خلّينا نبدأ بهدوء. أضف دخلك أولاً، ثم التزاماتك، وبعدها بطاقاتك وأهدافك. كلما أضفت معلومات أكثر، أصبحت صورتك المالية أوضح."
+                            : "Let's start gently. Add your income first, then your obligations, cards, and goals. The more you add, the clearer your financial picture becomes."}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-5 grid gap-2 sm:grid-cols-4">
+                      {[
+                        language === "ar" ? "1 الدخل" : "1 Income",
+                        language === "ar" ? "2 الالتزامات" : "2 Obligations",
+                        language === "ar" ? "3 بطاقات" : "3 Cards",
+                        language === "ar" ? "4 أهداف" : "4 Goals",
+                      ].map((step) => (
+                        <span key={step} className="rounded-lg border border-mint/30 bg-white/75 px-3 py-2 text-center text-xs font-black text-emerald-700 dark:bg-white/5 dark:text-mint">
+                          {step}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="mt-4 grid gap-2 sm:grid-cols-4">
+                      <button className="h-11 rounded-lg bg-ink px-3 text-sm font-black text-white dark:bg-mint dark:text-ink" type="button" onClick={() => setActive("income")}>
+                        {language === "ar" ? "أضف دخلي" : "Add my income"}
+                      </button>
+                      <button className="h-11 rounded-lg border border-mint/40 bg-white/70 px-3 text-sm font-black text-ink dark:bg-white/5 dark:text-white" type="button" onClick={() => setActive("obligations")}>
+                        {language === "ar" ? "أضف التزاماتي" : "Add my obligations"}
+                      </button>
+                      <button className="h-11 rounded-lg border border-mint/40 bg-white/70 px-3 text-sm font-black text-ink dark:bg-white/5 dark:text-white" type="button" onClick={() => setActive("debts")}>
+                        {language === "ar" ? "أضف بطاقاتي" : "Add my cards"}
+                      </button>
+                      <button className="h-11 rounded-lg border border-slate-200 bg-white/70 px-3 text-sm font-black text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200" type="button" onClick={() => setActive("goals")}>
+                        {language === "ar" ? "أضيف أهدافي لاحقاً" : "Add goals later"}
+                      </button>
+                    </div>
                   </div>
                 )}
+                {showBetaSetupCard && friendlyReminderCard}
                 {(importWizardOpen || importPreview || importErrors.length > 0 || importSummary) && (
                   <div className="rounded-lg border border-white/70 bg-white/85 p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -5939,10 +6003,17 @@ export default function Home() {
                             <div className="h-3 rounded-full bg-mint" style={{ width: `${progress}%` }} />
                           </div>
                         </div>
-                      );
-                    })}
+                        );
+                      })}
+                      {goals.length === 0 && (
+                        <div className="rounded-lg border border-dashed border-mint/40 bg-mint/10 p-4 text-sm font-semibold leading-7 text-slate-600 dark:text-slate-200">
+                          {language === "ar"
+                            ? "لا تحتاج هدفاً كبيراً من البداية. مبلغ بسيط شهرياً قد يساعدك تبني صندوق طوارئ أو تسدد بطاقة أسرع."
+                            : "You do not need a big goal to start. A small monthly amount can help build an emergency fund or pay a card faster."}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
               </div>
             )}
 
@@ -5987,6 +6058,13 @@ export default function Home() {
                         </div>
                       </div>
                     ))}
+                    {debts.length === 0 && (
+                      <div className="rounded-lg border border-dashed border-mint/40 bg-mint/10 p-4 text-sm font-semibold leading-7 text-slate-600 dark:text-slate-200">
+                        {language === "ar"
+                          ? "إذا عندك قرض أو تمويل، أضفه هنا بهدوء. الهدف ليس الحكم عليك، بل توضيح الصورة."
+                          : "If you have a loan or financing, add it here gently. The goal is not judgment, it is clarity."}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -5997,8 +6075,8 @@ export default function Home() {
                       <Plus size={18} />
                     </button>
                   </div>
-                  <div className="mt-4 grid gap-4">
-                    {creditCards.map((card, index) => (
+                    <div className="mt-4 grid gap-4">
+                      {creditCards.map((card, index) => (
                       <div key={card.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
                         <div className="flex items-center justify-between gap-3">
                           <div>
@@ -6024,6 +6102,13 @@ export default function Home() {
                         </div>
                       </div>
                     ))}
+                    {creditCards.length === 0 && (
+                      <div className="rounded-lg border border-dashed border-mint/40 bg-mint/10 p-4 text-sm font-semibold leading-7 text-slate-600 dark:text-slate-200">
+                        {language === "ar"
+                          ? "إذا عندك بطاقة ائتمانية، أضفها هنا. سنساعدك تعرف هل استخدامها آمن أو يحتاج انتباه."
+                          : "If you have a credit card, add it here. We will help you see whether its usage looks comfortable or needs attention."}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -6078,6 +6163,13 @@ export default function Home() {
                         </div>
                       </div>
                     ))}
+                    {obligationEntries.length === 0 && (
+                      <div className="rounded-lg border border-dashed border-mint/40 bg-mint/10 p-4 text-sm font-semibold leading-7 text-slate-600 dark:text-slate-200">
+                        {language === "ar"
+                          ? "أضف التزاماتك الشهرية أو السنوية. حتى الالتزامات الصغيرة تستحق أن تكون واضحة."
+                          : "Add your monthly or annual obligations. Even small commitments deserve to be visible."}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -6105,7 +6197,13 @@ export default function Home() {
                     <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-300">Used for monthly obligations and pressure calculations.</p>
                     <div className="mt-3 grid gap-4 md:grid-cols-2">
                       {incomeSources.map((income, index) => (!isAnnualBonusIncome(income) && income.recurring !== false ? renderIncomeEditor(income, index) : null))}
-                      {monthlyIncomeSources.length === 0 && <p className="rounded-lg border border-dashed border-slate-300 p-4 text-sm font-semibold text-slate-500 dark:border-white/20 dark:text-slate-300">No recurring monthly income added yet.</p>}
+                      {monthlyIncomeSources.length === 0 && (
+                        <div className="rounded-lg border border-dashed border-mint/40 bg-mint/10 p-4 text-sm font-semibold leading-7 text-slate-600 dark:text-slate-200">
+                          {language === "ar"
+                            ? "ابدأ بإضافة دخلك الشهري. هذه أول خطوة لفهم وضعك المالي."
+                            : "Start by adding your monthly income. This is the first step toward understanding your financial picture."}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -6113,7 +6211,11 @@ export default function Home() {
                     <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-300">Bonuses and one-time income appear only in their expected month.</p>
                     <div className="mt-3 grid gap-4 md:grid-cols-2">
                       {incomeSources.map((income, index) => (isAnnualBonusIncome(income) || income.recurring === false ? renderIncomeEditor(income, index) : null))}
-                      {extraIncomeEvents.length === 0 && <p className="rounded-lg border border-dashed border-slate-300 p-4 text-sm font-semibold text-slate-500 dark:border-white/20 dark:text-slate-300">No extra income events added yet.</p>}
+                      {extraIncomeEvents.length === 0 && (
+                        <div className="rounded-lg border border-dashed border-slate-300 p-4 text-sm font-semibold leading-7 text-slate-500 dark:border-white/20 dark:text-slate-300">
+                          {language === "ar" ? "إذا عندك بونص أو دخل إضافي قادم، أضفه هنا وقت ما تكون جاهز." : "If you expect a bonus or extra income event, add it here whenever you are ready."}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -6132,6 +6234,7 @@ export default function Home() {
                       <Plus size={18} />
                     </button>
                   </div>
+                  <div className="mt-4">{friendlyReminderCard}</div>
                   <div className="mt-4 grid gap-4 md:grid-cols-2">
                     {lifestyleExpenses.map((expense) => (
                       <div key={expense.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
@@ -6148,8 +6251,10 @@ export default function Home() {
                       </div>
                     ))}
                     {lifestyleExpenses.length === 0 && (
-                      <button className="h-11 rounded-lg border border-dashed border-slate-300 text-sm font-bold dark:border-white/20" onClick={addLifestyleExpense}>
-                        Add your first lifestyle expense
+                      <button className="min-h-20 rounded-lg border border-dashed border-mint/40 bg-mint/10 px-4 py-3 text-start text-sm font-bold leading-7 text-slate-600 dark:text-slate-200" onClick={addLifestyleExpense}>
+                        {language === "ar"
+                          ? "أضف مصاريفك الشهرية مثل المقاضي، البنزين، القهوة، الاشتراكات، أو الفواتير. التفاصيل الصغيرة تساعد الصورة تكمل."
+                          : "Add monthly spending like groceries, fuel, coffee, subscriptions, or bills. Small details help complete the picture."}
                       </button>
                     )}
                   </div>
@@ -6185,6 +6290,7 @@ export default function Home() {
                     <Plus size={18} />
                   </button>
                 </div>
+                <div className="mt-4">{friendlyReminderCard}</div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
                   {obligationEntries.map((obligation, index) => (
                     <div key={obligation.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
@@ -6226,6 +6332,13 @@ export default function Home() {
                       </div>
                     </div>
                   ))}
+                  {obligationEntries.length === 0 && (
+                    <button className="min-h-20 rounded-lg border border-dashed border-mint/40 bg-mint/10 px-4 py-3 text-start text-sm font-bold leading-7 text-slate-600 dark:text-slate-200" onClick={addObligationEntry}>
+                      {language === "ar"
+                        ? "أضف التزاماتك الشهرية أو السنوية. حتى الالتزامات الصغيرة تستحق أن تكون واضحة."
+                        : "Add your monthly or annual obligations. Even small commitments deserve to be visible."}
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -6242,7 +6355,13 @@ export default function Home() {
                   </button>
                 </div>
                 <div className="mt-4 grid gap-4 xl:grid-cols-2">
-                  {goals.length === 0 && <p className="rounded-lg border border-dashed border-slate-300 p-4 text-sm font-semibold text-slate-500 dark:border-white/20 dark:text-slate-300">No goals added yet.</p>}
+                  {goals.length === 0 && (
+                    <button className="min-h-20 rounded-lg border border-dashed border-mint/40 bg-mint/10 px-4 py-3 text-start text-sm font-bold leading-7 text-slate-600 dark:text-slate-200" onClick={addGoal}>
+                      {language === "ar"
+                        ? "اختر هدفاً بسيطاً. صندوق طوارئ، سداد بطاقة، أو رسوم مدارس. خطوة صغيرة تكفي للبداية."
+                        : "Choose one simple goal. Emergency fund, card payoff, or school fees. One small step is enough to begin."}
+                    </button>
+                  )}
                   {goals.map((goal, index) => renderGoalEditor(goal, index))}
                 </div>
               </div>
