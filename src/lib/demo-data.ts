@@ -3,19 +3,30 @@ import type { AdminUser, CreditCard, Debt, Goal, IncomeSource, Lead, ObligationE
 export const isDemoMode = process.env.NEXT_PUBLIC_DEBTIQ_DEMO_MODE !== "false";
 
 export const seedProfile: UserProfile = {
-  fullName: "Aisha Mohammed",
-  mobile: "+966 55 123 4567",
-  email: "aisha.mohammed@example.com",
+  fullName: "كريم",
+  mobile: "+966 55 100 2000",
+  email: "karim.demo@example.com",
   country: "Saudi Arabia",
   city: "Riyadh",
-  employer: "Premium Retail Group",
+  employer: "Private Company",
   employmentSector: "Private Sector",
+  maritalStatus: "Single",
+};
+
+export const seedKarimaProfile: UserProfile = {
+  fullName: "كريمة",
+  mobile: "+966 55 300 4000",
+  email: "karima.demo@example.com",
+  country: "Saudi Arabia",
+  city: "Jeddah",
+  employer: "Household Planning",
+  employmentSector: "Prefer not to say",
   maritalStatus: "Married",
 };
 
 export const seedAdminUsers: AdminUser[] = [
   {
-    id: "u1",
+    id: "demo-karim",
     ...seedProfile,
     createdAt: "2026-06-01T09:30:00.000Z",
     lastLogin: "2026-06-14T18:05:00.000Z",
@@ -29,24 +40,17 @@ export const seedAdminUsers: AdminUser[] = [
     leadCount: 1,
   },
   {
-    id: "u2",
-    fullName: "Mohammed Khalid",
-    mobile: "+966 54 987 6543",
-    email: "mohammed.khalid@example.com",
-    country: "Saudi Arabia",
-    city: "Jeddah",
-    employer: "Logistics Co.",
-    employmentSector: "Private Sector",
-    maritalStatus: "Single",
+    id: "demo-karima",
+    ...seedKarimaProfile,
     createdAt: "2026-06-04T13:15:00.000Z",
     lastLogin: "2026-06-13T11:30:00.000Z",
     userType: "Demo",
     status: "Active",
-    profileCompletion: 72,
-    incomeSourceCount: 1,
-    obligationCount: 3,
+    profileCompletion: 92,
+    incomeSourceCount: 2,
+    obligationCount: 5,
     creditCardCount: 1,
-    goalCount: 2,
+    goalCount: 3,
     leadCount: 1,
   },
 ];
@@ -211,6 +215,125 @@ export const seedCreditCards: CreditCard[] = [
   },
 ];
 
+export const seedKarimaDebts: Debt[] = [
+  {
+    id: "karima-d1",
+    type: "Personal Loan",
+    name: "Family planning loan",
+    bank: "Al Rajhi",
+    remainingBalance: 68000,
+    monthlyInstallment: 2600,
+    interestRate: 3.9,
+    endDate: "2028-11-30",
+  },
+];
+
+export const seedKarimaIncomeSources: IncomeSource[] = [
+  {
+    id: "karima-i1",
+    name: "Household salary",
+    amount: 18000,
+    type: "Salary",
+    recurring: true,
+  },
+  {
+    id: "karima-i2",
+    name: "Small business income",
+    amount: 2500,
+    type: "Business",
+    recurring: true,
+  },
+];
+
+export const seedKarimaObligationEntries: ObligationEntry[] = [
+  {
+    id: "karima-ob1",
+    name: "School fees",
+    monthlyAmount: 24000,
+    category: "Education",
+    dueDay: 15,
+    isRecurring: false,
+    frequency: "One-Time",
+    dueDate: "2026-08-15",
+    startDate: "2026-06-01",
+    allocationMethod: "Spread amount monthly until due date",
+    savedAmount: 4000,
+    notes: "Upcoming school fee planned as a sinking fund.",
+  },
+  {
+    id: "karima-ob2",
+    name: "Groceries and household",
+    monthlyAmount: 4200,
+    category: "Lifestyle",
+    dueDay: 5,
+    isRecurring: true,
+    frequency: "Monthly",
+    dueDate: "2026-06-05",
+    startDate: "2026-01-01",
+    allocationMethod: "Count full amount only in due month",
+    savedAmount: 0,
+    notes: "Core household spending.",
+  },
+  {
+    id: "karima-ob3",
+    name: "Utilities and mobile bills",
+    monthlyAmount: 1600,
+    category: "Lifestyle",
+    dueDay: 20,
+    isRecurring: true,
+    frequency: "Monthly",
+    dueDate: "2026-06-20",
+    startDate: "2026-01-01",
+    allocationMethod: "Count full amount only in due month",
+    savedAmount: 0,
+    notes: "Utilities, internet, and mobile bills.",
+  },
+  {
+    id: "karima-ob4",
+    name: "Emergency fund saving",
+    monthlyAmount: 2000,
+    category: "Other",
+    dueDay: 1,
+    isRecurring: true,
+    frequency: "Monthly",
+    dueDate: "2026-06-01",
+    startDate: "2026-06-01",
+    allocationMethod: "Count full amount only in due month",
+    savedAmount: 0,
+    notes: "Monthly saving toward family emergency fund.",
+  },
+  {
+    id: "karima-ob5",
+    name: "Loan installment",
+    monthlyAmount: 2600,
+    category: "Loan",
+    dueDay: 28,
+    isRecurring: true,
+    frequency: "Monthly",
+    dueDate: "2026-06-28",
+    startDate: "2026-01-01",
+    endDate: "2028-11-30",
+    allocationMethod: "Count full amount only in due month",
+    savedAmount: 0,
+    notes: "Personal loan installment.",
+  },
+];
+
+export const seedKarimaCreditCards: CreditCard[] = [
+  {
+    id: "karima-cc1",
+    cardName: "Household card",
+    provider: "SAB",
+    creditLimit: 22000,
+    currentBalance: 9800,
+    minimumPaymentDue: 900,
+    statementTotalDue: 3100,
+    dueDate: "2026-06-22",
+    aprOrProfitRate: 19,
+    notes: "Used for family and school-related purchases.",
+  },
+];
+
 export const seedOffers: Offer[] = [
   {
     id: "o1",
@@ -262,7 +385,7 @@ export const seedOffers: Offer[] = [
 export const seedAdminLeads: Lead[] = [
   {
     id: "l1",
-    userId: "u1",
+    userId: "demo-karim",
     userName: seedProfile.fullName,
     mobile: seedProfile.mobile,
     email: seedProfile.email,
@@ -272,10 +395,10 @@ export const seedAdminLeads: Lead[] = [
   },
   {
     id: "l2",
-    userId: "u2",
-    userName: "Mohammed Khalid",
-    mobile: "+966 54 987 6543",
-    email: "mohammed.khalid@example.com",
+    userId: "demo-karima",
+    userName: seedKarimaProfile.fullName,
+    mobile: seedKarimaProfile.mobile,
+    email: seedKarimaProfile.email,
     offerSelected: "Credit card consolidation",
     timestamp: "2026-06-11T15:45:00.000Z",
     status: "Contacted",
@@ -334,5 +457,38 @@ export const seedGoals: Goal[] = [
     targetDate: "2029-12-31",
     priority: "Medium",
     notes: "Long-term housing goal.",
+  },
+];
+
+export const seedKarimaGoals: Goal[] = [
+  {
+    id: "karima-g1",
+    name: "Family emergency fund",
+    type: "Emergency Fund",
+    targetAmount: 55000,
+    currentAmount: 16000,
+    targetDate: "2027-06-30",
+    priority: "High",
+    notes: "Build stability for household surprises.",
+  },
+  {
+    id: "karima-g2",
+    name: "School fees reserve",
+    type: "School Fees",
+    targetAmount: 24000,
+    currentAmount: 4000,
+    targetDate: "2026-08-15",
+    priority: "High",
+    notes: "Prepare for upcoming school fees.",
+  },
+  {
+    id: "karima-g3",
+    name: "Household stability plan",
+    type: "Other",
+    targetAmount: 30000,
+    currentAmount: 9000,
+    targetDate: "2027-12-31",
+    priority: "Medium",
+    notes: "Keep family budget steady across the year.",
   },
 ];

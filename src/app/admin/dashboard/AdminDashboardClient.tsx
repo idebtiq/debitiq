@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { BarChart3, Eye, Pencil, Plus, ShieldAlert, Trash2 } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { AdminLogout } from "../AdminLogout";
+import { seedAdminUsers } from "@/lib/demo-data";
 import type { AdminUser, Lead, LeadStatus, Offer, OfferType, UserStatus } from "@/lib/types";
 
 const offerTypes: OfferType[] = ["Debt Transfer", "Refinancing", "Personal Loan", "Mortgage", "Auto Finance", "Credit Card", "Other"];
@@ -255,8 +256,8 @@ export function AdminDashboardClient({
   const loginSourceUsersCount = activeRealUserCount;
   const userStoreMismatch = activeRealUserCount !== loginSourceUsersCount;
   const demoUsers = useMemo(
-    () => initialUsers.map((user) => ({ ...user, userType: "Demo" as const })).filter((user) => user.userType === "Demo"),
-    [initialUsers],
+    () => seedAdminUsers.map((user) => ({ ...user, userType: "Demo" as const })).filter((user) => user.userType === "Demo"),
+    [],
   );
   const stats = useMemo(() => {
     const totalLeads = leads.length;

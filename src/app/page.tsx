@@ -64,6 +64,12 @@ import {
   seedDebts,
   seedGoals,
   seedIncomeSources,
+  seedKarimaCreditCards,
+  seedKarimaDebts,
+  seedKarimaGoals,
+  seedKarimaIncomeSources,
+  seedKarimaObligationEntries,
+  seedKarimaProfile,
   seedObligationEntries,
   seedOffers,
   seedProfile,
@@ -952,6 +958,20 @@ const demoUserData: UserOwnedData = {
   goals: seedGoals,
   leads: [],
 };
+
+const karimaDemoUserData: UserOwnedData = {
+  profile: seedKarimaProfile,
+  debts: seedKarimaDebts,
+  creditCards: seedKarimaCreditCards,
+  incomeSources: seedKarimaIncomeSources,
+  obligationEntries: seedKarimaObligationEntries,
+  goals: seedKarimaGoals,
+  leads: [],
+};
+
+function getDemoUserData(persona?: string): UserOwnedData {
+  return persona === "demo-karima" || persona === "karima" ? karimaDemoUserData : demoUserData;
+}
 
 const sessionStorageKey = "debtiq.session.v1";
 const betaUsersRegistryStorageKey = "debtiq.users.registry.v1";
@@ -1877,7 +1897,7 @@ export default function Home() {
         setShowDraftRecovery(true);
       }
     } else if (storedSession?.mode === "demo") {
-      applyUserData(demoUserData);
+      applyUserData(getDemoUserData(storedSession.userId));
       setCurrentUserId("");
       setSessionMode("demo");
       setSessionStatus("Demo Mode \u2014 sample data only");
@@ -3206,12 +3226,13 @@ export default function Home() {
     setActive("profile");
   }
 
-  function startDemoMode() {
+  function startDemoMode(persona: "karim" | "karima" = "karim") {
     if (sessionMode === "real") return;
-    applyUserData(demoUserData);
+    const demoUserId = persona === "karima" ? "demo-karima" : "demo-karim";
+    applyUserData(getDemoUserData(demoUserId));
     setCurrentUserId("");
     setSessionMode("demo");
-    writeJson(sessionStorageKey, { mode: "demo", userId: "demo", authProvider: "demo" } satisfies StoredSession);
+    writeJson(sessionStorageKey, { mode: "demo", userId: demoUserId, authProvider: "demo" } satisfies StoredSession);
     setSessionStatus("Demo Mode \u2014 sample data only");
     setFlow("app");
     setActive("dashboard");
@@ -3233,8 +3254,8 @@ export default function Home() {
     startLogin();
   }
 
-  function openDemoFromLanding() {
-    startDemoMode();
+  function openDemoFromLanding(persona: "karim" | "karima" = "karim") {
+    startDemoMode(persona);
     if (pathname !== "/app") {
       router.push("/app");
     }
@@ -4274,9 +4295,6 @@ export default function Home() {
                       ? "خصص 2,000 ريال لصندوق الطوارئ و1,500 ريال لتسريع سداد الديون."
                       : "Allocate SAR 2,000 to your emergency fund and SAR 1,500 to accelerate debt payoff."}
                   </p>
-                  <button className="mt-4 text-sm font-black text-emerald-700 underline underline-offset-4 dark:text-mint" onClick={openDemoFromLanding} type="button">
-                    {language === "ar" ? "جرّب مثال الصورة المالية" : "Try the financial picture demo"}
-                  </button>
                 </div>
               </div>
             </div>
@@ -4326,7 +4344,7 @@ export default function Home() {
                     ? "راتبه جيد، لكن نهاية الشهر دائماً تضغطه. عنده بطاقة والتزامات، ويريد أن يعرف أين يذهب الراتب بهدوء."
                     : "His salary is good, but the end of the month always feels tight. He has a card, obligations, and wants to understand where his salary goes."}
                 </p>
-                <button className="mt-4 h-10 rounded-lg border border-mint/40 px-4 text-sm font-black text-emerald-700 dark:text-mint" onClick={openDemoFromLanding} type="button">
+                <button className="mt-4 h-10 rounded-lg border border-mint/40 px-4 text-sm font-black text-emerald-700 dark:text-mint" onClick={() => openDemoFromLanding("karim")} type="button">
                   {language === "ar" ? "شاهد مثال كريم" : "View Karim's example"}
                 </button>
               </div>
@@ -4338,7 +4356,7 @@ export default function Home() {
                     ? "تبغى ترتب مصاريف البيت والمدارس بدون مفاجآت، وتبني صندوق طوارئ يحمي قرارات العائلة."
                     : "She wants to organize home spending and school fees without surprises, while building an emergency fund for the family."}
                 </p>
-                <button className="mt-4 h-10 rounded-lg border border-mint/40 px-4 text-sm font-black text-emerald-700 dark:text-mint" onClick={openDemoFromLanding} type="button">
+                <button className="mt-4 h-10 rounded-lg border border-mint/40 px-4 text-sm font-black text-emerald-700 dark:text-mint" onClick={() => openDemoFromLanding("karima")} type="button">
                   {language === "ar" ? "شاهد مثال كريمة" : "View Karima's example"}
                 </button>
               </div>
