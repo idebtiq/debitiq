@@ -2529,10 +2529,10 @@ export default function Home() {
               {currency.format(goal.currentAmount)} of {currency.format(goal.targetAmount)}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="grid gap-2 sm:flex sm:items-center">
             <span className="rounded-lg bg-mint/15 px-2 py-1 text-xs font-black text-emerald-700 dark:text-mint">{progress}%</span>
             <button
-              className="grid size-10 place-items-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300"
+              className="flex h-11 w-full shrink-0 items-center justify-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300 sm:size-10 sm:w-10"
               onClick={() => deleteGoal(goal.id)}
               aria-label="Delete goal"
             >
@@ -3896,7 +3896,7 @@ export default function Home() {
   function renderIncomeEditor(income: IncomeSource, index: number) {
     return (
       <div key={income.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
-        <div className="flex items-end gap-3">
+        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_3rem] sm:items-end">
           <div className="min-w-0 flex-1">
             <SelectField
               label="Income Type"
@@ -3908,7 +3908,7 @@ export default function Home() {
             />
           </div>
           <button
-            className="grid size-11 place-items-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300"
+            className="flex h-11 w-full items-center justify-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300 sm:size-11"
             onClick={() => deleteIncomeSource(income.id)}
             aria-label="Delete income source"
           >
@@ -4381,9 +4381,6 @@ export default function Home() {
                   {language === "ar" ? "ابدأ الآن مجاناً" : "Start free"}
                 </button>
               </div>
-              <button className="mt-4 text-sm font-black text-emerald-700 underline underline-offset-4 dark:text-mint" onClick={openDemoFromLanding} type="button">
-                {language === "ar" ? "أو شاهد مثال كريم وكريمة أولاً" : "Or view Karim and Karima's example first"}
-              </button>
             </div>
           </section>
         </div>
@@ -4395,7 +4392,7 @@ export default function Home() {
     <main className={darkMode ? "dark" : ""} dir={language === "ar" ? "rtl" : "ltr"} lang={language}>
       {showInstallSurface && <PWAInstallPrompt language={language} />}
       {onboardingDebugPanel}
-      <div className="app-shell min-h-screen px-4 pb-5 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-ink dark:text-white sm:px-6 lg:px-8">
+      <div className="app-shell min-h-screen px-4 pb-32 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-ink dark:text-white sm:px-6 lg:px-8">
         <div className={`mx-auto grid gap-5 ${appShellReady ? "max-w-7xl lg:grid-cols-[280px_1fr]" : "max-w-3xl"}`}>
           {appShellReady && <aside className="rounded-lg border border-white/70 bg-white/80 p-4 shadow-premium backdrop-blur dark:border-white/10 dark:bg-white/5 lg:sticky lg:top-5 lg:h-[calc(100vh-2.5rem)]">
             <div className="flex items-center justify-between gap-3">
@@ -4893,7 +4890,7 @@ export default function Home() {
                     )}
                     {incomeSources.map((income, index) => (
                       <div key={income.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
-                        <div className="flex items-end gap-3">
+                        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_3rem] sm:items-end">
                           <div className="min-w-0 flex-1">
                             <SelectField
                               label="Income Type"
@@ -4905,7 +4902,7 @@ export default function Home() {
                             />
                           </div>
                           <button
-                            className="grid size-11 place-items-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300"
+                            className="flex h-11 w-full items-center justify-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300 sm:size-11"
                             onClick={() => deleteIncomeSource(income.id)}
                             aria-label="Delete income source"
                           >
@@ -5022,9 +5019,9 @@ export default function Home() {
                     </div>
                     {creditCards.map((card, index) => (
                       <div key={card.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="font-black">{card.cardName}</p>
-                          <button className="grid size-10 place-items-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300" onClick={() => deleteCreditCard(card.id)} aria-label="Delete credit card">
+                        <div className="grid gap-3 sm:flex sm:items-center sm:justify-between">
+                          <p className="min-w-0 truncate font-black">{card.cardName}</p>
+                          <button className="flex h-11 w-full shrink-0 items-center justify-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300 sm:size-10 sm:w-10" onClick={() => deleteCreditCard(card.id)} aria-label="Delete credit card">
                             <Trash2 size={16} />
                           </button>
                         </div>
@@ -5057,7 +5054,7 @@ export default function Home() {
                     )}
                     {obligationEntries.map((obligation, index) => (
                       <div key={obligation.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
-                        <div className="flex items-end gap-3">
+                        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_3rem] sm:items-end">
                           <div className="min-w-0 flex-1">
                             <SelectField
                               label="Category"
@@ -5070,7 +5067,7 @@ export default function Home() {
                             />
                           </div>
                           <button
-                            className="grid size-11 place-items-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300"
+                            className="flex h-11 w-full items-center justify-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300 sm:size-11"
                             onClick={() => deleteObligationEntry(obligation.id)}
                             aria-label="Delete obligation"
                           >
@@ -6029,7 +6026,7 @@ export default function Home() {
                   <div className="mt-4 grid gap-4">
                     {debts.map((debt, index) => (
                       <div key={debt.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
-                        <div className="flex items-end gap-3">
+                        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_3rem] sm:items-end">
                           <div className="min-w-0 flex-1">
                             <SelectField
                               label="Debt Type"
@@ -6041,7 +6038,7 @@ export default function Home() {
                             />
                           </div>
                           <button
-                            className="grid size-11 place-items-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300"
+                            className="flex h-11 w-full items-center justify-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300 sm:size-11"
                             onClick={() => deleteDebt(debt.id)}
                             aria-label="Delete debt"
                           >
@@ -6078,14 +6075,14 @@ export default function Home() {
                     <div className="mt-4 grid gap-4">
                       {creditCards.map((card, index) => (
                       <div key={card.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
+                        <div className="grid gap-3 sm:flex sm:items-center sm:justify-between">
+                          <div className="min-w-0">
                             <p className="font-black">{card.cardName}</p>
                             <p className="text-xs font-bold text-slate-500 dark:text-slate-400">
                               {currency.format(Math.max(card.creditLimit - card.currentBalance, 0))} available
                             </p>
                           </div>
-                          <button className="grid size-10 place-items-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300" onClick={() => deleteCreditCard(card.id)} aria-label="Delete credit card">
+                          <button className="flex h-11 w-full shrink-0 items-center justify-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300 sm:size-10 sm:w-10" onClick={() => deleteCreditCard(card.id)} aria-label="Delete credit card">
                             <Trash2 size={16} />
                           </button>
                         </div>
@@ -6125,7 +6122,7 @@ export default function Home() {
                   <div className="mt-4 grid gap-4">
                     {obligationEntries.map((obligation, index) => (
                       <div key={obligation.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
-                        <div className="flex items-end gap-3">
+                        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_3rem] sm:items-end">
                           <div className="min-w-0 flex-1">
                             <SelectField
                               label="Category"
@@ -6138,7 +6135,7 @@ export default function Home() {
                             />
                           </div>
                           <button
-                            className="grid size-11 place-items-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300"
+                            className="flex h-11 w-full items-center justify-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300 sm:size-11"
                             onClick={() => deleteObligationEntry(obligation.id)}
                             aria-label="Delete obligation"
                           >
@@ -6238,11 +6235,11 @@ export default function Home() {
                   <div className="mt-4 grid gap-4 md:grid-cols-2">
                     {lifestyleExpenses.map((expense) => (
                       <div key={expense.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
-                        <div className="flex items-end gap-3">
+                        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_3rem] sm:items-end">
                           <div className="min-w-0 flex-1">
                             <Field label="Expense Name" value={expense.name} onChange={(value) => setObligationEntries((current) => current.map((item) => (item.id === expense.id ? { ...item, name: value } : item)))} />
                           </div>
-                          <button className="grid size-11 place-items-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300" onClick={() => deleteObligationEntry(expense.id)} aria-label="Delete lifestyle expense">
+                          <button className="flex h-11 w-full items-center justify-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300 sm:size-11" onClick={() => deleteObligationEntry(expense.id)} aria-label="Delete lifestyle expense">
                             <Trash2 size={17} />
                           </button>
                         </div>
@@ -6294,7 +6291,7 @@ export default function Home() {
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
                   {obligationEntries.map((obligation, index) => (
                     <div key={obligation.id} className="grid gap-3 rounded-lg border border-slate-200 p-4 dark:border-white/10">
-                      <div className="flex items-end gap-3">
+                      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_3rem] sm:items-end">
                         <div className="min-w-0 flex-1">
                           <SelectField
                             label="Category"
@@ -6307,7 +6304,7 @@ export default function Home() {
                           />
                         </div>
                         <button
-                          className="grid size-11 place-items-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300"
+                          className="flex h-11 w-full items-center justify-center rounded-lg border border-red-200 text-red-600 dark:border-red-400/30 dark:text-red-300 sm:size-11"
                           onClick={() => deleteObligationEntry(obligation.id)}
                           aria-label="Delete obligation"
                         >
@@ -6438,10 +6435,10 @@ export default function Home() {
                   </div>
                   <div className="mt-4 grid gap-3">
                     {lifestyleExpenses.slice(0, 4).map((expense) => (
-                      <div key={expense.id} className="grid gap-3 rounded-lg border border-slate-200 p-3 dark:border-white/10 sm:grid-cols-[1fr_140px_auto]">
+                      <div key={expense.id} className="grid gap-3 rounded-lg border border-slate-200 p-3 dark:border-white/10 sm:grid-cols-[minmax(0,1fr)_140px_96px] sm:items-end">
                         <Field label="Name" value={expense.name} onChange={(value) => setObligationEntries((current) => current.map((item) => (item.id === expense.id ? { ...item, name: value } : item)))} />
                         <Field label="Amount" type="number" value={expense.monthlyAmount} onChange={(value) => setObligationEntries((current) => current.map((item) => (item.id === expense.id ? { ...item, monthlyAmount: Number(value) } : item)))} />
-                        <button className="self-end rounded-lg border border-red-200 px-3 py-3 text-sm font-bold text-red-600 dark:border-red-400/30 dark:text-red-300" onClick={() => deleteObligationEntry(expense.id)}>
+                        <button className="h-11 w-full rounded-lg border border-red-200 px-3 text-sm font-bold text-red-600 dark:border-red-400/30 dark:text-red-300" onClick={() => deleteObligationEntry(expense.id)}>
                           Delete
                         </button>
                       </div>
