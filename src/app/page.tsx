@@ -896,6 +896,14 @@ type SignupDiagnostic = {
   profileInsert: string;
 };
 
+type RegistrationClickDebug = {
+  clicks: number;
+  phase: string;
+  lastValidation: string;
+  lastError: string;
+  timings: string[];
+};
+
 type ImportError = {
   section: string;
   message: string;
@@ -1303,9 +1311,19 @@ export default function Home() {
   });
   const [supabaseHealthChecked, setSupabaseHealthChecked] = useState(false);
   const [signupDiagnostic, setSignupDiagnostic] = useState<SignupDiagnostic>(emptySignupDiagnostic);
+  const [registrationAction, setRegistrationAction] = useState("");
+  const [registrationSuccessMessage, setRegistrationSuccessMessage] = useState("");
+  const [registrationClickDebug, setRegistrationClickDebug] = useState<RegistrationClickDebug>({
+    clicks: 0,
+    phase: "idle",
+    lastValidation: "not-run",
+    lastError: "none",
+    timings: [],
+  });
   const t = translations[language];
   const themeWriteReadyRef = useRef(false);
   const onboardingProcessingRef = useRef(false);
+  const registrationProcessingRef = useRef(false);
   const categoryLabel = (category: string) => t.categories[category as ObligationCategory] || category;
   const maritalStatusLabel = (status: string) => {
     if (language !== "ar") return status;
@@ -1996,6 +2014,26 @@ export default function Home() {
       registrationSuccess: false,
     } satisfies RegistrationDraft);
   }, [flow, hasHydratedSession, registration.email, registration.fullName, registration.mobile]);
+
+  useEffect(() => {
+    if (!hasHydratedSession || flow !== "register" || registrationProcessingRef.current) return;
+    setAuthError("");
+    setRegistrationSuccessMessage("");
+    setRegistrationClickDebug((current) => ({
+      ...current,
+      phase: current.phase === "processing" ? "idle" : current.phase,
+      lastValidation: current.lastValidation === "failed" ? "corrected" : current.lastValidation,
+      lastError: current.lastValidation === "failed" ? "none" : current.lastError,
+    }));
+  }, [
+    flow,
+    hasHydratedSession,
+    registration.confirmPassword,
+    registration.email,
+    registration.fullName,
+    registration.mobile,
+    registration.password,
+  ]);
 
   useEffect(() => {
     if (!hasHydratedSession || sessionMode !== "real" || !currentUserId || flow !== "onboarding") return;
@@ -3681,37 +3719,99 @@ export default function Home() {
   }
 
   async function completeRegistration() {
-    if (!registration.fullName || !registration.mobile || !registration.email || !registration.password) {
-      setAuthError(validationMessage("Complete all registration fields to continue.", "أكمل جميع حقول التسجيل للمتابعة."));
+    if (registrationProcessingRef.current) {
+      setRegistrationClickDebug((current) => ({
+        ...current,
+        clicks: current.clicks + 1,
+        phase: "already-processing",
+        lastError: "Registration is already processing.",
+      }));
+      setSessionStatus(validationMessage("Processing...", "جاري المعالجة..."));
       return;
     }
 
-    if (!isValidEmail(registration.email)) {
-      setAuthError(validationMessage("Enter a valid email address.", "الرجاء إدخال بريد إلكتروني صحيح."));
-      return;
-    }
+    registrationProcessingRef.current = true;
+    const startedAt = performance.now();
+    const timings: string[] = [];
+    const mark = (label: string) => {
+      timings.push(`${label}: ${Math.round(performance.now() - startedAt)}ms`);
+      setRegistrationClickDebug((current) => ({ ...current, timings: [...timings] }));
+      console.info("DebtIQ signup timing", { label, elapsedMs: Math.round(performance.now() - startedAt) });
+    };
+    const failRegistration = (message: string, validation = "failed") => {
+      setAuthError(message);
+      setRegistrationClickDebug((current) => ({
+        ...current,
+        phase: "error",
+        lastValidation: validation,
+        lastError: message,
+        timings: [...timings],
+      }));
+    };
+    let successRedirectQueued = false;
+    const routeAfterSuccess = () => {
+      successRedirectQueued = true;
+      window.setTimeout(() => {
+        registrationProcessingRef.current = false;
+        setRegistrationAction("");
+        setRegistrationSuccessMessage("");
+        setFlow("quickSetup");
+        setActive("dashboard");
+      }, 650);
+    };
 
-    if (!isValidSaudiMobile(registration.mobile)) {
-      setAuthError(validationMessage("Enter a valid Saudi mobile number.", "الرجاء إدخال رقم جوال سعودي صحيح."));
-      return;
-    }
+    setRegistrationAction(validationMessage("Processing...", "جاري المعالجة..."));
+    setRegistrationSuccessMessage("");
+    setAuthError("");
+    setRegistrationClickDebug((current) => ({
+      clicks: current.clicks + 1,
+      phase: "processing",
+      lastValidation: "running",
+      lastError: "none",
+      timings: [],
+    }));
+    setSessionStatus(validationMessage("Processing...", "جاري المعالجة..."));
 
-    if (!isStrongPassword(registration.password)) {
-      setAuthError(validationMessage("Password does not meet the security requirements.", "كلمة المرور لا تحقق متطلبات الأمان."));
-      return;
-    }
+    try {
+      mark("signup click");
+      writeJson(registrationDraftStorageKey, {
+        fullName: registration.fullName,
+        mobile: registration.mobile,
+        email: registration.email,
+        registrationSuccess: false,
+      } satisfies RegistrationDraft);
 
-    if (registration.confirmPassword && registration.password !== registration.confirmPassword) {
-      setAuthError(validationMessage("Password and confirm password must match.", "كلمة المرور وتأكيد كلمة المرور غير متطابقين."));
-      return;
-    }
+      if (!registration.fullName || !registration.mobile || !registration.email || !registration.password) {
+        failRegistration(validationMessage("Complete all registration fields to continue.", "أكمل جميع حقول التسجيل للمتابعة."));
+        return;
+      }
 
-    const normalizedEmail = normalizeEmail(registration.email);
-    const userId = userIdFromEmail(normalizedEmail);
-    if (isSupabaseConfigured && supabase) {
-      setSignupDiagnostic({ ...emptySignupDiagnostic, email: normalizedEmail });
-      let supabaseUserId = "";
-      try {
+      if (!isValidEmail(registration.email)) {
+        failRegistration(validationMessage("Enter a valid email address.", "الرجاء إدخال بريد إلكتروني صحيح."));
+        return;
+      }
+
+      if (!isValidSaudiMobile(registration.mobile)) {
+        failRegistration(validationMessage("Enter a valid Saudi mobile number.", "الرجاء إدخال رقم جوال سعودي صحيح."));
+        return;
+      }
+
+      if (!isStrongPassword(registration.password)) {
+        failRegistration(validationMessage("Password does not meet the security requirements.", "كلمة المرور لا تحقق متطلبات الأمان."));
+        return;
+      }
+
+      if (registration.confirmPassword && registration.password !== registration.confirmPassword) {
+        failRegistration(validationMessage("Password and confirm password must match.", "كلمة المرور وتأكيد كلمة المرور غير متطابقين."));
+        return;
+      }
+      mark("validation");
+
+      const normalizedEmail = normalizeEmail(registration.email);
+      const userId = userIdFromEmail(normalizedEmail);
+      if (isSupabaseConfigured && supabase) {
+        setSignupDiagnostic({ ...emptySignupDiagnostic, email: normalizedEmail });
+        let supabaseUserId = "";
         const { data: existingProfile, error: existingProfileError } = await supabase
           .from("profiles")
           .select("id")
@@ -3719,7 +3819,6 @@ export default function Home() {
           .maybeSingle<{ id: string }>();
 
         if (existingProfileError) {
-          setAuthError(existingProfileError.message);
           setSessionStatus(`Supabase duplicate email check failed: ${existingProfileError.message}`);
           setSignupDiagnostic({
             ...emptySignupDiagnostic,
@@ -3730,11 +3829,11 @@ export default function Home() {
             errorStatus: "",
             profileInsert: "Not attempted because duplicate email check failed before signUp.",
           });
+          failRegistration(existingProfileError.message, "duplicate-check-failed");
           return;
         }
 
         if (existingProfile) {
-          setAuthError(validationMessage("An account already exists for this email. Please log in instead.", "يوجد حساب بهذا البريد الإلكتروني. الرجاء تسجيل الدخول بدلاً من إنشاء حساب جديد."));
           setSignupDiagnostic({
             ...emptySignupDiagnostic,
             status: "failed",
@@ -3743,10 +3842,13 @@ export default function Home() {
             errorMessage: "A profile already exists for this email.",
             profileInsert: "Not attempted because duplicate email check found an existing profile.",
           });
+          failRegistration(validationMessage("An account already exists for this email. Please log in instead.", "يوجد حساب بهذا البريد الإلكتروني. الرجاء تسجيل الدخول بدلاً من إنشاء حساب جديد."), "duplicate-email");
           return;
         }
+        mark("duplicate check");
 
         console.info("DebtIQ signup attempt", { email: normalizedEmail });
+        const signUpStartedAt = performance.now();
         const signUpResponse = await supabase.auth.signUp({
           email: normalizedEmail,
           password: registration.password,
@@ -3757,6 +3859,7 @@ export default function Home() {
             },
           },
         });
+        mark(`Supabase signup (${Math.round(performance.now() - signUpStartedAt)}ms)`);
         const { data: authData, error } = signUpResponse;
         const signupError = summarizeSupabaseError(error);
         const signupDiagnosticBase: SignupDiagnostic = {
@@ -3780,7 +3883,7 @@ export default function Home() {
         setSignupDiagnostic(signupDiagnosticBase);
 
         if (error || !authData.user) {
-          setAuthError(error?.message || validationMessage("Could not create your account. Please try again.", "تعذر إنشاء الحساب. الرجاء المحاولة مرة أخرى."));
+          failRegistration(error?.message || validationMessage("Could not create your account. Please try again.", "تعذر إنشاء الحساب. الرجاء المحاولة مرة أخرى."), "signup-failed");
           return;
         }
 
@@ -3795,11 +3898,13 @@ export default function Home() {
           created_at: createdAt,
           updated_at: createdAt,
         };
+        const profileStartedAt = performance.now();
         const profileInsertResponse = await supabase
           .from("profiles")
           .upsert(profilePayload)
           .select("id, full_name, mobile, email, role, created_at, updated_at")
           .maybeSingle();
+        mark(`profile creation (${Math.round(performance.now() - profileStartedAt)}ms)`);
         const profileInsertSummary = {
           data: profileInsertResponse.data,
           error: profileInsertResponse.error
@@ -3819,116 +3924,138 @@ export default function Home() {
           profileInsert: safeJson(profileInsertSummary),
         });
         if (profileInsertResponse.error) {
-          setAuthError(profileInsertResponse.error.message || validationMessage("Account created, but profile setup failed. Please contact the DebtIQ team.", "تم إنشاء الحساب، لكن فشل إعداد الملف الشخصي. الرجاء التواصل مع فريق ديبت آي كيو."));
+          failRegistration(profileInsertResponse.error.message || validationMessage("Account created, but profile setup failed. Please contact the DebtIQ team.", "تم إنشاء الحساب، لكن فشل إعداد الملف الشخصي. الرجاء التواصل مع فريق ديبت آي كيو."), "profile-failed");
           return;
         }
-      } catch (error) {
-        const signupError = summarizeSupabaseError(error);
-        console.error("DebtIQ signup exception", { email: normalizedEmail, error });
-        setSignupDiagnostic({
-          ...emptySignupDiagnostic,
-          status: "failed",
+
+        const ownedData = userDataFromProfile({
+          ...emptyProfile,
+          fullName: registration.fullName,
+          mobile: normalizeSaudiMobile(registration.mobile),
           email: normalizedEmail,
-          errorCode: signupError.code,
-          errorMessage: signupError.message,
-          errorStatus: signupError.status,
-          profileInsert: "Not attempted because signUp threw an exception.",
         });
-        setAuthError(signupError.message || validationMessage("Could not create your account. Please try again.", "تعذر إنشاء الحساب. الرجاء المحاولة مرة أخرى."));
+        writeJson(sessionStorageKey, {
+          mode: "real",
+          userId: supabaseUserId,
+          authProvider: "supabase",
+          onboardingStatus: "complete",
+          onboardingStep: 4,
+          onboardingMode: "quick",
+        } satisfies StoredSession);
+        writeJson(userStorageKey(supabaseUserId), ownedData);
+        writeJson(registrationDraftStorageKey, {
+          fullName: registration.fullName,
+          mobile: normalizeSaudiMobile(registration.mobile),
+          email: normalizedEmail,
+          registrationSuccess: true,
+        } satisfies RegistrationDraft);
+        removeStoredItem(registrationDraftStorageKey);
+        applyUserData(ownedData);
+        setCurrentUserId(supabaseUserId);
+        setSessionMode("real");
+        setAuthError("");
+        setSessionStatus(`Logged in as ${normalizedEmail}`);
+        setOnboardingMode("quick");
+        setOnboardingStep(4);
+        setQuickSetup(emptyQuickSetup);
+        setQuickSetupStep(0);
+        setQuickSetupSummary("");
+        setRegistrationSuccessMessage(validationMessage("Welcome to DebtIQ 👋", "✅ تم إنشاء الحساب بنجاح"));
+        mark("session creation");
+        setRegistrationClickDebug((current) => ({ ...current, phase: "success", lastValidation: "passed", lastError: "none", timings: [...timings] }));
+        routeAfterSuccess();
         return;
       }
 
-      const ownedData = userDataFromProfile({
-        ...emptyProfile,
+      const existingUser = findRegisteredBetaUser(normalizedEmail);
+      if (existingUser) {
+        failRegistration(validationMessage("An account already exists for this email. Please log in instead.", "يوجد حساب بهذا البريد الإلكتروني. الرجاء تسجيل الدخول بدلاً من إنشاء حساب جديد."), "duplicate-email");
+        return;
+      }
+      mark("local duplicate check");
+
+      const ownedData: UserOwnedData = {
+        ...emptyUserData,
+        profile: {
+          ...emptyProfile,
+          fullName: registration.fullName,
+          mobile: normalizeSaudiMobile(registration.mobile),
+          email: normalizedEmail,
+        },
+      };
+      const createdAt = new Date().toISOString();
+      removeStoredItem(onboardingProgressStorageKey(userId));
+      removeStoredItem(draftStorageKey(userId));
+      const initialOnboardingStep = 4;
+      const initialOnboardingMode: OnboardingMode = "quick";
+
+      writeJson(sessionStorageKey, {
+        mode: "real",
+        userId,
+        authProvider: "local-registration",
+        onboardingStatus: "complete",
+        onboardingStep: initialOnboardingStep,
+        onboardingMode: initialOnboardingMode,
+      } satisfies StoredSession);
+      writeJson(userStorageKey(userId), ownedData);
+      removeStoredItem(onboardingProgressStorageKey(userId));
+      removeStoredItem(draftStorageKey(userId));
+      writeJson(registrationDraftStorageKey, {
         fullName: registration.fullName,
         mobile: normalizeSaudiMobile(registration.mobile),
         email: normalizedEmail,
-      });
-      writeJson(sessionStorageKey, {
-        mode: "real",
-        userId: supabaseUserId,
-        authProvider: "supabase",
-        onboardingStatus: "complete",
-        onboardingStep: 4,
-        onboardingMode: "quick",
-      } satisfies StoredSession);
-      writeJson(userStorageKey(supabaseUserId), ownedData);
+        registrationSuccess: true,
+      } satisfies RegistrationDraft);
       removeStoredItem(registrationDraftStorageKey);
+      upsertRegisteredBetaUser({
+        id: userId,
+        email: normalizedEmail,
+        normalizedEmail,
+        fullName: ownedData.profile.fullName,
+        mobile: ownedData.profile.mobile,
+        createdAt,
+        lastLoginAt: createdAt,
+        status: "Active",
+        deleted: false,
+        onboardingStatus: "complete",
+        userType: "Real",
+        passwordHash: betaPasswordHash(registration.password),
+      });
+
       applyUserData(ownedData);
-      setCurrentUserId(supabaseUserId);
+      setCurrentUserId(userId);
       setSessionMode("real");
       setAuthError("");
       setSessionStatus(`Logged in as ${normalizedEmail}`);
-      setOnboardingMode("quick");
-      setOnboardingStep(4);
+      setOnboardingMode(initialOnboardingMode);
+      setOnboardingStep(initialOnboardingStep);
       setQuickSetup(emptyQuickSetup);
       setQuickSetupStep(0);
       setQuickSetupSummary("");
-      setFlow("quickSetup");
-      setActive("dashboard");
-      return;
+      setRegistrationSuccessMessage(validationMessage("Welcome to DebtIQ 👋", "✅ تم إنشاء الحساب بنجاح"));
+      mark("session creation");
+      setRegistrationClickDebug((current) => ({ ...current, phase: "success", lastValidation: "passed", lastError: "none", timings: [...timings] }));
+      routeAfterSuccess();
+    } catch (error) {
+      const signupError = summarizeSupabaseError(error);
+      console.error("DebtIQ signup exception", { email: normalizeEmail(registration.email), error });
+      setSignupDiagnostic({
+        ...emptySignupDiagnostic,
+        status: "failed",
+        email: normalizeEmail(registration.email),
+        errorCode: signupError.code,
+        errorMessage: signupError.message,
+        errorStatus: signupError.status,
+        profileInsert: "Not attempted because registration threw an exception.",
+      });
+      failRegistration(signupError.message || validationMessage("Could not create your account. Please try again.", "تعذر إنشاء الحساب. الرجاء المحاولة مرة أخرى."), "exception");
+    } finally {
+      mark("dashboard redirect queued");
+      if (!successRedirectQueued) {
+        registrationProcessingRef.current = false;
+        setRegistrationAction("");
+      }
     }
-
-    const existingUser = findRegisteredBetaUser(normalizedEmail);
-    if (existingUser) {
-      setAuthError(validationMessage("An account already exists for this email. Please log in instead.", "يوجد حساب بهذا البريد الإلكتروني. الرجاء تسجيل الدخول بدلاً من إنشاء حساب جديد."));
-      return;
-    }
-
-    const ownedData: UserOwnedData = {
-      ...emptyUserData,
-      profile: {
-        ...emptyProfile,
-        fullName: registration.fullName,
-        mobile: normalizeSaudiMobile(registration.mobile),
-        email: normalizedEmail,
-      },
-    };
-    const createdAt = new Date().toISOString();
-    removeStoredItem(onboardingProgressStorageKey(userId));
-    removeStoredItem(draftStorageKey(userId));
-    const initialOnboardingStep = 4;
-    const initialOnboardingMode: OnboardingMode = "quick";
-
-    writeJson(sessionStorageKey, {
-      mode: "real",
-      userId,
-      authProvider: "local-registration",
-      onboardingStatus: "complete",
-      onboardingStep: initialOnboardingStep,
-      onboardingMode: initialOnboardingMode,
-    } satisfies StoredSession);
-    writeJson(userStorageKey(userId), ownedData);
-    removeStoredItem(onboardingProgressStorageKey(userId));
-    removeStoredItem(draftStorageKey(userId));
-    removeStoredItem(registrationDraftStorageKey);
-    upsertRegisteredBetaUser({
-      id: userId,
-      email: normalizedEmail,
-      normalizedEmail,
-      fullName: ownedData.profile.fullName,
-      mobile: ownedData.profile.mobile,
-      createdAt,
-      lastLoginAt: createdAt,
-      status: "Active",
-      deleted: false,
-      onboardingStatus: "complete",
-      userType: "Real",
-      passwordHash: betaPasswordHash(registration.password),
-    });
-
-    applyUserData(ownedData);
-    setCurrentUserId(userId);
-    setSessionMode("real");
-    setAuthError("");
-    setSessionStatus(`Logged in as ${normalizedEmail}`);
-    setOnboardingMode(initialOnboardingMode);
-    setOnboardingStep(initialOnboardingStep);
-    setQuickSetup(emptyQuickSetup);
-    setQuickSetupStep(0);
-    setQuickSetupSummary("");
-    setFlow("quickSetup");
-    setActive("dashboard");
   }
 
   function completeOnboarding(action = "generate") {
@@ -5085,6 +5212,11 @@ export default function Home() {
                     ))}
                   </div>
                   {supabaseDiagnosticsPanel}
+                  {registrationSuccessMessage && (
+                    <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-black text-emerald-800 dark:border-emerald-300/30 dark:bg-emerald-300/10 dark:text-emerald-100">
+                      {registrationSuccessMessage}
+                    </p>
+                  )}
                   {signupDiagnostic.status !== "idle" && (
                     <div className={`rounded-lg border px-3 py-3 text-xs font-bold ${
                       signupDiagnostic.status === "success"
@@ -5108,16 +5240,27 @@ export default function Home() {
                     <p>User source: {userSourceMode === "supabase" ? "Supabase" : "Local beta registry"}</p>
                     <p>Registered users: {registeredUsersCount}</p>
                     <p>Login source users: {loginSourceUsersCount}</p>
+                    <p>Signup clicks: {registrationClickDebug.clicks}</p>
+                    <p>Signup phase: {registrationClickDebug.phase}</p>
+                    <p>Signup validation: {registrationClickDebug.lastValidation}</p>
+                    <p>Signup last error: {registrationClickDebug.lastError}</p>
+                    {registrationClickDebug.timings.length > 0 && (
+                      <p>Signup timings: {registrationClickDebug.timings.join(" | ")}</p>
+                    )}
                     {userStoreMismatch && <p className="text-red-600 dark:text-red-300">Warning: user store mismatch.</p>}
                   </div>
                   {authError && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 dark:bg-red-400/10 dark:text-red-200">{authError}</p>}
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <button className="h-11 rounded-lg border border-slate-200 text-sm font-bold dark:border-white/10" onClick={() => setFlow("app")}>
+                    <button className="h-11 rounded-lg border border-slate-200 text-sm font-bold disabled:opacity-50 dark:border-white/10" disabled={Boolean(registrationAction)} onClick={() => setFlow("app")}>
                       Back
                     </button>
-                    <button className="flex h-11 items-center justify-center gap-2 rounded-lg bg-ink text-sm font-bold text-white dark:bg-mint dark:text-ink" onClick={completeRegistration}>
-                      Continue
-                      <ChevronRight size={17} />
+                    <button
+                      className="flex h-11 items-center justify-center gap-2 rounded-lg bg-ink text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-70 dark:bg-mint dark:text-ink"
+                      onClick={completeRegistration}
+                      disabled={Boolean(registrationAction)}
+                    >
+                      {registrationAction || (language === "ar" ? "متابعة" : "Continue")}
+                      {!registrationAction && <ChevronRight size={17} />}
                     </button>
                   </div>
                 </div>
