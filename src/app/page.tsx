@@ -531,6 +531,10 @@ function onboardingProgressStorageKey(userId: string) {
   return `${onboardingProgressStoragePrefix}${userId}`;
 }
 
+function quickSetupDoneStorageKey(userId: string) {
+  return `${quickSetupDoneStoragePrefix}${userId}`;
+}
+
 function draftStorageKey(userId: string) {
   return `${draftDataStoragePrefix}${userId}`;
 }
@@ -701,6 +705,10 @@ function hasOwnedData(data: UserOwnedData) {
   );
 }
 
+function hasBasicFinancialPicture(data: UserOwnedData) {
+  return Boolean(data.incomeSources.length || data.obligationEntries.length || data.creditCards.length || data.goals.length);
+}
+
 function unknownRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" ? value as Record<string, unknown> : {};
 }
@@ -756,7 +764,7 @@ function pickColumn(columns: string[], candidates: string[]) {
   }) || "";
 }
 
-type AppFlow = "app" | "register" | "login" | "onboarding";
+type AppFlow = "app" | "register" | "login" | "onboarding" | "quickSetup";
 
 type RegistrationForm = {
   fullName: string;
@@ -785,6 +793,17 @@ type OnboardingForm = {
 };
 
 type OnboardingMode = "quick" | "full";
+
+type QuickSetupGoal = "Emergency Fund" | "Pay Off Debt" | "Buy Something Important" | "Travel" | "School Fees" | "Other";
+
+type QuickSetupForm = {
+  monthlyIncome: number;
+  creditCards: "none" | "one" | "multiple";
+  hasMonthlyObligations: boolean;
+  monthlyObligationAmount: number;
+  importantItems: string[];
+  primaryGoal: QuickSetupGoal;
+};
 
 type OnboardingProgress = {
   userId?: string;
@@ -959,6 +978,15 @@ const demoUserData: UserOwnedData = {
   leads: [],
 };
 
+const emptyQuickSetup: QuickSetupForm = {
+  monthlyIncome: 0,
+  creditCards: "none",
+  hasMonthlyObligations: false,
+  monthlyObligationAmount: 0,
+  importantItems: [],
+  primaryGoal: "Emergency Fund",
+};
+
 const karimaDemoUserData: UserOwnedData = {
   profile: seedKarimaProfile,
   debts: seedKarimaDebts,
@@ -978,6 +1006,7 @@ const betaUsersRegistryStorageKey = "debtiq.users.registry.v1";
 const registrationDraftStorageKey = "debtiq.registration.v1";
 const userDataStoragePrefix = "debtiq.user.v1.";
 const onboardingProgressStoragePrefix = "debtiq.onboarding.v1.";
+const quickSetupDoneStoragePrefix = "debtiq.quickSetup.done.v1.";
 const draftDataStoragePrefix = "debtiq.draft.v1.";
 const themeStorageKey = "debtiq.theme.v1";
 const languageStorageKey = "debtiq.language.v1";
@@ -1230,6 +1259,9 @@ export default function Home() {
   const [selectedChecklistItems, setSelectedChecklistItems] = useState<string[]>([]);
   const [selectedGoalStarters, setSelectedGoalStarters] = useState<GoalType[]>([]);
   const [onboarding, setOnboarding] = useState<OnboardingForm>(emptyOnboarding);
+  const [quickSetup, setQuickSetup] = useState<QuickSetupForm>(emptyQuickSetup);
+  const [quickSetupStep, setQuickSetupStep] = useState(0);
+  const [quickSetupSummary, setQuickSetupSummary] = useState("");
   const [authError, setAuthError] = useState("");
   const [consentOffer, setConsentOffer] = useState<Offer | null>(null);
   const [consent, setConsent] = useState(false);
@@ -1889,7 +1921,14 @@ export default function Home() {
         setActive("profile");
       } else {
         setSessionStatus(`Logged in as ${data.profile.email || storedSession.userId}`);
-        setFlow("app");
+        if (!hasBasicFinancialPicture(data) && !readJson<boolean>(quickSetupDoneStorageKey(storedSession.userId), false)) {
+          setQuickSetup(emptyQuickSetup);
+          setQuickSetupStep(0);
+          setQuickSetupSummary("");
+          setFlow("quickSetup");
+        } else {
+          setFlow("app");
+        }
         setActive("dashboard");
       }
       if (draft && hasOwnedData(draft)) {
@@ -3197,6 +3236,205 @@ export default function Home() {
     setConsent(false);
   }
 
+  function toggleQuickSetupItem(item: string) {
+    setQuickSetup((current) => ({
+      ...current,
+      importantItems: current.importantItems.includes(item)
+        ? current.importantItems.filter((selected) => selected !== item)
+        : [...current.importantItems, item],
+    }));
+  }
+
+  function quickSetupGoalType(goal: QuickSetupForm["primaryGoal"]): GoalType {
+    if (goal === "Pay Off Debt" || goal === "Emergency Fund" || goal === "Travel" || goal === "School Fees" || goal === "Other") return goal;
+    return "Other";
+  }
+
+  function quickSetupGoalLabel(goal: QuickSetupForm["primaryGoal"]) {
+    if (language === "ar") {
+      const labels: Record<QuickSetupForm["primaryGoal"], string> = {
+        "Emergency Fund": "صندوق الطوارئ",
+        "Pay Off Debt": "سداد الديون",
+        "Buy Something Important": "شراء شيء مهم",
+        Travel: "السفر",
+        "School Fees": "رسوم المدارس",
+        Other: "هدف آخر",
+      };
+      return labels[goal];
+    }
+    return goal === "Buy Something Important" ? "Buy something important" : goal;
+  }
+
+  function completeQuickSetup() {
+    if (sessionMode !== "real" || !currentUserId) {
+      setAuthError(validationMessage("Create or log in to continue.", "أنشئ حساباً أو سجل الدخول للمتابعة."));
+      return;
+    }
+
+    if (quickSetup.monthlyIncome <= 0) {
+      setAuthError(validationMessage("Add your approximate monthly income to continue.", "أضف دخلك الشهري التقريبي للمتابعة."));
+      setQuickSetupStep(1);
+      return;
+    }
+
+    if (quickSetup.hasMonthlyObligations && quickSetup.monthlyObligationAmount <= 0) {
+      setAuthError(validationMessage("Add the monthly obligation amount, or choose No.", "أضف مبلغ الالتزامات الشهرية أو اختر لا."));
+      setQuickSetupStep(3);
+      return;
+    }
+
+    const prefix = `quick-setup:${currentUserId}`;
+    const now = new Date();
+    const nextIncomeSources: IncomeSource[] = [
+      {
+        id: `${prefix}:income`,
+        name: "Approximate monthly income",
+        amount: quickSetup.monthlyIncome,
+        type: "Salary",
+        recurring: true,
+        notes: "Added from one minute setup.",
+      },
+      ...incomeSources.filter((income) => !String(income.id).startsWith(`${prefix}:`)),
+    ];
+
+    const starterCards: CreditCard[] =
+      quickSetup.creditCards === "none"
+        ? []
+        : Array.from({ length: quickSetup.creditCards === "multiple" ? 2 : 1 }, (_, index) => ({
+            id: `${prefix}:card:${index + 1}`,
+            cardName: index === 0 ? "Credit card" : `Credit card ${index + 1}`,
+            provider: "Card provider",
+            creditLimit: Math.max(10000, Math.round(quickSetup.monthlyIncome * 0.6)),
+            currentBalance: 0,
+            minimumPaymentDue: 0,
+            statementTotalDue: 0,
+            dueDate: dateFromDueDay(20),
+            aprOrProfitRate: 18,
+            notes: "Added from one minute setup. Add balance later for better insights.",
+          }));
+
+    const starterObligations: ObligationEntry[] = quickSetup.hasMonthlyObligations
+      ? [
+          {
+            id: `${prefix}:obligation:monthly`,
+            name: "Monthly obligations",
+            monthlyAmount: quickSetup.monthlyObligationAmount,
+            category: "Other",
+            dueDay: 1,
+            isRecurring: true,
+            frequency: "Monthly",
+            dueDate: dateFromDueDay(1),
+            startDate: isoDate(now),
+            allocationMethod: "Count full amount only in due month",
+            savedAmount: 0,
+            notes: "Added from one minute setup.",
+          },
+        ]
+      : [];
+
+    const importantGoals: Goal[] = quickSetup.importantItems.map((item, index) => ({
+      id: `${prefix}:important:${normalizeKey(item) || index}`,
+      name: item,
+      type: item === "School fees" ? "School Fees" : item === "Travel plans" ? "Travel" : "Other",
+      targetAmount: item === "School fees" ? 25000 : item === "Travel plans" ? 12000 : 10000,
+      currentAmount: 0,
+      targetDate: "2027-12-31",
+      priority: item === "School fees" ? "High" : "Medium",
+      notes: "Flagged as important during one minute setup.",
+    }));
+
+    const primaryGoal: Goal = {
+      id: `${prefix}:goal:primary`,
+      name: quickSetupGoalLabel(quickSetup.primaryGoal),
+      type: quickSetupGoalType(quickSetup.primaryGoal),
+      targetAmount:
+        quickSetup.primaryGoal === "Emergency Fund"
+          ? Math.max(10000, Math.round(quickSetup.monthlyIncome * 3))
+          : quickSetup.primaryGoal === "School Fees"
+            ? 25000
+            : quickSetup.primaryGoal === "Travel"
+              ? 12000
+              : quickSetup.primaryGoal === "Pay Off Debt"
+                ? 20000
+                : 15000,
+      currentAmount: 0,
+      targetDate: "2027-12-31",
+      priority: "High",
+      notes: "Primary goal from one minute setup.",
+    };
+
+    const nextData: UserOwnedData = {
+      ...currentUserData(),
+      incomeSources: nextIncomeSources,
+      creditCards: [...starterCards, ...creditCards.filter((card) => !String(card.id).startsWith(`${prefix}:`))],
+      obligationEntries: [...starterObligations, ...obligationEntries.filter((obligation) => !String(obligation.id).startsWith(`${prefix}:`))],
+      goals: [primaryGoal, ...importantGoals, ...goals.filter((goal) => !String(goal.id).startsWith(`${prefix}:`))],
+    };
+
+    const obligationRatio = quickSetup.hasMonthlyObligations
+      ? Math.round((quickSetup.monthlyObligationAmount / quickSetup.monthlyIncome) * 100)
+      : 0;
+    const surplus = quickSetup.monthlyIncome - (quickSetup.hasMonthlyObligations ? quickSetup.monthlyObligationAmount : 0);
+    const suggestedSaving = Math.max(0, Math.round((surplus * 0.2) / 100) * 100);
+    const goalMonths = suggestedSaving > 0 ? Math.ceil(primaryGoal.targetAmount / suggestedSaving) : 0;
+    const summary = language === "ar"
+      ? quickSetup.hasMonthlyObligations
+        ? `التزاماتك تستهلك تقريباً ${obligationRatio}% من دخلك. ${suggestedSaving > 0 ? `توفير ${currency.format(suggestedSaving)} شهرياً قد يساعدك على الاقتراب من هدفك خلال ${goalMonths} شهر.` : "ابدأ بإضافة تفاصيل أكثر لتحصل على توصيات أدق."}`
+        : `صورتك المالية الأولى جاهزة. يمكنك البدء بتوفير جزء من دخلك لهدف ${quickSetupGoalLabel(quickSetup.primaryGoal)}.`
+      : quickSetup.hasMonthlyObligations
+        ? `Your obligations consume about ${obligationRatio}% of your income. ${suggestedSaving > 0 ? `Saving ${currency.format(suggestedSaving)} monthly can help you move toward your goal in ${goalMonths} months.` : "Add more details to get sharper recommendations."}`
+        : `Your first financial picture is ready. You can start allocating part of your income toward ${quickSetupGoalLabel(quickSetup.primaryGoal)}.`;
+
+    writeJson(userStorageKey(currentUserId), nextData);
+    writeJson(quickSetupDoneStorageKey(currentUserId), true);
+    applyUserData(nextData);
+    setQuickSetupSummary(summary);
+    setQuickSetupStep(6);
+    setAuthError("");
+    setHasUnsavedChanges(false);
+    setSaveStatus(t.common.savedSuccessfully);
+    window.setTimeout(() => setSaveStatus(""), 2500);
+  }
+
+  function skipQuickSetup() {
+    if (currentUserId) writeJson(quickSetupDoneStorageKey(currentUserId), true);
+    setQuickSetupSummary("");
+    setFlow("app");
+    setActive("dashboard");
+  }
+
+  function openDashboardFromQuickSetup() {
+    if (currentUserId) writeJson(quickSetupDoneStorageKey(currentUserId), true);
+    setFlow("app");
+    setActive("dashboard");
+  }
+
+  function handleQuickSetupNext() {
+    setAuthError("");
+    if (quickSetupStep === 0) {
+      setQuickSetupStep(1);
+      return;
+    }
+    if (quickSetupStep === 1 && quickSetup.monthlyIncome <= 0) {
+      setAuthError(validationMessage("Add your approximate monthly income to continue.", "أضف دخلك الشهري التقريبي للمتابعة."));
+      return;
+    }
+    if (quickSetupStep === 3 && quickSetup.hasMonthlyObligations && quickSetup.monthlyObligationAmount <= 0) {
+      setAuthError(validationMessage("Add the monthly obligation amount, or choose No.", "أضف مبلغ الالتزامات الشهرية أو اختر لا."));
+      return;
+    }
+    if (quickSetupStep >= 5) {
+      completeQuickSetup();
+      return;
+    }
+    setQuickSetupStep((current) => Math.min(5, current + 1));
+  }
+
+  function handleQuickSetupBack() {
+    setAuthError("");
+    setQuickSetupStep((current) => Math.max(0, current - 1));
+  }
+
   function startRegistration() {
     const previousSession = readJson<StoredSession | null>(sessionStorageKey, null);
     if (previousSession?.mode === "real" && previousSession.userId) {
@@ -3212,6 +3450,9 @@ export default function Home() {
     setSessionMode("signedOut");
     setOnboardingMode("quick");
     setOnboardingStep(1);
+    setQuickSetup(emptyQuickSetup);
+    setQuickSetupStep(0);
+    setQuickSetupSummary("");
     setAuthError("");
     setSignupDiagnostic(emptySignupDiagnostic);
     setLastOnboardingError("");
@@ -3342,7 +3583,14 @@ export default function Home() {
       setSessionMode("real");
       setAuthError("");
       setSessionStatus(`Logged in as ${ownedData.profile.email}`);
-      setFlow("app");
+      if (!hasBasicFinancialPicture(ownedData) && !readJson<boolean>(quickSetupDoneStorageKey(userId), false)) {
+        setQuickSetup(emptyQuickSetup);
+        setQuickSetupStep(0);
+        setQuickSetupSummary("");
+        setFlow("quickSetup");
+      } else {
+        setFlow("app");
+      }
       setActive("dashboard");
       return;
     }
@@ -3386,7 +3634,14 @@ export default function Home() {
       setSessionMode("real");
       setAuthError("");
       setSessionStatus(`Logged in as ${normalizedLoginEmail}`);
-      setFlow("app");
+      if (!hasBasicFinancialPicture(restoredData) && !readJson<boolean>(quickSetupDoneStorageKey(betaUser.id), false)) {
+        setQuickSetup(emptyQuickSetup);
+        setQuickSetupStep(0);
+        setQuickSetupSummary("");
+        setFlow("quickSetup");
+      } else {
+        setFlow("app");
+      }
       setActive("dashboard");
       return;
     }
@@ -3606,7 +3861,10 @@ export default function Home() {
       setSessionStatus(`Logged in as ${normalizedEmail}`);
       setOnboardingMode("quick");
       setOnboardingStep(4);
-      setFlow("app");
+      setQuickSetup(emptyQuickSetup);
+      setQuickSetupStep(0);
+      setQuickSetupSummary("");
+      setFlow("quickSetup");
       setActive("dashboard");
       return;
     }
@@ -3666,7 +3924,10 @@ export default function Home() {
     setSessionStatus(`Logged in as ${normalizedEmail}`);
     setOnboardingMode(initialOnboardingMode);
     setOnboardingStep(initialOnboardingStep);
-    setFlow("app");
+    setQuickSetup(emptyQuickSetup);
+    setQuickSetupStep(0);
+    setQuickSetupSummary("");
+    setFlow("quickSetup");
     setActive("dashboard");
   }
 
@@ -4584,6 +4845,211 @@ export default function Home() {
             {appShellReady && sessionMode === "demo" && (
               <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-black text-amber-900 shadow-sm dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-100">
                 Demo Mode {"\u2014"} sample data only
+              </div>
+            )}
+
+            {flow === "quickSetup" && (
+              <div className="mx-auto w-full max-w-2xl rounded-lg border border-mint/30 bg-white/90 p-5 shadow-premium dark:border-mint/20 dark:bg-white/5">
+                <div className="flex items-start gap-3">
+                  <div className="grid size-12 shrink-0 place-items-center rounded-lg bg-mint/20 text-2xl" aria-hidden="true">👋</div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-black uppercase text-mint">
+                      {language === "ar" ? "إعداد مالي سريع" : "One minute setup"}
+                    </p>
+                    <h3 className="mt-2 text-2xl font-black leading-tight">
+                      {language === "ar" ? "أهلاً بك في ديبت آي كيو" : "Welcome to DebtIQ"}
+                    </h3>
+                    <p className="mt-2 text-sm font-bold leading-7 text-slate-600 dark:text-slate-200">
+                      {language === "ar"
+                        ? "خلّينا نبني صورتك المالية خلال دقيقة واحدة."
+                        : "Let's build your financial picture in less than one minute."}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 flex gap-2">
+                  {[1, 2, 3, 4, 5].map((step) => (
+                    <span key={step} className={`h-2 flex-1 rounded-full ${step <= Math.min(Math.max(quickSetupStep, 1), 5) ? "bg-mint" : "bg-slate-200 dark:bg-white/10"}`} />
+                  ))}
+                </div>
+
+                <div className="mt-6">
+                  {quickSetupStep === 0 && (
+                    <div className="rounded-lg bg-slate-50 p-5 dark:bg-white/5">
+                      <h4 className="text-xl font-black">
+                        {language === "ar" ? "لن تحتاج للتنقل بين التبويبات الآن." : "No tab-by-tab setup right now."}
+                      </h4>
+                      <p className="mt-3 text-sm font-semibold leading-7 text-slate-600 dark:text-slate-200">
+                        {language === "ar"
+                          ? "أجب عن خمسة أسئلة قصيرة، وسنفتح لك لوحة مالية أولية يمكنك تعديلها لاحقاً."
+                          : "Answer five short questions, and we will create a starter dashboard you can edit later."}
+                      </p>
+                    </div>
+                  )}
+
+                  {quickSetupStep === 1 && (
+                    <div className="grid gap-4">
+                      <h4 className="text-xl font-black">{language === "ar" ? "كم دخلك الشهري تقريباً؟" : "What is your monthly income?"}</h4>
+                      <Field
+                        label={language === "ar" ? "الدخل الشهري" : "Monthly income"}
+                        type="number"
+                        value={quickSetup.monthlyIncome}
+                        onChange={(value) => setQuickSetup((current) => ({ ...current, monthlyIncome: Number(value) }))}
+                      />
+                    </div>
+                  )}
+
+                  {quickSetupStep === 2 && (
+                    <div className="grid gap-4">
+                      <h4 className="text-xl font-black">{language === "ar" ? "هل لديك بطاقات ائتمانية؟" : "Do you have credit cards?"}</h4>
+                      <div className="grid gap-2">
+                        {[
+                          ["none", language === "ar" ? "لا" : "No"],
+                          ["one", language === "ar" ? "نعم، بطاقة واحدة" : "Yes, one card"],
+                          ["multiple", language === "ar" ? "نعم، أكثر من بطاقة" : "Yes, multiple cards"],
+                        ].map(([value, label]) => (
+                          <button
+                            key={value}
+                            className={`min-h-12 rounded-lg border px-4 text-start text-sm font-black transition ${
+                              quickSetup.creditCards === value
+                                ? "border-mint bg-mint/15 text-emerald-800 dark:text-mint"
+                                : "border-slate-200 bg-white/70 text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
+                            }`}
+                            type="button"
+                            onClick={() => setQuickSetup((current) => ({ ...current, creditCards: value as QuickSetupForm["creditCards"] }))}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {quickSetupStep === 3 && (
+                    <div className="grid gap-4">
+                      <h4 className="text-xl font-black">{language === "ar" ? "هل لديك التزامات شهرية ثابتة؟" : "Do you have monthly obligations?"}</h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          [false, language === "ar" ? "لا" : "No"],
+                          [true, language === "ar" ? "نعم" : "Yes"],
+                        ].map(([value, label]) => (
+                          <button
+                            key={String(value)}
+                            className={`h-12 rounded-lg border px-4 text-sm font-black transition ${
+                              quickSetup.hasMonthlyObligations === value
+                                ? "border-mint bg-mint/15 text-emerald-800 dark:text-mint"
+                                : "border-slate-200 bg-white/70 text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
+                            }`}
+                            type="button"
+                            onClick={() => setQuickSetup((current) => ({ ...current, hasMonthlyObligations: Boolean(value), monthlyObligationAmount: value ? current.monthlyObligationAmount : 0 }))}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                      {quickSetup.hasMonthlyObligations && (
+                        <Field
+                          label={language === "ar" ? "المبلغ الشهري التقريبي" : "Approximate monthly amount"}
+                          type="number"
+                          value={quickSetup.monthlyObligationAmount}
+                          onChange={(value) => setQuickSetup((current) => ({ ...current, monthlyObligationAmount: Number(value) }))}
+                        />
+                      )}
+                    </div>
+                  )}
+
+                  {quickSetupStep === 4 && (
+                    <div className="grid gap-4">
+                      <h4 className="text-xl font-black">{language === "ar" ? "✨ هل نسينا شيئاً مهماً؟" : "✨ Did we forget something important?"}</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          ["School fees", "🏫", language === "ar" ? "رسوم المدارس" : "School fees"],
+                          ["Special occasions", "🎂", language === "ar" ? "مناسبات خاصة" : "Special occasions"],
+                          ["Car insurance", "🚗", language === "ar" ? "تأمين السيارة" : "Car insurance"],
+                          ["Home expenses", "🏠", language === "ar" ? "مصاريف البيت" : "Home expenses"],
+                          ["Domestic worker", "👩‍🍳", language === "ar" ? "عاملة منزلية" : "Domestic worker"],
+                          ["Travel plans", "✈️", language === "ar" ? "خطط سفر" : "Travel plans"],
+                          ["Other", "📱", language === "ar" ? "أخرى" : "Other"],
+                        ].map(([value, icon, label]) => (
+                          <button
+                            key={value}
+                            className={`rounded-lg border px-3 py-2 text-sm font-black transition ${
+                              quickSetup.importantItems.includes(value)
+                                ? "border-mint bg-mint/15 text-emerald-800 dark:text-mint"
+                                : "border-slate-200 bg-white/70 text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
+                            }`}
+                            type="button"
+                            onClick={() => toggleQuickSetupItem(value)}
+                          >
+                            <span aria-hidden="true">{icon}</span> {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {quickSetupStep === 5 && (
+                    <div className="grid gap-4">
+                      <h4 className="text-xl font-black">{language === "ar" ? "ما أهم هدف مالي لك حالياً؟" : "What is your biggest financial goal right now?"}</h4>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {[
+                          ["Emergency Fund", language === "ar" ? "صندوق الطوارئ" : "Emergency fund"],
+                          ["Pay Off Debt", language === "ar" ? "سداد الديون" : "Pay off debt"],
+                          ["Buy Something Important", language === "ar" ? "شراء شيء مهم" : "Buy something important"],
+                          ["Travel", language === "ar" ? "السفر" : "Travel"],
+                          ["School Fees", language === "ar" ? "رسوم المدارس" : "School fees"],
+                          ["Other", language === "ar" ? "أخرى" : "Other"],
+                        ].map(([value, label]) => (
+                          <button
+                            key={value}
+                            className={`min-h-12 rounded-lg border px-4 text-start text-sm font-black transition ${
+                              quickSetup.primaryGoal === value
+                                ? "border-mint bg-mint/15 text-emerald-800 dark:text-mint"
+                                : "border-slate-200 bg-white/70 text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
+                            }`}
+                            type="button"
+                            onClick={() => setQuickSetup((current) => ({ ...current, primaryGoal: value as QuickSetupForm["primaryGoal"] }))}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {quickSetupStep === 6 && (
+                    <div className="rounded-lg border border-mint/30 bg-mint/10 p-5">
+                      <p className="text-xs font-black uppercase text-emerald-700 dark:text-mint">
+                        {language === "ar" ? "ملخص صورتك المالية" : "Financial Picture Summary"}
+                      </p>
+                      <h4 className="mt-2 text-2xl font-black">{language === "ar" ? "صورتك الأولى جاهزة." : "Your first picture is ready."}</h4>
+                      <p className="mt-3 text-sm font-bold leading-7 text-slate-700 dark:text-slate-100">{quickSetupSummary}</p>
+                    </div>
+                  )}
+                </div>
+
+                {authError && <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 dark:bg-red-400/10 dark:text-red-200">{authError}</p>}
+
+                <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                  {quickSetupStep < 6 ? (
+                    <>
+                      <button className="h-11 rounded-lg border border-slate-200 text-sm font-bold dark:border-white/10" type="button" onClick={quickSetupStep === 0 ? skipQuickSetup : handleQuickSetupBack}>
+                        {quickSetupStep === 0 ? (language === "ar" ? "لاحقاً" : "Later") : (language === "ar" ? "رجوع" : "Back")}
+                      </button>
+                      <button className="h-11 rounded-lg border border-dashed border-slate-300 text-sm font-bold dark:border-white/20" type="button" onClick={skipQuickSetup}>
+                        {language === "ar" ? "تخطي الآن" : "Skip for now"}
+                      </button>
+                      <button className="flex h-11 items-center justify-center gap-2 rounded-lg bg-ink text-sm font-bold text-white dark:bg-mint dark:text-ink" type="button" onClick={handleQuickSetupNext}>
+                        {quickSetupStep >= 5 ? (language === "ar" ? "إنشاء الصورة المالية" : "Generate picture") : (language === "ar" ? "متابعة" : "Continue")}
+                        <ChevronRight size={17} />
+                      </button>
+                    </>
+                  ) : (
+                    <button className="h-12 rounded-lg bg-ink px-4 text-sm font-black text-white dark:bg-mint dark:text-ink sm:col-span-3" type="button" onClick={openDashboardFromQuickSetup}>
+                      {language === "ar" ? "افتح لوحتي المالية" : "Open My Dashboard"}
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
