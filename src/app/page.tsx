@@ -637,6 +637,207 @@ function profileFromSupabaseRow(row: SupabaseProfileRow | null | undefined, fall
   };
 }
 
+function parseSupabaseNumber(value: unknown) {
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? numberValue : 0;
+}
+
+function mapSupabaseIncomeSource(row: Record<string, unknown>): IncomeSource {
+  return {
+    id: String(row.id || createClientId("income")),
+    name: String(row.income_name || "Income source"),
+    amount: parseSupabaseNumber(row.income_amount),
+    type: (row.income_type || "Other") as IncomeType,
+    expectedMonth: row.expected_month ? String(row.expected_month) : undefined,
+    guaranteed: typeof row.guaranteed === "boolean" ? row.guaranteed : undefined,
+    recurring: typeof row.recurring === "boolean" ? row.recurring : undefined,
+    allocation: row.allocation ? String(row.allocation) as BonusAllocation : undefined,
+    notes: row.notes ? String(row.notes) : undefined,
+  };
+}
+
+function mapSupabaseObligation(row: Record<string, unknown>): ObligationEntry {
+  return {
+    id: String(row.id || createClientId("obligation")),
+    name: String(row.obligation_name || "Obligation"),
+    monthlyAmount: parseSupabaseNumber(row.monthly_amount),
+    category: (row.category || "Other") as ObligationCategory,
+    dueDay: parseSupabaseNumber(row.due_day) || 1,
+    isRecurring: typeof row.is_recurring === "boolean" ? row.is_recurring : true,
+    frequency: (row.frequency || "Monthly") as ObligationFrequency,
+    dueDate: row.due_date ? String(row.due_date) : dateFromDueDay(parseSupabaseNumber(row.due_day) || 1),
+    startDate: row.start_date ? String(row.start_date) : isoDate(new Date()),
+    endDate: row.end_date ? String(row.end_date) : undefined,
+    allocationMethod: (row.allocation_method || "Count full amount only in due month") as ObligationAllocationMethod,
+    savedAmount: parseSupabaseNumber(row.saved_amount),
+    notes: String(row.notes || ""),
+  };
+}
+
+function mapSupabaseCreditCard(row: Record<string, unknown>): CreditCard {
+  return {
+    id: String(row.id || createClientId("card")),
+    cardName: String(row.card_name || "Credit card"),
+    provider: String(row.provider || "Card provider"),
+    creditLimit: parseSupabaseNumber(row.credit_limit),
+    currentBalance: parseSupabaseNumber(row.current_balance),
+    minimumPaymentDue: parseSupabaseNumber(row.minimum_payment_due),
+    statementTotalDue: parseSupabaseNumber(row.statement_total_due),
+    dueDate: row.due_date ? String(row.due_date) : dateFromDueDay(20),
+    aprOrProfitRate: parseSupabaseNumber(row.apr_or_profit_rate),
+    notes: String(row.notes || ""),
+  };
+}
+
+function mapSupabaseGoal(row: Record<string, unknown>): Goal {
+  return {
+    id: String(row.id || createClientId("goal")),
+    name: String(row.name || "Goal"),
+    type: (row.goal_type || "Other") as GoalType,
+    targetAmount: parseSupabaseNumber(row.target_amount),
+    currentAmount: parseSupabaseNumber(row.current_amount),
+    targetDate: row.target_date ? String(row.target_date) : "2027-12-31",
+    priority: (row.priority || "Medium") as GoalPriority,
+    notes: String(row.notes || ""),
+    linkedDebtId: row.linked_debt_id ? String(row.linked_debt_id) : undefined,
+    linkedCreditCardId: row.linked_credit_card_id ? String(row.linked_credit_card_id) : undefined,
+  };
+}
+
+async function loadSupabaseOwnedData(userId: string, fallbackEmail: string): Promise<SupabaseOwnedDataResult> {
+  if (!supabase) {
+    return { data: userDataFromProfile({ ...emptyProfile, email: fallbackEmail }), quickSetupCompleted: false, quickSetupSkipped: false };
+  }
+
+  const { data: profileRow, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .maybeSingle<SupabaseProfileRow>();
+
+  if (profileError || !profileRow) {
+    throw profileError || new Error("Supabase profile was not found.");
+  }
+
+  const [incomeResponse, obligationsResponse, cardsResponse, goalsResponse] = await Promise.all([
+    supabase.from("income_sources").select("*").eq("user_id", userId),
+    supabase.from("obligation_entries").select("*").eq("user_id", userId),
+    supabase.from("credit_cards").select("*").eq("user_id", userId),
+    supabase.from("goals").select("*").eq("user_id", userId),
+  ]);
+
+  if (incomeResponse.error) console.warn("Supabase income source load failed", incomeResponse.error);
+  if (obligationsResponse.error) console.warn("Supabase obligations load failed", obligationsResponse.error);
+  if (cardsResponse.error) console.warn("Supabase credit cards load failed", cardsResponse.error);
+  if (goalsResponse.error) console.warn("Supabase goals load failed", goalsResponse.error);
+
+  const data: UserOwnedData = {
+    ...userDataFromProfile(profileFromSupabaseRow(profileRow, fallbackEmail)),
+    incomeSources: (incomeResponse.data || []).map((row) => mapSupabaseIncomeSource(row as Record<string, unknown>)),
+    obligationEntries: (obligationsResponse.data || []).map((row) => mapSupabaseObligation(row as Record<string, unknown>)),
+    creditCards: (cardsResponse.data || []).map((row) => mapSupabaseCreditCard(row as Record<string, unknown>)),
+    goals: (goalsResponse.data || []).map((row) => mapSupabaseGoal(row as Record<string, unknown>)),
+  };
+
+  const quickSetupCompleted = profileRow.quick_setup_completed === true || Boolean(profileRow.quick_setup_completed_at) || hasBasicFinancialPicture(data);
+  const quickSetupSkipped = profileRow.quick_setup_skipped === true;
+  return { data, quickSetupCompleted, quickSetupSkipped };
+}
+
+async function updateSupabaseQuickSetupStatus(userId: string, status: "completed" | "skipped") {
+  if (!supabase) return;
+  const now = new Date().toISOString();
+  const payload =
+    status === "completed"
+      ? { quick_setup_completed: true, quick_setup_skipped: false, quick_setup_completed_at: now, updated_at: now }
+      : { quick_setup_skipped: true, updated_at: now };
+  const { error } = await supabase.from("profiles").update(payload).eq("id", userId);
+  if (error) console.warn("Supabase quick setup status update failed. Apply the latest schema if quick setup columns are missing.", error);
+}
+
+async function saveQuickSetupDataToSupabase(userId: string, data: UserOwnedData) {
+  if (!supabase) return;
+  const quickIncomeNotes = ["Added from one minute setup."];
+  const quickCardNotes = ["Added from one minute setup. Add balance later for better insights."];
+  const quickObligationNotes = ["Added from one minute setup."];
+  const quickGoalNotes = ["Primary goal from one minute setup.", "Flagged as important during one minute setup."];
+
+  await Promise.all([
+    supabase.from("income_sources").delete().eq("user_id", userId).in("notes", quickIncomeNotes),
+    supabase.from("credit_cards").delete().eq("user_id", userId).in("notes", quickCardNotes),
+    supabase.from("obligation_entries").delete().eq("user_id", userId).in("notes", quickObligationNotes),
+    supabase.from("goals").delete().eq("user_id", userId).in("notes", quickGoalNotes),
+  ]);
+
+  const quickIncome = data.incomeSources.filter((income) => quickIncomeNotes.includes(income.notes || ""));
+  const quickCards = data.creditCards.filter((card) => quickCardNotes.includes(card.notes || ""));
+  const quickObligations = data.obligationEntries.filter((obligation) => quickObligationNotes.includes(obligation.notes));
+  const quickGoals = data.goals.filter((goal) => quickGoalNotes.includes(goal.notes));
+
+  const insertResults = await Promise.all([
+    quickIncome.length
+      ? supabase.from("income_sources").insert(quickIncome.map((income) => ({
+          user_id: userId,
+          income_name: income.name,
+          income_amount: income.amount,
+          income_type: income.type,
+          expected_month: income.expectedMonth || null,
+          guaranteed: income.guaranteed ?? null,
+          recurring: income.recurring ?? true,
+          allocation: income.allocation || null,
+          notes: income.notes || null,
+        })))
+      : Promise.resolve({ error: null }),
+    quickCards.length
+      ? supabase.from("credit_cards").insert(quickCards.map((card) => ({
+          user_id: userId,
+          card_name: card.cardName,
+          provider: card.provider,
+          credit_limit: card.creditLimit,
+          current_balance: card.currentBalance,
+          minimum_payment_due: card.minimumPaymentDue,
+          statement_total_due: card.statementTotalDue,
+          due_date: card.dueDate,
+          apr_or_profit_rate: card.aprOrProfitRate,
+          notes: card.notes,
+        })))
+      : Promise.resolve({ error: null }),
+    quickObligations.length
+      ? supabase.from("obligation_entries").insert(quickObligations.map((obligation) => ({
+          user_id: userId,
+          obligation_name: obligation.name,
+          monthly_amount: obligation.monthlyAmount,
+          category: obligation.category,
+          due_day: obligation.dueDay,
+          is_recurring: obligation.isRecurring,
+          frequency: obligation.frequency,
+          due_date: obligation.dueDate || null,
+          start_date: obligation.startDate || null,
+          end_date: obligation.endDate || null,
+          allocation_method: obligation.allocationMethod,
+          saved_amount: obligation.savedAmount,
+          notes: obligation.notes,
+        })))
+      : Promise.resolve({ error: null }),
+    quickGoals.length
+      ? supabase.from("goals").insert(quickGoals.map((goal) => ({
+          user_id: userId,
+          name: goal.name,
+          goal_type: goal.type,
+          target_amount: goal.targetAmount,
+          current_amount: goal.currentAmount,
+          target_date: goal.targetDate || null,
+          priority: goal.priority,
+          notes: goal.notes,
+        })))
+      : Promise.resolve({ error: null }),
+  ]);
+
+  insertResults.forEach((result) => {
+    if (result.error) console.warn("Supabase quick setup data save failed", result.error);
+  });
+}
+
 function normalizeBetaRegisteredUser(user: BetaRegisteredUser): BetaRegisteredUser {
   const normalizedEmail = normalizeEmail(user.normalizedEmail || user.email);
   const deleted = user.deleted === true || user.status === "Deleted";
@@ -881,8 +1082,17 @@ type SupabaseProfileRow = {
   employer?: string | null;
   employment_sector?: EmploymentSector | null;
   marital_status?: MaritalStatus | null;
+  quick_setup_completed?: boolean | null;
+  quick_setup_skipped?: boolean | null;
+  quick_setup_completed_at?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
+};
+
+type SupabaseOwnedDataResult = {
+  data: UserOwnedData;
+  quickSetupCompleted: boolean;
+  quickSetupSkipped: boolean;
 };
 
 type SignupDiagnostic = {
@@ -3303,7 +3513,7 @@ export default function Home() {
     return goal === "Buy Something Important" ? "Buy something important" : goal;
   }
 
-  function completeQuickSetup() {
+  async function completeQuickSetup() {
     if (sessionMode !== "real" || !currentUserId) {
       setAuthError(validationMessage("Create or log in to continue.", "أنشئ حساباً أو سجل الدخول للمتابعة."));
       return;
@@ -3424,7 +3634,12 @@ export default function Home() {
         : `Your first financial picture is ready. You can start allocating part of your income toward ${quickSetupGoalLabel(quickSetup.primaryGoal)}.`;
 
     writeJson(userStorageKey(currentUserId), nextData);
-    writeJson(quickSetupDoneStorageKey(currentUserId), true);
+    if (isSupabaseConfigured && supabase) {
+      await saveQuickSetupDataToSupabase(currentUserId, nextData);
+      await updateSupabaseQuickSetupStatus(currentUserId, "completed");
+    } else {
+      writeJson(quickSetupDoneStorageKey(currentUserId), true);
+    }
     applyUserData(nextData);
     setQuickSetupSummary(summary);
     setQuickSetupStep(6);
@@ -3434,15 +3649,27 @@ export default function Home() {
     window.setTimeout(() => setSaveStatus(""), 2500);
   }
 
-  function skipQuickSetup() {
-    if (currentUserId) writeJson(quickSetupDoneStorageKey(currentUserId), true);
+  async function skipQuickSetup() {
+    if (currentUserId) {
+      if (isSupabaseConfigured && supabase) {
+        await updateSupabaseQuickSetupStatus(currentUserId, "skipped");
+      } else {
+        writeJson(quickSetupDoneStorageKey(currentUserId), true);
+      }
+    }
     setQuickSetupSummary("");
     setFlow("app");
     setActive("dashboard");
   }
 
-  function openDashboardFromQuickSetup() {
-    if (currentUserId) writeJson(quickSetupDoneStorageKey(currentUserId), true);
+  async function openDashboardFromQuickSetup() {
+    if (currentUserId) {
+      if (isSupabaseConfigured && supabase) {
+        await updateSupabaseQuickSetupStatus(currentUserId, "completed");
+      } else {
+        writeJson(quickSetupDoneStorageKey(currentUserId), true);
+      }
+    }
     setFlow("app");
     setActive("dashboard");
   }
@@ -3462,7 +3689,7 @@ export default function Home() {
       return;
     }
     if (quickSetupStep >= 5) {
-      completeQuickSetup();
+      void completeQuickSetup();
       return;
     }
     setQuickSetupStep((current) => Math.min(5, current + 1));
@@ -3587,18 +3814,16 @@ export default function Home() {
       }
 
       const userId = authData.user.id;
-      const { data: profileRow, error: profileError } = await supabase
-        .from("profiles")
-        .select("id, full_name, mobile, email, country, city, employer, marital_status, created_at, updated_at")
-        .eq("id", userId)
-        .maybeSingle<SupabaseProfileRow>();
-
-      if (profileError || !profileRow) {
+      let loadedSupabaseData: SupabaseOwnedDataResult;
+      try {
+        loadedSupabaseData = await loadSupabaseOwnedData(userId, authData.user.email || normalizedLoginEmail);
+      } catch (error) {
+        const profileError = summarizeSupabaseError(error);
         setAuthError(validationMessage(
           "Your account exists, but the profile could not be loaded. Please contact the DebtIQ team.",
           "الحساب موجود، لكن تعذر تحميل الملف الشخصي. الرجاء التواصل مع فريق ديبت آي كيو.",
         ));
-        setSessionStatus("Supabase profile load failed. No dashboard session was opened.");
+        setSessionStatus(`Supabase profile load failed: ${profileError.message}. No dashboard session was opened.`);
         setSessionMode("signedOut");
         setCurrentUserId("");
         clearUserData();
@@ -3606,7 +3831,7 @@ export default function Home() {
         return;
       }
 
-      const ownedData = userDataFromProfile(profileFromSupabaseRow(profileRow, authData.user.email || normalizedLoginEmail));
+      const ownedData = loadedSupabaseData.data;
       writeJson(sessionStorageKey, {
         mode: "real",
         userId,
@@ -3621,7 +3846,7 @@ export default function Home() {
       setSessionMode("real");
       setAuthError("");
       setSessionStatus(`Logged in as ${ownedData.profile.email}`);
-      if (!hasBasicFinancialPicture(ownedData) && !readJson<boolean>(quickSetupDoneStorageKey(userId), false)) {
+      if (!loadedSupabaseData.quickSetupCompleted && !loadedSupabaseData.quickSetupSkipped && !hasBasicFinancialPicture(ownedData)) {
         setQuickSetup(emptyQuickSetup);
         setQuickSetupStep(0);
         setQuickSetupSummary("");

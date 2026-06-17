@@ -22,9 +22,16 @@ create table public.profiles (
   city text,
   employer text,
   marital_status marital_status,
+  quick_setup_completed boolean not null default false,
+  quick_setup_skipped boolean not null default false,
+  quick_setup_completed_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.profiles add column if not exists quick_setup_completed boolean not null default false;
+alter table public.profiles add column if not exists quick_setup_skipped boolean not null default false;
+alter table public.profiles add column if not exists quick_setup_completed_at timestamptz;
 
 create table public.income_sources (
   id uuid primary key default gen_random_uuid(),
